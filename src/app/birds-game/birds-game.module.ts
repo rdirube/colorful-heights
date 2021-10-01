@@ -1,12 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GameBodyComponent } from './components/game-body/game-body.component';
+import {SharedModule} from '../shared/shared.module';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    GameBodyComponent
+  ],
+  exports: [
+    GameBodyComponent
+  ],
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
   ]
 })
 export class BirdsGameModule { }
