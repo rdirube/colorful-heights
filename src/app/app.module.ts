@@ -8,6 +8,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from './shared/shared.module';
 import { TranslocoRootModule } from './transloco-root.module';
 import {BirdsGameModule} from './birds-game/birds-game.module';
+import {ChallengeService, ScoreStarsService} from 'micro-lesson-core';
+import {ColorfulHeightsChallengeService} from './shared/services/colorful-heights-challenge.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,12 @@ import {BirdsGameModule} from './birds-game/birds-game.module';
     SharedModule,
     TranslocoRootModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: ChallengeService,
+      useExisting: ColorfulHeightsChallengeService
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

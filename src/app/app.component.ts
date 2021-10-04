@@ -56,11 +56,18 @@ export class AppComponent extends BaseMicroLessonApp {
     // animationSvgs.forEach(z => svg.push('gnome-game/svg/Fondos/sorpresas/' + z));
 
     return svg.map(x => new ResourceOx(x, ResourceType.Svg,
-      [ScreenTypeOx.Game], true));
+      [ScreenTypeOx.Game], true))
+      .concat(getResourceArrayFromUrlList(['mini-lessons/executive-functions/svg/buttons/Home.svg',
+        'mini-lessons/executive-functions/svg/buttons/Hint.svg'], ResourceType.Svg, false))
+      ;
   }
 
   protected getBasePath(): string {
     return environment.basePath;
   }
 
+}
+
+function getResourceArrayFromUrlList(urlList: string[], resourceType: ResourceType, isLocal: boolean): ResourceOx[] {
+  return urlList.map(listElement => new ResourceOx(listElement, resourceType, [ScreenTypeOx.Game], isLocal));
 }
