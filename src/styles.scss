@@ -27,3 +27,14 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.bird {
+  overflow: hidden;
+  height: 23vh;
+  width: 23vh;
+}
+
+.stick {
+  width: 47vh;
+  height: 15vh;
+}

@@ -7,7 +7,7 @@ import {
   LevelService,
   SubLevelService
 } from 'micro-lesson-core';
-import {ExerciseOx, PreloaderOxService} from 'ox-core';
+import {ExerciseOx, PreloaderOxService, randomBetween} from 'ox-core';
 import {BirdInfo, ColorfullHeightsExercise} from '../models/types';
 import {ExpandableInfo, Showable} from 'ox-types';
 
@@ -57,42 +57,44 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
 
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
-    const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new Bird(), quantity: Math.random() <= 0.05 ? this.maxBirdsPerNest : 1};
-    const allColors = ['red', 'green', 'yellow', 'blue', 'violet'];
-    exercise.targetBird.setType(this.mainBird ? this.mainBird.type : this.getRandomBirdType());
-    exercise.targetBird.setColor(allColors.splice(Math.floor(Math.random() * allColors.length), 1)[0] as any);
-    exercise.optionsBirds = Array(this.nests).fill(undefined).map(() => {
-      return {quantity: Math.random() <= 0.05 ? this.maxBirdsPerNest : 1, bird: new Bird()};
-    });
-    exercise.optionsBirds.forEach((option, index, array) => {
-      if (this.availableBirdsInLevel.length > 1) {
-        do {
-          const percentage = this.availableBirdsInLevel.length * 0.1;
-          if (percentage >= Math.random()) {
-            const birdsWithDistintctTypeOfExerciseTarget = this.availableBirdsInLevel.filter(e => e.type !== exercise.targetBird.type);
-            option.bird.setType(birdsWithDistintctTypeOfExerciseTarget[this.oxUtils.randomBetween(0, birdsWithDistintctTypeOfExerciseTarget.length - 1)].type);
-            const distintctPreviouslyUsedColors = array.slice(0, index).filter(e => e.bird.color !== exercise.targetBird.color);
-            if (Math.random() < 0.3 && distintctPreviouslyUsedColors.length > 0) {
-              option.bird.setColor(distintctPreviouslyUsedColors[this.oxUtils.randomBetween(0, distintctPreviouslyUsedColors.length - 1)].bird.color);
-            } else {
-              option.bird.setColor(exercise.targetBird.color);
-            }
-          } else {
-            option.bird.setType(exercise.targetBird.type);
-            option.bird.setColor(allColors[this.oxUtils.randomBetween(0, allColors.length - 1)] as any);
-          }
-        } while (array.slice(0, index).some(e => (e && this.equalBirds(e.bird, option.bird)
-          || this.equalBirds(exercise.targetBird, option.bird))));
-      } else {
-        option.bird.setType(this.availableBirdsInLevel[0].type);
-        option.bird.setColor(allColors.splice(this.oxUtils.randomBetween(0, allColors.length - 1), 1)[0] as any);
-      }
-    });
-    const optionsBird = exercise.optionsBirds[Math.floor(Math.random() * exercise.optionsBirds.length)];
-    optionsBird.quantity = exercise.quantity;
-    optionsBird.bird
-      .setColor(exercise.targetBird.color).setType(exercise.targetBird.type);
-    return {exerciseData: exercise, requiredResources: [], subLevel: this.currentSubLevel};
+    // const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new Bird(), quantity: Math.random() <= 0.05 ? this.maxBirdsPerNest : 1};
+    // const allColors = ['red', 'green', 'yellow', 'blue', 'violet'];
+    // exercise.targetBird.setType(this.mainBird ? this.mainBird.type : this.getRandomBirdType());
+    // exercise.targetBird.setColor(allColors.splice(Math.floor(Math.random() * allColors.length), 1)[0] as any);
+    // exercise.optionsBirds = Array(this.nests).fill(undefined).map(() => {
+    //   return {quantity: Math.random() <= 0.05 ? this.maxBirdsPerNest : 1, bird: new Bird()};
+    // });
+    // exercise.optionsBirds.forEach((option, index, array) => {
+    //   if (this.availableBirdsInLevel.length > 1) {
+    //     do {
+    //       const percentage = this.availableBirdsInLevel.length * 0.1;
+    //       if (percentage >= Math.random()) {
+    //         const birdsWithDistintctTypeOfExerciseTarget = this.availableBirdsInLevel.filter(e => e.type !== exercise.targetBird.type);
+    //         option.bird.setType(birdsWithDistintctTypeOfExerciseTarget[this.oxUtils.randomBetween(0, birdsWithDistintctTypeOfExerciseTarget.length - 1)].type);
+    //         const distintctPreviouslyUsedColors = array.slice(0, index).filter(e => e.bird.color !== exercise.targetBird.color);
+    //         if (Math.random() < 0.3 && distintctPreviouslyUsedColors.length > 0) {
+    //           option.bird.setColor(distintctPreviouslyUsedColors[this.oxUtils.randomBetween(0, distintctPreviouslyUsedColors.length - 1)].bird.color);
+    //         } else {
+    //           option.bird.setColor(exercise.targetBird.color);
+    //         }
+    //       } else {
+    //         option.bird.setType(exercise.targetBird.type);
+    //         option.bird.setColor(allColors[this.oxUtils.randomBetween(0, allColors.length - 1)] as any);
+    //       }
+    //     } while (array.slice(0, index).some(e => (e && this.equalBirds(e.bird, option.bird)
+    //       || this.equalBirds(exercise.targetBird, option.bird))));
+    //   } else {
+    //     option.bird.setType(this.availableBirdsInLevel[0].type);
+    //     option.bird.setColor(allColors.splice(this.oxUtils.randomBetween(0, allColors.length - 1), 1)[0] as any);
+    //   }
+    // });
+    // const optionsBird = exercise.optionsBirds[Math.floor(Math.random() * exercise.optionsBirds.length)];
+    // optionsBird.quantity = exercise.quantity;
+    // optionsBird.bird
+    //   .setColor(exercise.targetBird.color).setType(exercise.targetBird.type);
+    // return {exerciseData: exercise, requiredResources: [], subLevel: this.currentSubLevel};
+    // return {exerciseData: {id: randomBetween(0, 100)} as any, requiredResources: [], subLevel: this.currentSubLevel};
+    return new ExerciseOx(JSON.parse(JSON.stringify({id: randomBetween(0, 100)})), 1, {maxTimeToBonus: 0, freeTime: 0}, []);
   }
 
 

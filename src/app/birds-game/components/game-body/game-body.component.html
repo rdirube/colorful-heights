@@ -5,12 +5,61 @@
     <mlc-hint-button style="width: 13vh;"
                      svgPath="mini-lessons/executive-functions/svg/buttons/Hint.svg"></mlc-hint-button>
   </div>
-  <mlc-ratio-container ratio="4-3" style="position: relative">
-    <div insideRatio style="width: 100%; height: 100%; z-index: 1"
-         fxLayoutAlign="center center">
-
+  <div fxFlex="grow" fxFlexFill class="myAbsolute">
+    <div fxFlex="grow" fxFlexFill style="position: relative">
+      <div
+        class="myAbsolute"
+        fxFlex="grow" fxFlexFill
+        [ngClass]="treeClass"
+        style="z-index: 1; transition: 2s">
+        <div fxFlex="grow" fxFlexFill style="position: relative" fxLayoutAlign="center center">
+          <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"
+                          forceViewBoxTo="''"
+                          path="colorful-heights/svg/Elementos fondo/arbol.svg">
+          </mlc-loaded-svg>
+          <mlc-ratio-container ratio="4-3" style="position: relative; top: 10vh;">
+            <div insideRatio style="width: 100%; height: 100%; z-index: 1;"
+                 fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="10vh">
+              <mlc-loaded-svg
+                class="clock"
+                path="colorful-heights/svg/Elementos fondo/reloj/Reloj1.svg"></mlc-loaded-svg>
+              <div fxLayoutAlign="center center" fxLayoutGap="7vh">
+                <app-stick class="stick" stickSvg="rama_izquierda.svg"></app-stick>
+                <app-hole class="hole" ></app-hole>
+<!--                <mlc-loaded-svg-->
+<!--                  class="hole"-->
+<!--                  path="colorful-heights/svg/Elementos fondo/hueco.svg"></mlc-loaded-svg>-->
+                <app-stick class="stick" stickSvg="rama_derecha.svg"></app-stick>
+<!--                <mlc-loaded-svg-->
+<!--                  class="stick"-->
+<!--                  path="colorful-heights/svg/Elementos fondo/rama_derecha.svg"></mlc-loaded-svg>-->
+              </div>
+              <div fxLayoutAlign="center center" fxLayoutGap="7vh">
+                <mlc-loaded-svg
+                  class="stick"
+                  path="colorful-heights/svg/Elementos fondo/rama_izquierda.svg"></mlc-loaded-svg>
+                <mlc-loaded-svg
+                  class="hole"
+                  path="colorful-heights/svg/Elementos fondo/hueco.svg"></mlc-loaded-svg>
+                <mlc-loaded-svg
+                  class="stick"
+                  path="colorful-heights/svg/Elementos fondo/rama_derecha.svg"></mlc-loaded-svg>
+              </div>
+            </div>
+          </mlc-ratio-container>
+        </div>
+      </div>
+<!--      <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"-->
+<!--                      forceViewBoxTo="''" style="z-index: 1; transition: 2s"-->
+<!--                      path="colorful-heights/svg/Elementos fondo/arbol.svg">-->
+<!--      </mlc-loaded-svg>-->
+      <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"
+                      [ngClass]="baseClass"
+                      forceViewBoxTo="''" style="transition: 2s"
+                      path="colorful-heights/svg/Elementos fondo/Base.svg">
+      </mlc-loaded-svg>
     </div>
-  </mlc-ratio-container>
+  </div>
 </div>
 <app-count-down *ngIf="showCountDown"
                 (started)="startGame()"
