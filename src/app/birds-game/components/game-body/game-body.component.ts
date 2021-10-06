@@ -1,5 +1,5 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-
+import anime from 'animejs';
 @Component({
   selector: 'app-game-body',
   templateUrl: './game-body.component.html',
@@ -33,6 +33,22 @@ export class GameBodyComponent implements OnInit {
     if ($event.key === 'b') {
       this.treeClass = 'tree-hide';
       this.baseClass = 'base-show';
+    }
+    if ($event.key === 'p') {
+      anime({
+        targets: '.birdImage',
+        translateY: '100%',
+        easing: 'linear',
+        duration: 250,
+      });
+    }
+    if ($event.key === 'o') {
+      anime({
+        targets: '.birdImage',
+        translateY: ['65%', '0'],
+        duration: 750,
+        easing: 'easeInOutElastic'
+      });
     }
   }
 }
