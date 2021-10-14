@@ -11,6 +11,8 @@ import {BirdsGameModule} from './birds-game/birds-game.module';
 import {ChallengeService, ScoreStarsService} from 'micro-lesson-core';
 import {ColorfulHeightsChallengeService} from './shared/services/colorful-heights-challenge.service';
 
+
+
 @NgModule({
   declarations: [
     AppComponent

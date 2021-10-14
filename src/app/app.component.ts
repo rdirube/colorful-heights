@@ -52,7 +52,7 @@ export class AppComponent extends BaseMicroLessonApp {
 
   protected getGameResourcesToLoad(): ResourceOx[] {
     const svgFondo: string[] = ['arbol.svg', 'Base.svg',
-    'hueco.svg', 'hueco-over.svg', 'rama_derecha.svg', 'rama_izquierda.svg', 'reloj/Reloj1.svg'];
+    'hueco.svg', 'hueco-over.svg', 'rama_derecha.svg', 'rama_izquierda.svg', 'reloj/Reloj1.svg', 'reloj/reloj4.svg'];
     const svgBirds: string[] = ['cotorra_amarillo.svg', 'gordo_azul.svg'];
     // const animationSvgs = [];
     // animationSvgs.forEach(z => svg.push('gnome-game/svg/Fondos/sorpresas/' + z));

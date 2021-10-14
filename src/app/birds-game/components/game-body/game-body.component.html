@@ -12,6 +12,7 @@
         fxFlex="grow" fxFlexFill
         [ngClass]="treeClass"
         style="z-index: 1; transition: 2s">
+       
         <div fxFlex="grow" fxFlexFill style="position: relative" fxLayoutAlign="center center">
           <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"
                           forceViewBoxTo="''"
@@ -20,9 +21,7 @@
           <mlc-ratio-container ratio="4-3" style="position: relative; top: 10vh;">
             <div insideRatio style="width: 100%; height: 100%; z-index: 1;"
                  fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="10vh">
-              <mlc-loaded-svg
-                class="clock"
-                path="colorful-heights/svg/Elementos fondo/reloj/Reloj1.svg"></mlc-loaded-svg>
+             <app-clock ></app-clock>
               <div fxLayoutAlign="center center" fxLayoutGap="5.5vh">
                 <app-stick class="stick" stickSvg="rama_izquierda.svg"></app-stick>
                 <app-hole class="hole" ></app-hole>
