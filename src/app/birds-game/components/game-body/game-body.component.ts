@@ -25,7 +25,6 @@ export class GameBodyComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   asdsad($event: KeyboardEvent) {
-    console.log('keke ')
     if ($event.key === 't') {
       this.treeClass = 'tree-show';
       this.baseClass = 'base-hide';

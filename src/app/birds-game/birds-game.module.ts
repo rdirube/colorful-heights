@@ -5,6 +5,7 @@ import {SharedModule} from '../shared/shared.module';
 import { BirdComponent } from './components/bird/bird.component';
 import { StickComponent } from './components/stick/stick.component';
 import { HoleComponent } from './components/hole/hole.component';
+import { ClockComponent } from './components/clock/clock.component';
 
 
 
@@ -13,10 +14,12 @@ import { HoleComponent } from './components/hole/hole.component';
     GameBodyComponent,
     BirdComponent,
     StickComponent,
-    HoleComponent
+    HoleComponent,
+    ClockComponent
   ],
   exports: [
-    GameBodyComponent
+    GameBodyComponent,
+    ClockComponent
   ],
   imports: [
     CommonModule,
