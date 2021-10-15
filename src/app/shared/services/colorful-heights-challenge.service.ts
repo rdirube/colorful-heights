@@ -7,9 +7,13 @@ import {
   LevelService,
   SubLevelService
 } from 'micro-lesson-core';
-import {ExerciseOx, PreloaderOxService, randomBetween} from 'ox-core';
-import {BirdInfo, ColorfullHeightsExercise} from '../models/types';
+import {ExerciseOx, PreloaderOxService, randomBetween, shuffle} from 'ox-core';
+import {BirdInfo, ColorfullHeightsExercise, NivelationColorfulHeightInfo} from '../models/types';
 import {ExpandableInfo, Showable} from 'ox-types';
+
+
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,21 +21,26 @@ import {ExpandableInfo, Showable} from 'ox-types';
 export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullHeightsExercise, any> {
   // public theme: ThemeInfo;
   public resources = new Map<string, string>();
-  private allAvailableBirds: BirdInfo[] | undefined;
-  private availableBirdsInLevel: BirdInfo[] | undefined;
-  private mainBird: BirdInfo | undefined;
-  private maxBirdsPerNest: number | undefined;
+  // private allAvailableBirds: BirdInfo[] | undefined;
+  private availableBirdsInLevel!: BirdInfo[];
+  private statementBird!: BirdInfo;
+  // private maxBirdsPerNest: number | undefined;
   private nests: number | undefined;
+  public exerciseConfig!: NivelationColorfulHeightInfo;
+  public allBirds!:BirdInfo[];
+  public exercise:ColorfullHeightsExercise | undefined;
+
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
               subLevelService: SubLevelService,
               private preloaderService: PreloaderOxService,
               private feedback: FeedbackOxService,
-              private appInfo: AppInfoOxService) {
+              private appInfo: AppInfoOxService,
+             ) {
     super(gameActionsService, subLevelService, preloaderService);
     gameActionsService.restartGame.subscribe(z => {
       this.cachedExercises = [];
-      // this.exercise = undefined;
+      this.exercise = undefined;
       // this.setInitialExercise();
     });
     gameActionsService.showNextChallenge.subscribe(z => {
@@ -54,17 +63,35 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     return this.appInfo.getMicroLessonLevelConfiguration(this.levelService.currentLevel.value)
       .sublevelConfigurations[sublevel - 1].properties as any;
   }
+ 
+
+  private mainBirdGenerator():BirdInfo {
+    shuffle(this.allBirds);
+    return this.allBirds[0];
+  }
+  
+  private avaiableBirdsGenerator():void {
+    this.availableBirdsInLevel.push(this.statementBird);
+    const allBirdsShuffled = shuffle(this.allBirds);
+    for(let i = 0; i > this.exerciseConfig.birdsQuantity-1; i++){
+       this.availableBirdsInLevel.push(allBirdsShuffled[i]);
+    }
+  }
+  
 
 
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
-    // const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new Bird(), quantity: Math.random() <= 0.05 ? this.maxBirdsPerNest : 1};
-    // const allColors = ['red', 'green', 'yellow', 'blue', 'violet'];
-    // exercise.targetBird.setType(this.mainBird ? this.mainBird.type : this.getRandomBirdType());
-    // exercise.targetBird.setColor(allColors.splice(Math.floor(Math.random() * allColors.length), 1)[0] as any);
-    // exercise.optionsBirds = Array(this.nests).fill(undefined).map(() => {
-    //   return {quantity: Math.random() <= 0.05 ? this.maxBirdsPerNest : 1, bird: new Bird()};
-    // });
-    // exercise.optionsBirds.forEach((option, index, array) => {
+    this.statementBird = this.mainBirdGenerator()
+    const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new BirdInfo(this.statementBird.color,this.statementBird.type), quantity: 1};
+    const allColors = this.exerciseConfig.colorsToUse;
+    this.avaiableBirdsGenerator();
+    exercise.optionsBirds = this.availableBirdsInLevel.map((z,i) => {
+      return {quantity: 1, bird: new BirdInfo(this.allBirds[i].color,this.allBirds[i].type)};
+    });
+    exercise.optionsBirds.forEach((option, index, array) => {
+      const percentage = this.availableBirdsInLevel.length * 0.1;
+      
+    })
     //   if (this.availableBirdsInLevel.length > 1) {
     //     do {
     //       const percentage = this.availableBirdsInLevel.length * 0.1;
