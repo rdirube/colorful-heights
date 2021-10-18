@@ -8,6 +8,8 @@ import {Component, Input, OnInit} from '@angular/core';
 export class StickComponent implements OnInit {
 
   @Input() stickSvg: string = '';
+  @Input() bird!: string;
+
 
   constructor() {
   }

@@ -1,7 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { timer } from 'rxjs';
 import anime from 'animejs';
 import { listenOrNotOperator } from '@ngneat/transloco/lib/shared';
+import { SubscriberOxDirective } from 'micro-lesson-components';
+import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 
 
 @Component({
@@ -9,11 +11,11 @@ import { listenOrNotOperator } from '@ngneat/transloco/lib/shared';
   templateUrl: './clock.component.html',
   styleUrls: ['./clock.component.scss']
 })
-export class ClockComponent implements OnInit, AfterViewInit {
+export class ClockComponent extends SubscriberOxDirective implements OnInit, AfterViewInit {
 
 
   public isTimeRunning: boolean = false;
-  public duration: number = 14000;
+  public duration:number = 20000;
   public currentMsSecond: number = 0;
   public animations: any[] = []
   public isPaused: boolean = false;
@@ -31,31 +33,20 @@ export class ClockComponent implements OnInit, AfterViewInit {
     this.pieAnimation.play();
   }
   
-  public  addTimeMethod() {
+  public addTimeMethod(bonus:number) {
     this.pauseTime()
-    this.pieAnimation.seek(((this.progressAnimation - 20) * this.duration) / 100);
+    this.pieAnimation.seek(((this.progressAnimation - bonus) * this.duration) / 100);
     this.playTime();
-
   }
   
 
 
 
 
-  constructor() {
-  }
-
-
-
-  ngOnInit(): void {
-    this.isTimeRunning = true;
-
-  }
-
-
-  ngAfterViewInit(): void {
-
-    this.pieAnimation = 
+  constructor(private challengeService:ColorfulHeightsChallengeService) {
+    super()
+    this.addSubscription(this.challengeService.startTime, x=> {
+      this.pieAnimation = 
       anime({
         targets: '.svg-inner-pie',
         duration: this.duration,
@@ -70,6 +61,24 @@ export class ClockComponent implements OnInit, AfterViewInit {
         duration: this.duration,
         keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'easeInOutQuad'}, { borderColor: 'rgb(250, 0, 0)' , easing:'easeInOutQuad'}],   
       })
+    })
+
+    this.addSubscription(this.challengeService.bonusTime, x => {
+      this.addTimeMethod(x);
+    })
+  }
+
+
+
+  ngOnInit(): void {
+    this.isTimeRunning = true;
+
+  }
+
+
+  ngAfterViewInit(): void {
+
+    
       
 
     // this.animations = [
@@ -120,3 +129,5 @@ export class ClockComponent implements OnInit, AfterViewInit {
 
 
 }
+
+

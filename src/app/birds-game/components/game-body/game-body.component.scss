@@ -16,3 +16,18 @@
   height: 15vh;
 }
 
+.correct-counter {
+    color: white;
+    background-color: #82461e;
+    border-radius: 25px;
+    width: 12vh;
+    height: 5vh;
+    left: 100vh;
+    top: 13vh;
+    z-index: 2;
+  }
+
+  .counter {
+    margin-left:3.5vh;
+    margin-top: 0.5vh;
+  }

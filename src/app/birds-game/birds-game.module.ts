@@ -6,6 +6,7 @@ import { BirdComponent } from './components/bird/bird.component';
 import { StickComponent } from './components/stick/stick.component';
 import { HoleComponent } from './components/hole/hole.component';
 import { ClockComponent } from './components/clock/clock.component';
+import { BirdToSelectComponent } from './components/bird-to-select/bird-to-select.component';
 
 
 
@@ -15,7 +16,8 @@ import { ClockComponent } from './components/clock/clock.component';
     BirdComponent,
     StickComponent,
     HoleComponent,
-    ClockComponent
+    ClockComponent,
+    BirdToSelectComponent
   ],
   exports: [
     GameBodyComponent,

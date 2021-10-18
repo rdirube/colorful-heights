@@ -4,8 +4,9 @@ $animation-duration : 10s;
 
   
 .clock-container {
-    width: 25vh;
-    height:25vh;
+    width: 19vh;
+    height:19vh;
+    transform: translateY(2vh);
 }
 
 .clock{
@@ -17,19 +18,19 @@ $animation-duration : 10s;
 
 .clock-hours {
 z-index: 1000;
-width:27vh;
-height:27vh;
+width:24vh;
+height:24vh;
 }
 
 
 .timer {
-width:17.7vh;
-height:17.7vh;
+width: 13.5vh;
+height:13.5vh;
 border-radius: 50%;
 border:3px solid $background-color;
 background-color:#FFF;
 z-index: 150;
-bottom:-1.8vh;
+bottom:-1.35vh;
 overflow: hidden;
 }
 
@@ -39,8 +40,8 @@ overflow: hidden;
 .svg-pie {
   transform: rotateZ(270deg);
   position:absolute;
-  height: 17.7vh;
-  width: 17.7vh;
+  height: 14vh;
+  width: 14vh;
   stroke:#FFF;
 }
 

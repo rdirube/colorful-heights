@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import {
   AppInfoOxService,
   ChallengeService,
@@ -22,14 +22,18 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   // public theme: ThemeInfo;
   public resources = new Map<string, string>();
   // private allAvailableBirds: BirdInfo[] | undefined;
-  private availableBirdsInLevel!: BirdInfo[];
+  public availableBirdsInLevel!: BirdInfo[];
   private statementBird!: BirdInfo;
   // private maxBirdsPerNest: number | undefined;
   private nests: number | undefined;
   public exerciseConfig!: NivelationColorfulHeightInfo;
   public allBirds!:BirdInfo[];
   public exercise:ColorfullHeightsExercise | undefined;
-
+  stopPlayTimeEmitter = new EventEmitter<boolean>();
+  addTimeEmitter = new EventEmitter<void>();
+  startTime = new EventEmitter<void>();
+  bonusTime = new EventEmitter<number>();
+  activateCounter = new EventEmitter<number>();
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
               subLevelService: SubLevelService,
@@ -65,12 +69,12 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   }
  
 
-  private mainBirdGenerator():BirdInfo {
+  public mainBirdGenerator():BirdInfo {
     shuffle(this.allBirds);
     return this.allBirds[0];
   }
   
-  private avaiableBirdsGenerator():void {
+  public avaiableBirdsGenerator():void {
     this.availableBirdsInLevel.push(this.statementBird);
     const allBirdsShuffled = shuffle(this.allBirds);
     for(let i = 0; i > this.exerciseConfig.birdsQuantity-1; i++){

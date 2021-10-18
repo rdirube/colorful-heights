@@ -1,3 +1,5 @@
+import { PostMessageBridgeFactory } from "ngox-post-message";
+
 export interface ColorfullHeightsExercise {
   targetBird: BirdInfo;
   quantity: number;
@@ -16,14 +18,20 @@ export class BirdInfo {
     this.color=color;
     this.type=type
   }
- 
+ setType(bird:BirdInfo) {
+    return bird.type;
+ } 
 
+ setColor(color:BirdColor){
+   return color;
+ }
 }
 
 
 export interface Bonus {
   numberOfCorrectAnswersForBonus:number,
-  timeEarnPerBonus:number
+  timeEarnPerBonus:number,
+  isAble:boolean
 }
 
 

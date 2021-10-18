@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
 import anime from 'animejs'
 import {LoadedSvgComponent} from 'micro-lesson-components';
 
@@ -10,11 +10,14 @@ import {LoadedSvgComponent} from 'micro-lesson-components';
 export class BirdComponent implements OnInit {
 
   @ViewChild(LoadedSvgComponent) loadedSvgComponet!: LoadedSvgComponent;
+  @Input() bird!: string;
+
 
   constructor(private elementRef: ElementRef) {
   }
 
   ngOnInit(): void {
+    console.log(this.bird);
   }
 
 
