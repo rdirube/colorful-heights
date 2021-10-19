@@ -34,6 +34,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   startTime = new EventEmitter<void>();
   bonusTime = new EventEmitter<number>();
   activateCounter = new EventEmitter<number>();
+  birdMainAppearence = new EventEmitter<void>()
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
               subLevelService: SubLevelService,

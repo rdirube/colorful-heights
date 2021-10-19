@@ -4,7 +4,7 @@
     border-radius: 25px;
     width: 12vh;
     height: 5vh;
-    top: 10.5vh;
+    top: 8vh;
     z-index: 20;
   }
 
@@ -12,3 +12,17 @@
     margin-left:3vh;
     margin-top: 0.5vh;
   }
+
+.bird-to-select {
+    height:19vh;
+    width:19vh;
+    overflow: hidden;
+   
+}
+
+.container-bird-to-select {
+    position: relative;
+     width:35vh;
+     height:20vh;
+     overflow: hidden;top:-20vh;
+}

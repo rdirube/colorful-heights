@@ -31,7 +31,7 @@ export class BirdInfo {
 export interface Bonus {
   numberOfCorrectAnswersForBonus:number,
   timeEarnPerBonus:number,
-  isAble:boolean
+  isAble?:boolean,
 }
 
 
@@ -45,4 +45,10 @@ export interface NivelationColorfulHeightInfo {
   maxMultipleBirds?:number,
   totalGameTime:number,
   bonusRequirmentsAndTimeEarn:Bonus[]
+}
+
+
+export interface BirdsAux {
+  svg:string,
+  isDouble:boolean
 }

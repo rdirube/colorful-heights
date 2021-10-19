@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import { BirdsAux } from 'src/app/shared/models/types';
 
 @Component({
   selector: 'app-stick',
@@ -8,7 +9,10 @@ import {Component, Input, OnInit} from '@angular/core';
 export class StickComponent implements OnInit {
 
   @Input() stickSvg: string = '';
-  @Input() bird!: string;
+  @Input() bird!: BirdsAux;
+  @Input() isDouble!: boolean;
+  public isAnswer:boolean = true;
+  
 
 
   constructor() {

@@ -1,4 +1,5 @@
 import { Component, OnInit , Input} from '@angular/core';
+import { BirdsAux } from 'src/app/shared/models/types';
 
 @Component({
   selector: 'app-hole',
@@ -8,8 +9,9 @@ import { Component, OnInit , Input} from '@angular/core';
 export class HoleComponent implements OnInit {
 
 
-  @Input() bird!: string;
-
+  @Input() bird!: BirdsAux;
+  public isAnswer:boolean = true;
+  
   constructor() { }
 
   ngOnInit(): void {

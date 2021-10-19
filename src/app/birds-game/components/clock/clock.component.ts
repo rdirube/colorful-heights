@@ -20,22 +20,33 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
   public animations: any[] = []
   public isPaused: boolean = false;
   public progressAnimation!: number;
-  public pieAnimation: any;
+  public pieAnimation!: any[];
+
+
   public playPauseMethod() {
     this.isPaused ? this.playTime() : this.pauseTime();
   }
+
+
   public pauseTime() {
     this.isPaused = true;
-    this.pieAnimation.pause()
+    this.pieAnimation.forEach(z => {
+      z.pause()
+    });
   }
+
   public playTime() {
     this.isPaused = false;
-    this.pieAnimation.play();
+    this.pieAnimation.forEach(z => {
+      z.play()
+    });
   }
   
   public addTimeMethod(bonus:number) {
     this.pauseTime()
-    this.pieAnimation.seek(((this.progressAnimation - bonus) * this.duration) / 100);
+    this.pieAnimation.forEach(z=> {
+      z.seek(((this.progressAnimation - bonus) * this.duration) / 100);
+    })
     this.playTime();
   }
   
@@ -45,10 +56,17 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
 
   constructor(private challengeService:ColorfulHeightsChallengeService) {
     super()
+    const animationPieTimeLine = anime.timeline({
+      targets: '.svg-inner-pie',
+      duration:this.duration+2500
+    })
     this.addSubscription(this.challengeService.startTime, x=> {
-      this.pieAnimation = 
-      anime({
-        targets: '.svg-inner-pie',
+      this.pieAnimation =[
+      animationPieTimeLine.add({
+        duration:2500,
+        backgroundColor: "rgb(119, 198, 110)"
+      })
+      .add({
         duration: this.duration,
         strokeDashoffset: [anime.setDashoffset, 0],
         easing: 'linear',
@@ -60,8 +78,9 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
         targets: '.timer',
         duration: this.duration,
         keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'easeInOutQuad'}, { borderColor: 'rgb(250, 0, 0)' , easing:'easeInOutQuad'}],   
-      })
+      })] 
     })
+
 
     this.addSubscription(this.challengeService.bonusTime, x => {
       this.addTimeMethod(x);

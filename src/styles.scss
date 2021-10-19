@@ -34,12 +34,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   overflow: hidden;
   height: 23vh;
   width: 23vh;
+  transform:translateY(100%)
 }
 
 .stick {
   width: 47vh;
   height: 15vh;
   position: absolute;
+  top:6vh;
 }
 
 .hole {
@@ -52,6 +54,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 29vh;
   height: 30vh;
   left:50vh;
+  top: 17vh;
+  left: 2vh;
 }
 
 .stick-left {
@@ -62,4 +66,30 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .stick-right {
   @extend .stick;
   right:1vh;
+}
+
+.bird-to-select {
+  width:19vh;
+  height:19vh;
+  overflow: hidden;
+}
+
+
+.birds-1 {
+  @extend .bird;
+  top: -37vh;
+  left: 13vh;
+}
+
+
+.birdDouble {
+  @extend .bird;
+  top: -37vh;
+  left: 4vh;
+}
+
+.bird-2 {
+  @extend .bird;
+  top: -37vh;
+  left: 19vh;
 }
