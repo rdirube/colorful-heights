@@ -10,7 +10,6 @@ export class StickComponent implements OnInit {
 
   @Input() stickSvg: string = '';
   @Input() bird!: BirdsAux;
-  @Input() isDouble!: boolean;
   public isAnswer:boolean = true;
   
 

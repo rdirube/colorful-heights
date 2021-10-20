@@ -1,5 +1,7 @@
-import { Component, OnInit , Input} from '@angular/core';
+import { Component, OnInit , Input, Output, EventEmitter} from '@angular/core';
 import { BirdsAux } from 'src/app/shared/models/types';
+
+
 
 @Component({
   selector: 'app-hole',
@@ -8,7 +10,7 @@ import { BirdsAux } from 'src/app/shared/models/types';
 })
 export class HoleComponent implements OnInit {
 
-
+  @Output() loadedBirdSvgParent = new EventEmitter();
   @Input() bird!: BirdsAux;
   public isAnswer:boolean = true;
   
@@ -16,5 +18,9 @@ export class HoleComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+   loadedBirdSvgParentMethod() {
+     this.loadedBirdSvgParent.emit("hola")
+   }
 
 }

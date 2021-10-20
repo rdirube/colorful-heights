@@ -1,15 +1,15 @@
 <div fxFlex="grow" fxLayoutAlign="center center" style="position: relative; background: red">
   <div class="myAbsolute full-width" style="height: 13vh; z-index: 10" fxLayoutAlign="space-between">
-    <mlc-to-in-game-menu-button style="width: 13vh;" svgPath="mini-lessons/executive-functions/svg/buttons/Home.svg">
+    <mlc-to-in-game-menu-button class='button-menu'style="width: 13vh; transform: translateX(-100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Home.svg">
     </mlc-to-in-game-menu-button>
-    <mlc-hint-button style="width: 13vh;" svgPath="mini-lessons/executive-functions/svg/buttons/Hint.svg">
+    <mlc-hint-button class='button-hint' style="width: 13vh; transform: translateX(100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Hint.svg">
     </mlc-hint-button>
   </div>
   <div fxFlex="grow" fxFlexFill class="myAbsolute">
     <div fxFlex="grow" fxFlexFill style="position: relative">
 
-      <div insideRatio style="width:100%; height:25vh;padding-top: 2vh; padding-right: 2vh;top:10vh;overflow: hidden;" class="myAbsolute"
-        fxLayoutAlign="end center">
+      <div insideRatio style="width:100%; height:25vh;padding-top: 2vh; padding-right: 2vh;top:10vh;overflow: hidden;"
+        class="myAbsolute" fxLayoutAlign="end center">
         <app-bird-to-select [BirdToSelect]="birdToSelect" [counterOriginalText]="correctAnswerCounter"
           class="bird-select-container"></app-bird-to-select>
       </div>
@@ -26,22 +26,22 @@
               <app-clock></app-clock>
               <div fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
                 <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="nestsPerExercise[0]"
-                  [bird]="answerBirds[0]" (click)="birdSelectMethod(answerBirds[0])">
+                  [bird]="answerBirds[0]" (click)="birdSelectMethod(answerBirds[0].isDouble, answerBirds[0].svg,0)">
                 </app-stick>
                 <app-hole class="hole" *ngIf="nestsPerExercise[2]" [bird]="answerBirds[2]"
-                  (click)="birdSelectMethod(answerBirds[2])"></app-hole>
+                  (click)="birdSelectMethod(answerBirds[2].isDouble, answerBirds[2].svg,2)"></app-hole>
                 <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="nestsPerExercise[1]"
-                  [bird]="answerBirds[1]" (click)="birdSelectMethod(answerBirds[1])">
+                  [bird]="answerBirds[1]" (click)="birdSelectMethod(answerBirds[1].isDouble, answerBirds[1].svg,1)">
                 </app-stick>
               </div>
               <div fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
                 <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="nestsPerExercise[3]"
-                  [bird]="answerBirds[3]" (click)="birdSelectMethod(answerBirds[3])">
+                  [bird]="answerBirds[3]" (click)="birdSelectMethod(answerBirds[3].isDouble, answerBirds[3].svg,3)">
                 </app-stick>
                 <app-hole class="hole" *ngIf="nestsPerExercise[5]" [bird]="answerBirds[5]"
-                  (click)="birdSelectMethod(answerBirds[5])"></app-hole>
+                  (click)="birdSelectMethod(answerBirds[5].isDouble, answerBirds[5].svg,5)"></app-hole>
                 <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="nestsPerExercise[4]"
-                  [bird]="answerBirds[4]" (click)="birdSelectMethod(answerBirds[4])">
+                  [bird]="answerBirds[4]" (click)="birdSelectMethod(answerBirds[4].isDouble, answerBirds[4].svg,4)">
                 </app-stick>
               </div>
             </div>

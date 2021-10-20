@@ -20,7 +20,8 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
   public animations: any[] = []
   public isPaused: boolean = false;
   public progressAnimation!: number;
-  public pieAnimation!: any[];
+  public pieAnimation!: any;
+  public borderAnimation!:any;
 
 
   public playPauseMethod() {
@@ -30,26 +31,27 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
 
   public pauseTime() {
     this.isPaused = true;
-    this.pieAnimation.forEach(z => {
-      z.pause()
-    });
+    this.pieAnimation.pause();
+    this.borderAnimation.pause();
   }
 
   public playTime() {
     this.isPaused = false;
-    this.pieAnimation.forEach(z => {
-      z.play()
-    });
+    this.pieAnimation.play();
+    this.borderAnimation.play();
   }
   
   public addTimeMethod(bonus:number) {
     this.pauseTime()
-    this.pieAnimation.forEach(z=> {
-      z.seek(((this.progressAnimation - bonus) * this.duration) / 100);
-    })
+    this.goBackMethod(this.pieAnimation,bonus)
+    this.goBackMethod(this.borderAnimation,bonus)
     this.playTime();
   }
   
+
+  public goBackMethod(animation:any, bonus:number) {
+    animation.seek(((this.progressAnimation - bonus) * this.duration) / 100);
+  }
 
 
 
@@ -60,8 +62,13 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
       targets: '.svg-inner-pie',
       duration:this.duration+2500
     })
+    const animationBorderPie = anime.timeline({
+      targets: '.timer',
+      duration:this.duration+2500
+    })
+        
     this.addSubscription(this.challengeService.startTime, x=> {
-      this.pieAnimation =[
+      this.pieAnimation =
       animationPieTimeLine.add({
         duration:2500,
         backgroundColor: "rgb(119, 198, 110)"
@@ -73,14 +80,25 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
         update: (anim) => {
           this.progressAnimation = Math.round(anim.progress)
         },
-        keyframes: [{ fill: 'rgb(253, 218, 13)' , easing:'easeInOutQuad'}, { fill: 'rgb(250, 0, 0)' , easing:'easeInOutQuad'}],    
-      }), anime({
+        keyframes: [{ fill: 'rgb(253, 218, 13)' , easing:'linear'}, { fill: 'rgb(250, 0, 0)' , easing:'linear'}],    
+      })
+      
+
+      this.borderAnimation = animationBorderPie.add({
+        targets: '.timer',
+        duration:2500,
+        backgroundColor: "rgb(119, 198, 110)"
+      }).add({
         targets: '.timer',
         duration: this.duration,
-        keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'easeInOutQuad'}, { borderColor: 'rgb(250, 0, 0)' , easing:'easeInOutQuad'}],   
-      })] 
+        keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'linear'}, { borderColor: 'rgb(250, 0, 0)' , easing:'linear'}],
+        update: (anim) => {
+          this.progressAnimation = Math.round(anim.progress)
+        }
+      })   
     })
 
+    
 
     this.addSubscription(this.challengeService.bonusTime, x => {
       this.addTimeMethod(x);

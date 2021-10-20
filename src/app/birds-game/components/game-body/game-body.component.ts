@@ -1,14 +1,15 @@
-import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import anime  from 'animejs';
+import { Component, HostListener, OnInit, AfterViewInit, ViewChild, ViewChildren,  QueryList } from '@angular/core';
+import anime from 'animejs';
 import { ChallengeService } from 'micro-lesson-core';
-import { BirdInfo, Bonus , BirdsAux} from 'src/app/shared/models/types';
+import { BirdInfo, Bonus, BirdsAux } from 'src/app/shared/models/types';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 import { ExerciseOx, PreloaderOxService, randomBetween, shuffle } from 'ox-core';
 import { timer } from 'rxjs';
-import { TryButtonComponent } from 'micro-lesson-components';
+import { TryButtonComponent, LoadedSvgComponent } from 'micro-lesson-components';
 import { OxTextInfo } from 'ox-types';
 import { Typographies, TextComponent } from 'typography-ox';
 import { SubscriberOxDirective } from 'micro-lesson-components';
+import { StickComponent } from '../stick/stick.component';
 
 
 
@@ -22,7 +23,8 @@ import { SubscriberOxDirective } from 'micro-lesson-components';
 
 export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
-  
+  @ViewChild('counterText') counterText!: TextComponent;
+  @ViewChildren(StickComponent) stickComponent!: QueryList<StickComponent>;
 
 
   showCountDown: boolean | undefined;
@@ -30,12 +32,13 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   baseClass: string = 'base-show';
   public avaiableBirdsPerExercise: number[] = [];
   public nestsPerExercise: boolean[] = [];
-  public allBirds: BirdsAux[] = [{svg:'colorful-heights/svg/Pajaritos/cóndor_amarillo.svg', isDouble:false}, {svg:'colorful-heights/svg/Pajaritos/cóndor_azul.svg',isDouble:false}, {svg:'colorful-heights/svg/Pajaritos/cotorra_roja.svg', isDouble:false}, {svg:"colorful-heights/svg/Pajaritos/cotorra_violeta.svg", isDouble:false},
-    {svg:"colorful-heights/svg/Pajaritos/cotorra_amarillo.svg", isDouble:false}, {svg:"colorful-heights/svg/Pajaritos/lechuza_azul.svg", isDouble:false}, {svg:"colorful-heights/svg/Pajaritos/pelado_verde.svg",isDouble:false}, {svg:"colorful-heights/svg/Pajaritos/gordo_azul.svg",isDouble:false}, {svg:"colorful-heights/svg/Pajaritos/pelado_rojo.svg", isDouble:false}];
+  public allBirds: BirdsAux[] = [{ svg: 'colorful-heights/svg/Pajaritos/cóndor_amarillo.svg', isDouble: false }, { svg: 'colorful-heights/svg/Pajaritos/cóndor_azul.svg', isDouble: false }, { svg: 'colorful-heights/svg/Pajaritos/cotorra_roja.svg', isDouble: false }, { svg: "colorful-heights/svg/Pajaritos/cotorra_violeta.svg", isDouble: false },
+  { svg: "colorful-heights/svg/Pajaritos/cotorra_amarillo.svg", isDouble: false }, { svg: "colorful-heights/svg/Pajaritos/lechuza_azul.svg", isDouble: false }, { svg: "colorful-heights/svg/Pajaritos/pelado_verde.svg", isDouble: false }, { svg: "colorful-heights/svg/Pajaritos/gordo_azul.svg", isDouble: false }, { svg: "colorful-heights/svg/Pajaritos/pelado_rojo.svg", isDouble: false }];
   public birdToSelect!: BirdsAux;
-  public answerBirds: BirdsAux[]=[];
+  public answerBirds: BirdsAux[] = [];
   public duration!: number;
-  public isDouble!:boolean;
+  public isDouble!: boolean;
+  public isDoubleCounter: number = 0;
   public correctAnswerCounter: number = 0;
   public bonusValuesList: Bonus[] = [{ numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true }, {
     numberOfCorrectAnswersForBonus: 10, timeEarnPerBonus: 40, isAble: true
@@ -44,22 +47,40 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     isAble: true
   }]
   public correctCountertext = new OxTextInfo;
-  @ViewChild('counterText') counterText!: TextComponent;
+  
 
 
-
-  constructor(private challengeService: ColorfulHeightsChallengeService) {
+  constructor(private challengeService: ColorfulHeightsChallengeService, stickComponent:StickComponent) {
     super()
     this.addSubscription(this.challengeService.startTime, x => {
-      timer(1300).subscribe(z=> {
+      timer(1300).subscribe(z => {
         anime({
           targets: '.bird',
-          translateY: ['100%', '-2%'],
-        duration: 1050,
-        easing: 'easeInOutExpo'
+          translateY: ['100%', '-1.8%'],
+          duration: 1050,
+          easing: 'easeInOutExpo'
         })
       })
     })
+    this.addSubscription(this.challengeService.startTime,x=> {
+      timer(1200).subscribe(z=> {
+        anime({
+          targets:'.button-hint',
+          translateX: ['100%' , '0%'],
+          duration:700,
+          easing: 'easeInOutExpo'
+        })
+      })
+      timer(1200).subscribe(z=> {
+        anime({
+          targets:'.button-menu',
+          translateX: ['-100%' , '0%'],
+          duration:700,
+          easing: 'easeInOutExpo'
+        })
+      })
+    })
+    
   }
 
 
@@ -67,7 +88,6 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   ngOnInit(): void {
     this.birdsAddedToExercises(6);
     this.birdToSelectGenerator();
-    console.log(this.nestsPerExercise.length);
 
   }
 
@@ -85,11 +105,11 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     this.birdToSelect = shuffledBirds[0];
     this.answerBirds.push(this.birdToSelect);
     const allBirdsWithoutCorrect = shuffledBirds.filter(z => z !== this.birdToSelect);
-    allBirdsWithoutCorrect.forEach( (z,i)=> z.isDouble = i%3===0);
+    allBirdsWithoutCorrect.forEach((z, i) => z.isDouble = i % 3 === 0);
     for (let i = 0; i < this.nestsPerExercise.length; i++) {
-    
-       this.answerBirds.push(allBirdsWithoutCorrect[i]);
-  
+
+      this.answerBirds.push(allBirdsWithoutCorrect[i]);
+
     }
     this.answerBirds = shuffle(this.answerBirds);
     this.bonusValuesList.forEach(z => {
@@ -103,28 +123,69 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
 
 
+  birdSelectMethod(isDouble: boolean, bird: string, i:number) {
+    if (isDouble) {
+      this.isDoubleCounter++
+      if (this.isDoubleCounter === 2) {
+        this.isDoubleCounter = 0;
+        this.birdAnimationGenerator(bird,i);
+      }
+    } else {
+      this.birdAnimationGenerator(bird,i);
+    }
+  }
 
 
-  birdSelectMethod(i: BirdsAux) {
+
+  birdAnimationGenerator(birdSvg: string, i:number) {
     this.correctAnswerCounter++;
-    this.challengeService.activateCounter.emit(this.correctAnswerCounter)
+    this.challengeService.activateCounter.emit(this.correctAnswerCounter);
+    console.log(this.stickComponent);
+    const sticks = this.stickComponent.toArray();
+    console.log(sticks[0].bird);
+    if(sticks[i].bird.isDouble) {
+      this.animationBirdsTimeline(); 
+        timer(250).subscribe(z=> {
+          this.animationDoubleBirdstimeLine()
+        })    
+    }
+    this.animationBirdsTimeline();
+  }
+
+  
+  animationDoubleBirdstimeLine() {
+    const opacityUniqueBird = anime({
+      targets:'.bird-1',
+      opacity:0,
+      duration:1
+    })
+    const opacityDoubleBirds = anime({
+      targets:['.birdDouble', '.bird-2'],
+      opacity:1,
+      duration:1
+    })
+  }
+
+
+
+  animationBirdsTimeline() {
     const birdsAnimation = anime.timeline({
-      targets: '.birdImage',
-      duration: 1000
-    });
-    birdsAnimation.add({
-      translateY: '100%',
-      easing: 'linear',
-      duration: 250,
-    })
-      .add({
-        translateY: ['95%', '0'],
-        duration: 750,
-        easing: 'easeInOutElastic'
+        targets: '.birdImage',
+        duration: 1000
+      });
+      birdsAnimation.add({
+        translateY: '100%',
+        easing: 'linear',
+        duration: 250,
+        complete : (anim) => {
+          this.birdToSelectGenerator();
+        }   
       })
-    timer(250).subscribe(z => {
-      this.birdToSelectGenerator();     
-    })
+      .add({
+          translateY: ['95%', '0'],
+          duration: 750,
+          easing: 'easeInOutElastic',    
+        })  
   }
 
 

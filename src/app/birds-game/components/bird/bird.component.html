@@ -1,4 +1,4 @@
-<mlc-loaded-svg [ngClass]="isAnswer ? 'bird birdImage': 'bird-to-select birdImage'"
+<mlc-loaded-svg [ngClass]="isAnswer && !isDouble ? 'bird birdImage': 'bird-to-select birdImage'"
   [path]="bird.svg"></mlc-loaded-svg>
 
 <!--  path="colorful-heights/svg/Pajaritos/cotorra_amarillo.svg"></mlc-loaded-svg>-->

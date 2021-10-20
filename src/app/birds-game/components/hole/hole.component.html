@@ -6,7 +6,9 @@
 <!--  background: rgba(255,0,0,0.57)-->
   <div class="bird"
        fxLayoutAlign="center start"
-       style=" border-radius: 50%;z-index: 1; width: 100%;">
-    <app-bird class="bird" [bird]="bird" [isAnswer]="isAnswer" ></app-bird>
+       style=" border-radius: 50%;z-index: 1; width: 100%; overflow: hidden;">
+    <!-- <app-bird class="bird" [bird]="bird" [isAnswer]="isAnswer"></app-bird> -->
+    <app-bird [ngClass]="bird.isDouble ? 'birdDouble-hole myAbsolute': 'bird-hole myAbsolute' " [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble" (loadedBirdSvg)="loadedBirdSvgParentMethod"></app-bird>
+    <app-bird class="bird-2-hole myAbsolute" *ngIf="bird.isDouble"  [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble" (loadedBirdSvg)="loadedBirdSvgParentMethod"></app-bird>
   </div>
 </div>

@@ -26,6 +26,8 @@ import { BirdToSelectComponent } from './components/bird-to-select/bird-to-selec
   imports: [
     CommonModule,
     SharedModule
+  ], providers:[
+    StickComponent
   ]
 })
 export class BirdsGameModule { }
