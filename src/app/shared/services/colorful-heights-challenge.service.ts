@@ -8,7 +8,7 @@ import {
   SubLevelService
 } from 'micro-lesson-core';
 import {ExerciseOx, PreloaderOxService, randomBetween, shuffle} from 'ox-core';
-import {BirdInfo, ColorfullHeightsExercise, NivelationColorfulHeightInfo} from '../models/types';
+import {BirdInfo, BirdsAux, ColorfullHeightsExercise, NivelationColorfulHeightInfo} from '../models/types';
 import {ExpandableInfo, Showable} from 'ox-types';
 
 
@@ -34,7 +34,8 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   startTime = new EventEmitter<void>();
   bonusTime = new EventEmitter<number>();
   activateCounter = new EventEmitter<number>();
-  birdMainAppearence = new EventEmitter<void>()
+  doubleBirdSwitch = new EventEmitter<void>()
+  clickBirdEvent = new EventEmitter<boolean>();
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
               subLevelService: SubLevelService,
@@ -71,7 +72,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
  
 
   public mainBirdGenerator():BirdInfo {
-    shuffle(this.allBirds);
+    // shuffle(this.allBirds);
     return this.allBirds[0];
   }
   
@@ -86,17 +87,20 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
 
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
-    this.statementBird = this.mainBirdGenerator()
-    const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new BirdInfo(this.statementBird.color,this.statementBird.type), quantity: 1};
-    const allColors = this.exerciseConfig.colorsToUse;
-    this.avaiableBirdsGenerator();
-    exercise.optionsBirds = this.availableBirdsInLevel.map((z,i) => {
-      return {quantity: 1, bird: new BirdInfo(this.allBirds[i].color,this.allBirds[i].type)};
-    });
-    exercise.optionsBirds.forEach((option, index, array) => {
-      const percentage = this.availableBirdsInLevel.length * 0.1;
+    // this.statementBird = this.mainBirdGenerator()
+    // const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new BirdInfo(this.statementBird.color,this.statementBird.type), quantity: 1};
+    // const allColors = this.exerciseConfig.colorsToUse;
+    // this.avaiableBirdsGenerator();
+    // exercise.optionsBirds = this.availableBirdsInLevel.map((z,i) => {
+    //   return {quantity: 1, bird: new BirdInfo(this.allBirds[i].color,this.allBirds[i].type)};
+    // });
+    // exercise.optionsBirds.forEach((option, index, array) => {
+    //   const percentage = this.availableBirdsInLevel.length * 0.1;
       
-    })
+    // })
+
+
+    
     //   if (this.availableBirdsInLevel.length > 1) {
     //     do {
     //       const percentage = this.availableBirdsInLevel.length * 0.1;

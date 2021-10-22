@@ -49,6 +49,11 @@ export interface NivelationColorfulHeightInfo {
 
 
 export interface BirdsAux {
-  svg:string,
+  svgBird:string,
+  svgBirdHappy:string,
+  svgBirdSad:string,
+  svgWings:string,
+  svgWingsUp:string,
   isDouble:boolean
 }
+

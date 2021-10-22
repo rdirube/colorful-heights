@@ -1,8 +1,8 @@
-<div style="position: relative;" fxLayoutAlign="space-between center" fxLayout="row" >
+  <div style="position: relative;" fxLayoutAlign="space-between center" fxLayout="row">
   <mlc-loaded-svg class="stick myAbsolute"
                   style="z-index: 1" [path]="stickSvg"></mlc-loaded-svg>
-                  <app-bird class="bird-1 myAbsolute" [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
-                  <app-bird class= 'birdDouble myAbsolute' [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
-                  <app-bird class="bird-2 myAbsolute"  [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
-
-</div>
+                  <!-- <app-bird class='bird-1 myAbsolute' [bird]="bird" [isAnswer]="isAnswer"></app-bird>
+                  <app-bird class='bird-2 myAbsolute'  [bird]="bird" [isAnswer]="isAnswer"></app-bird> -->
+                  <app-bird [ngClass]= "bird.isDouble ? 'bird-1-double myAbsolute':'bird-1 myAbsolute'" [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
+                  <app-bird [ngClass]= "bird.isDouble ? 'bird-2-double myAbsolute':'bird-2 myAbsolute'"  [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
+  </div>

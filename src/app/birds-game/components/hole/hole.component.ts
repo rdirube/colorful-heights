@@ -1,6 +1,6 @@
-import { Component, OnInit , Input, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BirdsAux } from 'src/app/shared/models/types';
-
+import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 
 
 @Component({
@@ -12,15 +12,22 @@ export class HoleComponent implements OnInit {
 
   @Output() loadedBirdSvgParent = new EventEmitter();
   @Input() bird!: BirdsAux;
-  public isAnswer:boolean = true;
+  public isAnswer: boolean = true;
+
   
-  constructor() { }
+  constructor(private challengeService:ColorfulHeightsChallengeService) {
+  }
+
 
   ngOnInit(): void {
   }
 
-   loadedBirdSvgParentMethod() {
-     this.loadedBirdSvgParent.emit("hola")
-   }
+
+  loadedBirdSvgParentMethod() {
+    this.loadedBirdSvgParent.emit()
+  }
+
+  
+ 
 
 }

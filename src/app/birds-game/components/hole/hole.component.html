@@ -8,7 +8,8 @@
        fxLayoutAlign="center start"
        style=" border-radius: 50%;z-index: 1; width: 100%; overflow: hidden;">
     <!-- <app-bird class="bird" [bird]="bird" [isAnswer]="isAnswer"></app-bird> -->
-    <app-bird [ngClass]="bird.isDouble ? 'birdDouble-hole myAbsolute': 'bird-hole myAbsolute' " [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble" (loadedBirdSvg)="loadedBirdSvgParentMethod"></app-bird>
-    <app-bird class="bird-2-hole myAbsolute" *ngIf="bird.isDouble"  [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble" (loadedBirdSvg)="loadedBirdSvgParentMethod"></app-bird>
+    <app-bird [ngClass]= "bird.isDouble ? 'bird-double-hole myAbsolute':'bird-hole myAbsolute'" [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble" ></app-bird>
+    <app-bird [ngClass]= "bird.isDouble ? 'bird-2-double-hole myAbsolute':'bird-2-hole myAbsolute'"  [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble" ></app-bird>
+
   </div>
 </div>

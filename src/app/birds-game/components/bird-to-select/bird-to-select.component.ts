@@ -7,16 +7,18 @@ import anime from 'animejs';
 import { timer } from 'rxjs';
 import { BirdsAux } from 'src/app/shared/models/types';
 
+
 @Component({
   selector: 'app-bird-to-select',
   templateUrl: './bird-to-select.component.html',
   styleUrls: ['./bird-to-select.component.scss']
 })
-export class BirdToSelectComponent extends SubscriberOxDirective implements OnInit {
 
+
+export class BirdToSelectComponent extends SubscriberOxDirective implements OnInit {
   @Input() counterOriginalText!:number;
-  @Input('BirdToSelect') BirdToSelect!: BirdsAux;
-  public correctCountertext = new OxTextInfo;
+  @Input('birdToSelect') birdToSelect!: BirdsAux;
+  public correctCountertext= new OxTextInfo;
   public isAnswer:boolean = false;
   @ViewChild('counterText') counterText!: TextComponent;
 

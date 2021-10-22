@@ -6,12 +6,9 @@
   </div>
     <mlc-loaded-svg class="myAbsolute" fxFlex="grow" fxFlexFill
                     style="z-index: 25" path="colorful-heights/svg/Elementos fondo/Muestra pajaritos.svg"></mlc-loaded-svg>
-  <!--  <mlc-loaded-svg class="hole myAbsolute" fxFlex="grow" fxFlexFill-->
-  <!--                  style="z-index: 1" path="colorful-heights/svg/Elementos fondo/hueco-over.svg"></mlc-loaded-svg>-->
-  <!--  background: rgba(255,0,0,0.57)-->
     <div class="bird-to-select"
          fxLayoutAlign="center center"
          style=" border-radius: 50%; transform: translateY(-1vh); z-index: 25; width: 100%;">
-      <app-bird class="bird-to-select" [bird]="BirdToSelect" [isAnswer]="isAnswer"></app-bird>
+      <app-bird class="bird-to-select" [bird]="birdToSelect" [isAnswer]="isAnswer"></app-bird>
     </div>
   </div>

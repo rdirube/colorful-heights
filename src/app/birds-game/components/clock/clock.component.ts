@@ -19,7 +19,9 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
   public currentMsSecond: number = 0;
   public animations: any[] = []
   public isPaused: boolean = false;
-  public progressAnimation!: number;
+  public progressAnimationPie!: number;
+  public progressAnimationBorder!: number;
+
   public pieAnimation!: any;
   public borderAnimation!:any;
 
@@ -50,7 +52,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
   
 
   public goBackMethod(animation:any, bonus:number) {
-    animation.seek(((this.progressAnimation - bonus) * this.duration) / 100);
+    animation.seek(((this.progressAnimationBorder - bonus) * this.duration) / 100);
   }
 
 
@@ -65,8 +67,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
     const animationBorderPie = anime.timeline({
       targets: '.timer',
       duration:this.duration+2500
-    })
-        
+    })       
     this.addSubscription(this.challengeService.startTime, x=> {
       this.pieAnimation =
       animationPieTimeLine.add({
@@ -78,11 +79,10 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
         strokeDashoffset: [anime.setDashoffset, 0],
         easing: 'linear',
         update: (anim) => {
-          this.progressAnimation = Math.round(anim.progress)
+          this.progressAnimationPie = Math.round(anim.progress)
         },
         keyframes: [{ fill: 'rgb(253, 218, 13)' , easing:'linear'}, { fill: 'rgb(250, 0, 0)' , easing:'linear'}],    
       })
-      
 
       this.borderAnimation = animationBorderPie.add({
         targets: '.timer',
@@ -91,10 +91,10 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
       }).add({
         targets: '.timer',
         duration: this.duration,
-        keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'linear'}, { borderColor: 'rgb(250, 0, 0)' , easing:'linear'}],
         update: (anim) => {
-          this.progressAnimation = Math.round(anim.progress)
-        }
+          this.progressAnimationBorder = Math.round(anim.progress)
+        },
+        keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'linear'}, { borderColor: 'rgb(250, 0, 0)' , easing:'linear'}],  
       })   
     })
 
@@ -118,51 +118,10 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
     
       
 
-    // this.animations = [
-    //   anime({
-    //     targets: '.pieSpinner',
-    //     rotate: {
-    //       value: 360,
-    //       duration: this.duration,
-    //       easing: 'linear'
-    //     },
-    //     zIndex: {
-    //       value:  this.zIndexAdjustment(),
-    //       delay: this.duration/2 - 1000,
-    //     }
-    //   }
-    //   ),
-    //   anime.timeline({
-    //     duration: this.duration
-    //   }).add({
-    //     targets: '.timer-running',
-    //     keyframes: [{ borderColor: 'rgb(253, 218, 13)' }, { borderColor: 'rgb(250, 0, 0)' }],
-    //     easing: 'easeInOutQuad'
-    //   }, 0).add({
-    //     targets: '.mask',
-    //     keyframes: [{ backgroundColor: 'rgb(253, 218, 13)' }, { backgroundColor: 'rgb(250, 0, 0)' }],
-    //     easing: 'easeInOutQuad'
-    //   }, 0),
-    //   anime({
-    //     targets: '.pieFiller',
-    //     keyframes: [{ backgroundColor: 'rgb(253, 218, 13)', duration: this.duration / 2 }, {
-    //       backgroundColor: "#FFF", duration: 1
-    //     }, {
-    //       backgroundColor: "#FFF", duration: this.duration / 2
-    //     }],
-    //     easing: 'easeInOutQuad',
-    //     update: (anim) => {
-    //       this.progressAnimation = Math.round(anim.progress)
-    //     }
-    //   })
-    // ]
   }
 
 
 
-  // playPauseMethod() {
-  //   this.isPaused ? this.playTime() : this.pauseTime();
-  // }
 
 
 }
