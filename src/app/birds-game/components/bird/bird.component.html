@@ -1,4 +1,4 @@
-<mlc-loaded-svg [ngClass]="isAnswer && !isDouble ? 'bird birdImage': 'bird-to-select birdImage'"
-  [path]="svgBird" ></mlc-loaded-svg>
-<mlc-loaded-svg [path]="wings" [ngClass]="isAnswer && !isDouble ? 'bird birdImage': 'bird-to-select birdImage'" (click)="clickBirdEmitMethod()"></mlc-loaded-svg>
+<mlc-loaded-svg [ngClass]="isAnswer && !bird?.isDouble ? 'bird birdImage': 'bird-to-select birdImage'"
+  [path]="svgBird" [pathWithReplaces]="pathWithReplaces"></mlc-loaded-svg>
+<mlc-loaded-svg [path]="wings" [ngClass]="isAnswer && !bird?.isDouble ? 'bird birdImage': 'bird-to-select birdImage'" (click)="birdSelectMethod(bird.isDouble)"></mlc-loaded-svg>
 <!--  path="colorful-heights/svg/Pajaritos/cotorra_amarillo.svg"></mlc-loaded-svg>-->

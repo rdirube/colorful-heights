@@ -57,3 +57,8 @@ export interface BirdsAux {
   isDouble:boolean
 }
 
+
+export interface BirdsAndWings {
+  svgBird:string;
+  wings:string;
+}

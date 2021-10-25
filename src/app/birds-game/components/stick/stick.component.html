@@ -3,6 +3,10 @@
                   style="z-index: 1" [path]="stickSvg"></mlc-loaded-svg>
                   <!-- <app-bird class='bird-1 myAbsolute' [bird]="bird" [isAnswer]="isAnswer"></app-bird>
                   <app-bird class='bird-2 myAbsolute'  [bird]="bird" [isAnswer]="isAnswer"></app-bird> -->
-                  <app-bird [ngClass]= "bird.isDouble ? 'bird-1-double myAbsolute':'bird-1 myAbsolute'" [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
-                  <app-bird [ngClass]= "bird.isDouble ? 'bird-2-double myAbsolute':'bird-2 myAbsolute'"  [bird]="bird" [isAnswer]="isAnswer" [isDouble]="bird.isDouble"></app-bird>
+                  <app-bird
+                  [testInput]="svgBird"
+                  [ngClass]= "bird.isDouble ? 'bird-1-double myAbsolute':'bird-1 myAbsolute'" [bird]="bird" [isAnswer]="isAnswer" 
+                  ></app-bird>
+                  <app-bird [ngClass]= "bird.isDouble ? 'bird-2-double myAbsolute':'bird-2 myAbsolute'"  [bird]="bird" [isAnswer]="isAnswer" 
+                  ></app-bird>
   </div>

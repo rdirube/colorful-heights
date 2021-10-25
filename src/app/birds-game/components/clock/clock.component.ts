@@ -43,6 +43,8 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
     this.borderAnimation.play();
   }
   
+
+  
   public addTimeMethod(bonus:number) {
     this.pauseTime()
     this.goBackMethod(this.pieAnimation,bonus)
@@ -50,6 +52,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
     this.playTime();
   }
   
+
 
   public goBackMethod(animation:any, bonus:number) {
     animation.seek(((this.progressAnimationBorder - bonus) * this.duration) / 100);

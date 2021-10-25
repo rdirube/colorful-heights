@@ -19,25 +19,35 @@ import { take } from 'rxjs/operators';
 export class BirdComponent extends SubscriberOxDirective implements OnInit {
 
   @ViewChild(LoadedSvgComponent) loadedSvgComponent!: LoadedSvgComponent;
+  @Input('testInput')
+  set asdasdas(b: string) {
+    console.log('scv has changed.')
+    console.log(this.svgBird, b);
+  }
   @Input() bird!: BirdsAux;
   @Input() isAnswer!: boolean;
-  @Input() i: number = 0;
-  @Input() isDouble!: boolean;
-  public wings!: string;
-  public svgBird!: string;
-  public happyBird!: boolean;
+  @Input() wings!: string;
+  @Input() svgBird!: string;
+  public isDoubleCounter: number = 0;
+  public pathWithReplaces!:{path: string;
+    replaces: Map<string, string>;} 
+
 
   constructor(private elementRef: ElementRef, private preloaderService: PreloaderOxService, private challengeService: ColorfulHeightsChallengeService) {
     super()
-
     this.addSubscription(this.challengeService.clickBirdEvent, x => {
       this.svgBird = this.bird.svgBirdHappy;
-      interval(400).pipe(take(3)).subscribe(f=> {
-        this.wingAnimationMethod();
-      });
+      interval(200).pipe(take(5)).subscribe(w => {
+        this.wingAnimationMethod()
+      })
+      timer(1550).subscribe(z=> {
+        this.svgBird = this.bird.svgBird;
+        this.wings = this.bird.svgWings;
+      })
     })
   }
 
+  
 
 
   ngOnInit(): void {
@@ -46,16 +56,43 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   }
 
 
-  wingAnimationMethod():void {
-    this.wings = this.bird.svgWings ? this.bird.svgBirdHappy : this.bird.svgWings;
+  wingAnimationMethod(): void {
+    this.wings = (this.wings === this.bird.svgWings) ? this.bird.svgWingsUp : this.bird.svgWings;
   }
 
 
-  clickBirdEmitMethod(): void {
-    this.challengeService.clickBirdEvent.emit(this.bird.isDouble)
+
+  birdSelectMethod(isDouble: boolean) {
+    if (isDouble) {
+      this.isDoubleCounter++
+      if (this.isDoubleCounter === 2) {
+        this.isDoubleCounter = 0;
+        this.challengeService.clickBirdEvent.emit()
+      }
+    } else {
+      this.challengeService.clickBirdEvent.emit()
+      this.replacePath();
+    }
   }
+
+
+  replacePath():void {
+    this.pathWithReplaces.path = "path";
+    this.pathWithReplaces.replaces.set("#406faf", "#e81e25");
+  }
+
+
+  // @HostListener('document:keydown', ['$event'])
+  // wingsAnimation($event: KeyboardEvent) {
+  //   if ($event.key === 'q') {
+
+
+  //     interval(400).pipe(take(5)).subscribe(w =>
+  //       this.wingAnimationMethod()
+  //     )
+  //   }
+  // }
 
 
 
 }
-
