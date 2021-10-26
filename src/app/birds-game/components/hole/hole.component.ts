@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { BirdsAux , BirdsAndWings} from 'src/app/shared/models/types';
+import { BirdsAux , Replaces} from 'src/app/shared/models/types';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 
 
@@ -14,7 +14,10 @@ export class HoleComponent implements OnInit {
   @Input() bird!: BirdsAux;
   public isAnswer: boolean = true;
   @Input() svgBird!: string;
-  
+  @Input() pathWithReplaces!:Replaces;
+
+
+
   constructor(private challengeService:ColorfulHeightsChallengeService) {
   }
 
@@ -26,6 +29,8 @@ export class HoleComponent implements OnInit {
   loadedBirdSvgParentMethod() {
     this.loadedBirdSvgParent.emit()
   }
+
+
 
   
  

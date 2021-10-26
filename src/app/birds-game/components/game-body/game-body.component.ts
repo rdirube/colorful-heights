@@ -1,9 +1,9 @@
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import anime from 'animejs';
 import { ChallengeService } from 'micro-lesson-core';
-import { BirdInfo, Bonus, BirdsAux, BirdsAndWings } from 'src/app/shared/models/types';
+import { BirdInfo, Bonus, BirdsAux, Replaces } from 'src/app/shared/models/types';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
-import { ExerciseOx, PreloaderOxService, randomBetween, shuffle } from 'ox-core';
+import { ExerciseOx, PreloaderOxService, randomBetween, shuffle, anyElement } from 'ox-core';
 import { timer } from 'rxjs';
 import { TryButtonComponent, LoadedSvgComponent } from 'micro-lesson-components';
 import { OxTextInfo } from 'ox-types';
@@ -33,16 +33,16 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   public avaiableBirdsPerExercise: number[] = [];
   public nestsPerExercise: boolean[] = [];
   public allBirds: BirdsAux[] =
-    [{ svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_1_1.svg', isDouble: false },
-    { svgBird: 'colorful-heights/svg/Pajaritos/cotorra.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cotorra_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cotorra_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cotorra_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cotorra_alas_2.svg', isDouble: false },
-    { svgBird: 'colorful-heights/svg/Pajaritos/gordo.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/gordo_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/gordo_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/gordo_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/gordo_alas_2.svg', isDouble: false },
-    { svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg", svgBirdHappy: "colorful-heights/svg/Pajaritos/lechuza_happy.svg", svgBirdSad: "colorful-heights/svg/Pajaritos/lechuza_sad.svg", svgWings: 'colorful-heights/svg/Pajaritos/lechuza_alas_1.svg', svgWingsUp: "colorful-heights/svg/Pajaritos/lechuza_alas_2.svg", isDouble: false },
-    { svgBird: "colorful-heights/svg/Pajaritos/pelado.svg", svgBirdHappy: "colorful-heights/svg/Pajaritos/pelado_happy.svg", svgBirdSad: "colorful-heights/svg/Pajaritos/pelado_sad.svg", svgWings: 'colorful-heights/svg/Pajaritos/pelado_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/pelado_alas_2.svg', isDouble: true }]
+    [{ svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_1_1.svg', isDouble: false, pathWithReplaces: undefined as any },
+    { svgBird: 'colorful-heights/svg/Pajaritos/cotorra.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cotorra_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cotorra_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cotorra_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cotorra_alas_2.svg', isDouble: false, pathWithReplaces: undefined as any  },
+    { svgBird: 'colorful-heights/svg/Pajaritos/gordo.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/gordo_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/gordo_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/gordo_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/gordo_alas_2.svg', isDouble: false, pathWithReplaces: undefined as any  },
+    { svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg", svgBirdHappy: "colorful-heights/svg/Pajaritos/lechuza_happy.svg", svgBirdSad: "colorful-heights/svg/Pajaritos/lechuza_sad.svg", svgWings: 'colorful-heights/svg/Pajaritos/lechuza_alas_1.svg', svgWingsUp: "colorful-heights/svg/Pajaritos/lechuza_alas_2.svg", isDouble: false, pathWithReplaces: undefined as any  },
+    { svgBird: "colorful-heights/svg/Pajaritos/pelado.svg", svgBirdHappy: "colorful-heights/svg/Pajaritos/pelado_happy.svg", svgBirdSad: "colorful-heights/svg/Pajaritos/pelado_sad.svg", svgWings: 'colorful-heights/svg/Pajaritos/pelado_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/pelado_alas_2.svg', isDouble: true, pathWithReplaces: undefined as any  }]
   public birdToSelect!: BirdsAux;
   public svgBird: string[] = [];
   public answerBirds: BirdsAux[] = [];
   public duration!: number;
-  public birdsQuantity: number = 3 ;
+  public birdsQuantity: number = 5;
   public correctAnswerCounter: number = 0;
   public bonusValuesList: Bonus[] = [{ numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true }, {
     numberOfCorrectAnswersForBonus: 10, timeEarnPerBonus: 40, isAble: true
@@ -55,6 +55,9 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     const answerBird = this.birdsQuantity === 4 ? this.answerBirds[birdIndex] : this.answerBirds[birdIndex + 1];
     return answerBird
   }
+  public pathWithReplaces!: Replaces[];
+  public colorsAvaiable: string[] = ["#406faf", "#e81e25", "#ffc807", "#8b2c90", "#73be44"];
+
 
 
 
@@ -92,10 +95,11 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     this.addSubscription(this.challengeService.clickBirdEvent, (z => {
       timer(1200).subscribe(v => {
         this.birdAnimationGenerator();
-        console.log(this.answerBirds)
       })
     }
     ))
+    
+
   }
 
 
@@ -103,12 +107,14 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
   ngOnInit(): void {
     this.birdToSelectGenerator(this.birdsQuantity);
+    this.replacePathBirds();
   }
+  
 
 
 
   ngAfterViewInit(): void {
-   
+
   }
 
 
@@ -147,36 +153,54 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   animationBirdsTimeline() {
     const birdsAnimation = anime.timeline({
       targets: '.birdImage',
-      duration: 1000
+      duration: 1200
     });
     birdsAnimation.add({
       translateY: '125%',
       easing: 'linear',
       duration: 250,
       complete: (anim) => {
+        this.replacePathBirds();
         this.birdToSelectGenerator(this.birdsQuantity);
-        this.challengeService.restoreBirds.emit();
       }
     })
       .add({
         translateY: ['120%', '0'],
-        duration: 750,
+        duration: 950,
         easing: 'easeInOutElastic',
       })
   }
 
 
-
-
-  // birdsAddedToExercises(numberOfBirds: number) {
-  //   for (let i = 0; i < numberOfBirds; i++) {
-  //     this.nestsPerExercise.push(true);
-  //   }
-  //   if (numberOfBirds === 4) {
-  //     this.nestsPerExercise[2] = false;
-  //     this.nestsPerExercise[4] = true;
-  //   }
+  // birdsDefinePath(i: number): Replaces[] {
+  //   const initialValues = [{
+  //     path: this.allBirds[i].svgBird,
+  //     replaces: new Map<string, string>()
+  //   }, { path: this.allBirds[i].svgBirdHappy, replaces: new Map<string, string>() },
+  //   { path: this.allBirds[i].svgWings, replaces: new Map<string, string>() },
+  //   { path: this.allBirds[i].svgWingsUp, replaces: new Map<string, string>() }]
+  //   return initialValues;
+    
   // }
+
+
+
+  replacePathBirds(): void {
+    this.answerBirds.forEach(b => {
+      b.pathWithReplaces = [{
+        path: b.svgBird,
+        replaces: new Map<string, string>()
+      }, { path: b.svgBirdHappy, replaces: new Map<string, string>() },
+      { path: b.svgWings, replaces: new Map<string, string>() },
+      { path: b.svgWingsUp, replaces: new Map<string, string>() }]
+      const colorSelected = anyElement(this.colorsAvaiable);
+      b.pathWithReplaces.forEach(o =>
+        o.replaces.set("#406faf", colorSelected)
+      )
+    })
+
+  }
+
 
 
 

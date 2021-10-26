@@ -90,10 +90,9 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
     // this.statementBird = this.mainBirdGenerator()
     // const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new BirdInfo(this.statementBird.color,this.statementBird.type), quantity: 1};
-    // const allColors = this.exerciseConfig.colorsToUse;
-    // this.avaiableBirdsGenerator();
+     const allColors = this.exerciseConfig.colorsToUse;
     // exercise.optionsBirds = this.availableBirdsInLevel.map((z,i) => {
-    //   return {quantity: 1, bird: new BirdInfo(this.allBirds[i].color,this.allBirds[i].type)};
+    //   return {quantity: 1, bird: new BirdI nfo(this.allBirds[i].color,this.allBirds[i].type)};
     // });
     // exercise.optionsBirds.forEach((option, index, array) => {
     //   const percentage = this.availableBirdsInLevel.length * 0.1;
@@ -140,13 +139,18 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     // this.allGnomes = this.info.gnomes;
     const gameCase = this.appInfo.microLessonInfo.extraInfo.exerciseCase;
     switch (gameCase) {
-      case 'created-config':
+      case 'colorful-heights':
         this.currentSubLevelPregeneratedExercisesNeeded = 1;
-        // this.exerciseConfig = this.appInfo.microLessonInfo.creatorInfo.microLessonGameInfo.properties;
+        this.exerciseConfig = this.appInfo.microLessonInfo.creatorInfo?.microLessonGameInfo.properties;
         // this.exerciseIndex = 0;
         this.feedback.endFeedback.subscribe(x => {
           // this.exerciseIndex++;
         });
+        console.log('JEJEJEJEJ');
+        console.log('JEJEJEJEJ');
+        console.log('JEJEJEJEJ');
+        console.log('JEJEJEJEJ');
+        console.log(this.exerciseConfig);
         // this.setInitialExercise();
         break;
       default:

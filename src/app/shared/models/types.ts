@@ -54,11 +54,12 @@ export interface BirdsAux {
   svgBirdSad:string,
   svgWings:string,
   svgWingsUp:string,
-  isDouble:boolean
+  isDouble:boolean,
+  pathWithReplaces:Replaces[]
 }
 
 
-export interface BirdsAndWings {
-  svgBird:string;
-  wings:string;
+export interface Replaces {
+  path: string;
+  replaces: Map<string, string>;
 }

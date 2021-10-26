@@ -26,22 +26,22 @@
               <app-clock></app-clock>
               <div fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
                  <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="answerBirds[0]"
-                  [bird]="answerBirds[0]" >
+                  [bird]="answerBirds[0]">
                 </app-stick>  
-                <app-hole class="hole" *ngIf="answerBirds[2]" [bird]="answerBirds[2]"
-               ></app-hole>  
+                <app-hole class="hole" *ngIf="answerBirds[2] && answerBirds[4]" [bird]="answerBirds[2]"
+              ></app-hole>  
                   <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="answerBirds[1]"
-                  [bird]="answerBirds[1]" >
+                  [bird]="answerBirds[1]">
                 </app-stick>
               </div> 
               <div fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
               <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="answerBirds[3]"
-                  [bird]="answerModifidied4and5(2)" > 
+                  [bird]="answerModifidied4and5(2)"> 
                 </app-stick> 
                 <app-hole class="hole" *ngIf="answerBirds[5]" [bird]="answerBirds[5]"
                   ></app-hole>  
                  <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="answerBirds[3]"
-                  [bird]="answerModifidied4and5(3)"  >
+                  [bird]="answerModifidied4and5(3)" >
                 </app-stick> 
               </div>
             </div>
