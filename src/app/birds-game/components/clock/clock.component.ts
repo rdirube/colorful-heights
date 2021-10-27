@@ -117,10 +117,6 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
 
 
   ngAfterViewInit(): void {
-
-    
-      
-
   }
 
 

@@ -29,13 +29,8 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   @Input() wings!: string;
   @Input() svgBird!: string;
   public isDoubleCounter: number = 0;
-  @Input() pathWithReplaces!: {
-    path: string;
-    replaces: Map<string, string>;
-  }
   public isHappy: number = 0;
   public wingsUpActivate: boolean = false;
-  public colorsAvaiable: string[] = ["#406faf", "#e81e25", "#ffc807", "#8b2c90", "#73be44"];
 
 
   constructor(private elementRef: ElementRef, private preloaderService: PreloaderOxService, private challengeService: ColorfulHeightsChallengeService) {
@@ -45,14 +40,11 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
       interval(200).pipe(take(4)).subscribe(w => {
         this.wingAnimationMethod()
       })
-      timer(1550).subscribe(z => {
-        
+      timer(1550).subscribe(z => {     
         this.isHappy = 0;
       })
     })
   }
-
-
 
 
   ngOnInit(): void {   
@@ -62,7 +54,6 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   wingAnimationMethod(): void {
     this.wingsUpActivate = !this.wingsUpActivate;
   }
-
 
 
   birdSelectMethod(isDouble: boolean) {
@@ -78,9 +69,7 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   }
 
 
-  colorShuffle(): string {
-    return this.colorsAvaiable[Math.floor(Math.random()) * 5];
-  }
+  
 
 
   // replacePathBirds(): void {

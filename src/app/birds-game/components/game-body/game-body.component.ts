@@ -1,10 +1,10 @@
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import anime from 'animejs';
 import { ChallengeService } from 'micro-lesson-core';
-import { BirdInfo, Bonus, BirdsAux, Replaces } from 'src/app/shared/models/types';
+import { BirdInfo, Bonus, BirdsAux, Replaces, BirdType, BirdColor, NivelationColorfulHeightInfo } from 'src/app/shared/models/types';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 import { ExerciseOx, PreloaderOxService, randomBetween, shuffle, anyElement } from 'ox-core';
-import { timer } from 'rxjs';
+import { timer, zip } from 'rxjs';
 import { TryButtonComponent, LoadedSvgComponent } from 'micro-lesson-components';
 import { OxTextInfo } from 'ox-types';
 import { Typographies, TextComponent } from 'typography-ox';
@@ -33,7 +33,7 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   public avaiableBirdsPerExercise: number[] = [];
   public nestsPerExercise: boolean[] = [];
   public allBirds: BirdsAux[] =
-    [{ svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_1_1.svg', isDouble: false, pathWithReplaces: undefined as any },
+    [{ svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_.svg', isDouble: false, pathWithReplaces: undefined as any},
     { svgBird: 'colorful-heights/svg/Pajaritos/cotorra.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/cotorra_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/cotorra_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/cotorra_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/cotorra_alas_2.svg', isDouble: false, pathWithReplaces: undefined as any  },
     { svgBird: 'colorful-heights/svg/Pajaritos/gordo.svg', svgBirdHappy: 'colorful-heights/svg/Pajaritos/gordo_happy.svg', svgBirdSad: 'colorful-heights/svg/Pajaritos/gordo_sad.svg', svgWings: 'colorful-heights/svg/Pajaritos/gordo_alas_1.svg', svgWingsUp: 'colorful-heights/svg/Pajaritos/gordo_alas_2.svg', isDouble: false, pathWithReplaces: undefined as any  },
     { svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg", svgBirdHappy: "colorful-heights/svg/Pajaritos/lechuza_happy.svg", svgBirdSad: "colorful-heights/svg/Pajaritos/lechuza_sad.svg", svgWings: 'colorful-heights/svg/Pajaritos/lechuza_alas_1.svg', svgWingsUp: "colorful-heights/svg/Pajaritos/lechuza_alas_2.svg", isDouble: false, pathWithReplaces: undefined as any  },
@@ -42,7 +42,8 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   public svgBird: string[] = [];
   public answerBirds: BirdsAux[] = [];
   public duration!: number;
-  public birdsQuantity: number = 5;
+  public exerciseConfig!: NivelationColorfulHeightInfo;
+  public birdsQuantity: number = 4;
   public correctAnswerCounter: number = 0;
   public bonusValuesList: Bonus[] = [{ numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true }, {
     numberOfCorrectAnswersForBonus: 10, timeEarnPerBonus: 40, isAble: true
@@ -50,12 +51,14 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     numberOfCorrectAnswersForBonus: 15, timeEarnPerBonus: 60,
     isAble: true
   }]
+  public pathWithReplaces!: Replaces[];
+
   public correctCountertext = new OxTextInfo;
   public answerModifidied4and5(birdIndex: number): BirdsAux {
     const answerBird = this.birdsQuantity === 4 ? this.answerBirds[birdIndex] : this.answerBirds[birdIndex + 1];
     return answerBird
   }
-  public pathWithReplaces!: Replaces[];
+  public answerTest!:string[];
   public colorsAvaiable: string[] = ["#406faf", "#e81e25", "#ffc807", "#8b2c90", "#73be44"];
 
 
@@ -98,7 +101,9 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
       })
     }
     ))
-    
+   
+    this.challengeService.beforeStartGame();
+    this.birdToSelectGenerator(4);
 
   }
 
@@ -106,7 +111,7 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
 
   ngOnInit(): void {
-    this.birdToSelectGenerator(this.birdsQuantity);
+
     this.replacePathBirds();
   }
   
@@ -120,16 +125,23 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
 
   birdToSelectGenerator(birds: number): void {
+    this.answerTest = [];
     this.answerBirds = [];
-    const shuffledBirds = shuffle(this.allBirds);
-    this.birdToSelect = shuffledBirds[0];
-    this.answerBirds.push(this.birdToSelect);
-    const allBirdsWithoutCorrect = shuffledBirds.filter(z => z !== this.birdToSelect);
-    allBirdsWithoutCorrect.forEach((z, i) => z.isDouble = i % 4 === 0);
-    for (let i = 0; i < birds - 1; i++) {
-      this.answerBirds.push(allBirdsWithoutCorrect[Math.floor(Math.random() * (this.allBirds.length - 1))])
-    }
-    this.answerBirds = shuffle(this.answerBirds);
+    this.challengeService.answerBirdOptions.forEach((e,i) => {
+    this.answerTest.push('colorful-heights/svg/Pajaritos/'+ e.type +'.svg');
+    const foundBird = this.allBirds.find(z => z.svgBird === this.answerTest[i])!;
+    this.answerBirds.push(foundBird);
+  }) 
+    this.birdToSelect = this.answerBirds.find(z => z.svgBird.includes(this.challengeService.answerBird.type))!
+    // const shuffledBirds = shuffle(this.allBirds);
+    // this.birdToSelect = shuffledBirds[0];
+    // this.answerBirds.push(this.birdToSelect);
+    // const allBirdsWithoutCorrect = shuffledBirds.filter(z => z !== this.birdToSelect);
+    // allBirdsWithoutCorrect.forEach((z, i) => z.isDouble = i % 4 === 0);
+    // for (let i = 0; i < birds - 1; i++) {
+    //   this.answerBirds.push(allBirdsWithoutCorrect[Math.floor(Math.random() * (this.allBirds.length - 1))])
+    // }
+    // this.answerBirds = shuffle(this.answerBirds);
     this.bonusValuesList.forEach(z => {
       if (z.numberOfCorrectAnswersForBonus === this.correctAnswerCounter && z.isAble) {
         this.challengeService.bonusTime.emit(z.timeEarnPerBonus);
@@ -160,8 +172,8 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
       easing: 'linear',
       duration: 250,
       complete: (anim) => {
-        this.replacePathBirds();
         this.birdToSelectGenerator(this.birdsQuantity);
+        this.replacePathBirds();
       }
     })
       .add({
@@ -170,18 +182,6 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         easing: 'easeInOutElastic',
       })
   }
-
-
-  // birdsDefinePath(i: number): Replaces[] {
-  //   const initialValues = [{
-  //     path: this.allBirds[i].svgBird,
-  //     replaces: new Map<string, string>()
-  //   }, { path: this.allBirds[i].svgBirdHappy, replaces: new Map<string, string>() },
-  //   { path: this.allBirds[i].svgWings, replaces: new Map<string, string>() },
-  //   { path: this.allBirds[i].svgWingsUp, replaces: new Map<string, string>() }]
-  //   return initialValues;
-    
-  // }
 
 
 
@@ -198,7 +198,6 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         o.replaces.set("#406faf", colorSelected)
       )
     })
-
   }
 
 

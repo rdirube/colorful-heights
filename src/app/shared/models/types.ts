@@ -6,8 +6,9 @@ export interface ColorfullHeightsExercise {
   optionsBirds: { quantity: number, bird: BirdInfo }[];
 }
 
-export type BirdColor = 'yellow' | 'blue' | 'red' | 'violet' | 'orange' | 'green';
-export type BirdType = 'peluso' | 'buho' | 'buitre' | 'loro' | 'pelado';
+export type BirdColor = 'yellow' | 'blue' | 'red' | 'violet' | 'green';
+export type BirdType = 'cóndor' | 'cotorra' | 'lechuza' | 'gordo' | 'pelado';
+export type TrapType = 'Equal shape' | 'Equal color' | 'different color and shape';
 
 
 
@@ -28,6 +29,7 @@ export class BirdInfo {
 }
 
 
+
 export interface Bonus {
   numberOfCorrectAnswersForBonus:number,
   timeEarnPerBonus:number,
@@ -35,17 +37,34 @@ export interface Bonus {
 }
 
 
+export interface TrapsInterface {
+  
+  
+    forcedTrapsType:string[],
+    quantity:number
+  
+    
+ 
+}
+
+
+
+
+
 export interface NivelationColorfulHeightInfo {
   birdsQuantity:number, 
-  colorsToUse:string[],
-  birdsToUse:string[],
+  colorsToUse:BirdColor[],
+  birdsToUse:BirdType[],
   statementChangeFromExercise?:number,
   probabilityOfStatementChange?:number,
   minMultipleBirds?:number,
   maxMultipleBirds?:number,
   totalGameTime:number,
-  bonusRequirmentsAndTimeEarn:Bonus[]
+  bonusRequirmentsAndTimeEarn:Bonus[],
+  forcesTraps:TrapsInterface[]
 }
+
+
 
 
 export interface BirdsAux {
@@ -57,6 +76,7 @@ export interface BirdsAux {
   isDouble:boolean,
   pathWithReplaces:Replaces[]
 }
+
 
 
 export interface Replaces {

@@ -7,9 +7,9 @@ import {
   LevelService,
   SubLevelService
 } from 'micro-lesson-core';
-import {ExerciseOx, PreloaderOxService, randomBetween, shuffle} from 'ox-core';
-import {BirdInfo, BirdsAux, ColorfullHeightsExercise, NivelationColorfulHeightInfo} from '../models/types';
-import {ExpandableInfo, Showable} from 'ox-types';
+import { anyElement, ExerciseOx, PreloaderOxService, randomBetween, shuffle } from 'ox-core';
+import { BirdColor, BirdInfo, BirdsAux, BirdType, ColorfullHeightsExercise, NivelationColorfulHeightInfo, TrapType, TrapsInterface } from '../models/types';
+import { ExpandableInfo, Showable } from 'ox-types';
 
 
 
@@ -27,8 +27,11 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   // private maxBirdsPerNest: number | undefined;
   private nests: number | undefined;
   public exerciseConfig!: NivelationColorfulHeightInfo;
-  public allBirds!:BirdInfo[];
-  public exercise:ColorfullHeightsExercise | undefined;
+  public allBirds: BirdInfo[] = [];
+  public answerBird!: BirdInfo;
+  public answerBirdOptions: BirdInfo[]=[];
+  public optionBirds!: BirdInfo;
+  public exercise: ColorfullHeightsExercise | undefined;
   stopPlayTimeEmitter = new EventEmitter<boolean>();
   addTimeEmitter = new EventEmitter<void>();
   startTime = new EventEmitter<void>();
@@ -39,11 +42,11 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   restoreBirds = new EventEmitter<void>();
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
-              subLevelService: SubLevelService,
-              private preloaderService: PreloaderOxService,
-              private feedback: FeedbackOxService,
-              private appInfo: AppInfoOxService,
-             ) {
+    subLevelService: SubLevelService,
+    private preloaderService: PreloaderOxService,
+    private feedback: FeedbackOxService,
+    private appInfo: AppInfoOxService,
+  ) {
     super(gameActionsService, subLevelService, preloaderService);
     gameActionsService.restartGame.subscribe(z => {
       this.cachedExercises = [];
@@ -58,49 +61,68 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     // });
   }
 
+
   nextChallenge(): void {
     this.cachedExercises.push(this.generateNextChallenge(0));
   }
+
 
   protected equalsExerciseData(exerciseData: ColorfullHeightsExercise, exerciseDoneData: ColorfullHeightsExercise): boolean {
     return exerciseData.targetBird === exerciseDoneData.targetBird;
   }
 
+
   private getSublevelConfig(sublevel: number): any {
     return this.appInfo.getMicroLessonLevelConfiguration(this.levelService.currentLevel.value)
       .sublevelConfigurations[sublevel - 1].properties as any;
   }
- 
 
-  public mainBirdGenerator():BirdInfo {
-    // shuffle(this.allBirds);
-    return this.allBirds[0];
+
+
+  filterColor(): BirdInfo {
+    const colorFilteredBirds = this.allBirds.filter(z => z.color !== this.answerBird.color);
+    const colorFilteredBird = anyElement(colorFilteredBirds);
+    return colorFilteredBird
   }
-  
-  public avaiableBirdsGenerator():void {
+
+  filterType(): BirdInfo {
+    const typeFilterBirds = this.allBirds.filter(z => z.type !== this.answerBird.type);
+    const typeFilterBird = anyElement(typeFilterBirds);
+    return typeFilterBird
+  }
+
+
+  setAnswerBird(): void {
+    this.answerBird = new BirdInfo(anyElement(this.exerciseConfig.colorsToUse), anyElement(this.exerciseConfig.birdsToUse));
+  }
+
+
+
+  // public answerBirdGenerator():BirdInfo {
+  //   const shuffleBirds = shuffle(this.exerciseConfig.birdsToUse);
+  //   return shuffleBirds[0];
+  // }
+
+  public avaiableBirdsGenerator(): void {
     this.availableBirdsInLevel.push(this.statementBird);
     const allBirdsShuffled = shuffle(this.allBirds);
-    for(let i = 0; i > this.exerciseConfig.birdsQuantity-1; i++){
-       this.availableBirdsInLevel.push(allBirdsShuffled[i]);
+    for (let i = 0; i > this.exerciseConfig.birdsQuantity - 1; i++) {
+      this.availableBirdsInLevel.push(allBirdsShuffled[i]);
     }
   }
-  
+
 
 
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
     // this.statementBird = this.mainBirdGenerator()
     // const exercise: ColorfullHeightsExercise = {optionsBirds: [], targetBird: new BirdInfo(this.statementBird.color,this.statementBird.type), quantity: 1};
-     const allColors = this.exerciseConfig.colorsToUse;
     // exercise.optionsBirds = this.availableBirdsInLevel.map((z,i) => {
     //   return {quantity: 1, bird: new BirdI nfo(this.allBirds[i].color,this.allBirds[i].type)};
     // });
     // exercise.optionsBirds.forEach((option, index, array) => {
     //   const percentage = this.availableBirdsInLevel.length * 0.1;
-      
+
     // })
-
-
-    
     //   if (this.availableBirdsInLevel.length > 1) {
     //     do {
     //       const percentage = this.availableBirdsInLevel.length * 0.1;
@@ -130,7 +152,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     //   .setColor(exercise.targetBird.color).setType(exercise.targetBird.type);
     // return {exerciseData: exercise, requiredResources: [], subLevel: this.currentSubLevel};
     // return {exerciseData: {id: randomBetween(0, 100)} as any, requiredResources: [], subLevel: this.currentSubLevel};
-    return new ExerciseOx(JSON.parse(JSON.stringify({id: randomBetween(0, 100)})), 1, {maxTimeToBonus: 0, freeTime: 0}, []);
+    return new ExerciseOx(JSON.parse(JSON.stringify({ id: randomBetween(0, 100) })), 1, { maxTimeToBonus: 0, freeTime: 0 }, []);
   }
 
 
@@ -139,24 +161,25 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     // this.allGnomes = this.info.gnomes;
     const gameCase = this.appInfo.microLessonInfo.extraInfo.exerciseCase;
     switch (gameCase) {
-      case 'colorful-heights':
+      case 'created-config':
         this.currentSubLevelPregeneratedExercisesNeeded = 1;
         this.exerciseConfig = this.appInfo.microLessonInfo.creatorInfo?.microLessonGameInfo.properties;
         // this.exerciseIndex = 0;
         this.feedback.endFeedback.subscribe(x => {
           // this.exerciseIndex++;
         });
-        console.log('JEJEJEJEJ');
-        console.log('JEJEJEJEJ');
-        console.log('JEJEJEJEJ');
-        console.log('JEJEJEJEJ');
-        console.log(this.exerciseConfig);
-        // this.setInitialExercise();
+        this.exerciseConfig.birdsToUse.forEach(b => {
+          this.exerciseConfig.colorsToUse.forEach(c => {
+            this.allBirds.push(new BirdInfo(c, b));
+          })
+        })
+        this.setInitialExercise();
         break;
       default:
         throw new Error('Wrong game case recived from Wumbox');
     }
   }
+
 
   getGeneralTitle(): Showable {
     return undefined as any;
@@ -181,34 +204,58 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     };
   }
 
-  // private setInitialExercise(): void {
-  //   console.log(' Setting inital exercise');
-  //   const gnomes = [];
-  //   const gnomeCount = randomBetween(this.exerciseConfig.gnomeMinCount, this.exerciseConfig.gnomeMaxCount);
-  //   this.exerciseConfig.forcedGnomes.forEach(z => {
-  //     gnomes.push(this.allGnomes.find(g => g.reference === z));
-  //   });
-  //   const validGnomesToAdd = this.allGnomes.filter(z => this.exerciseConfig.validGnomes.includes(z.reference));
-  //   for (let i = 0; i < gnomeCount - this.exerciseConfig.forcedGnomes.length; i++) {
-  //     gnomes.push(anyElement(validGnomesToAdd.filter(z => !gnomes.includes(z))));
-  //   }
-  //   const sequenceGnomeIds = [];
-  //   const auxScene = anyElement(this.exerciseConfig.possibleScenes);
-  //   // const auxScene = 'jardin-alacena-5';
-  //   // gnomes.push(anyElement(this.allGnomes.filter(z => !gnomes.includes(z))));
-  //   // gnomes.push(anyElement(this.allGnomes.filter(z => !gnomes.includes(z))));
-  //   // gnomes.push(anyElement(this.allGnomes.filter(z => !gnomes.includes(z))));
-  //   for (let i = 0; i < this.exerciseConfig.startSoundCount - 1; i++) {
-  //     sequenceGnomeIds.push(anyElement(this.getValidGnomeIds(3, sequenceGnomeIds, gnomes)));
-  //   }
-  //   this.exercise = {
-  //     sequenceGnomeIds,
-  //     scene: this.info.scenes.find(z => auxScene.includes(z.name)),
-  //     soundDuration: this.exerciseConfig.soundDuration,
-  //     gnomes,
-  //     maxSecondsBetweenAnswers: this.exerciseConfig.maxSecondsBetweenAnswers,
-  //     secondsToStartAnswer: this.exerciseConfig.secondsToStartAnswer,
-  //     timeBetweenSounds: this.exerciseConfig.timeBetweenSounds
-  //   };
-  // }
+
+  private setInitialExercise(): void {
+    this.answerBirdOptions = [];
+    this.setAnswerBird();
+    this.answerBirdOptions.push(this.answerBird)
+    for (let i = 0; i < this.exerciseConfig.forcesTraps[0].quantity; i++) {
+      let trapTypeDrafted = anyElement(this.exerciseConfig.forcesTraps[0].forcedTrapsType);
+      if (trapTypeDrafted === 'Equal shape') {
+        this.answerBirdOptions.push(new BirdInfo(this.filterColor().color, this.answerBird.type));
+      } else if (trapTypeDrafted === 'Equal color') {
+        this.answerBirdOptions.push(new BirdInfo(this.answerBird.color, this.filterType().type));
+      } else if (trapTypeDrafted === "different color and shape") {
+        this.answerBirdOptions.push(new BirdInfo(this.filterColor().color, this.filterType().type));
+      }
+    }
+    const allBirdsWithNoAnswer = this.allBirds.filter(bird => bird !== this.answerBird);
+    if (this.exerciseConfig.birdsQuantity > this.exerciseConfig.forcesTraps[0].quantity + 1) {
+      this.answerBirdOptions.fill(anyElement(allBirdsWithNoAnswer), this.exerciseConfig.forcesTraps[0].quantity);
+    }
+    this.answerBirdOptions = shuffle(this.answerBirdOptions);   
+    console.log(allBirdsWithNoAnswer);
+    console.log(this.answerBirdOptions);
+    //   const gnomeCount = randomBetween(this.exerciseConfig.gnomeMinCount, this.exerciseConfig.gnomeMaxCount);
+    //   this.exerciseConfig.forcedGnomes.forEach(z => {
+    //     gnomes.push(this.allGnomes.find(g => g.reference === z));
+    //   });
+    //   const validGnomesToAdd = this.allGnomes.filter(z => this.exerciseConfig.validGnomes.includes(z.reference));
+    //   for (let i = 0; i < gnomeCount - this.exerciseConfig.forcedGnomes.length; i++) {
+    //     gnomes.push(anyElement(validGnomesToAdd.filter(z => !gnomes.includes(z))));
+    //   }
+    //   const sequenceGnomeIds = [];
+    //   const auxScene = anyElement(this.exerciseConfig.possibleScenes);
+    //   // const auxScene = 'jardin-alacena-5';
+    //   // gnomes.push(anyElement(this.allGnomes.filter(z => !gnomes.includes(z))));
+    //   // gnomes.push(anyElement(this.allGnomes.filter(z => !gnomes.includes(z))));
+    //   // gnomes.push(anyElement(this.allGnomes.filter(z => !gnomes.includes(z))));
+    //   for (let i = 0; i < this.exerciseConfig.startSoundCount - 1; i++) {
+    //     sequenceGnomeIds.push(anyElement(this.getValidGnomeIds(3, sequenceGnomeIds, gnomes)));
+    //   }
+    //   this.exercise = {
+    //     sequenceGnomeIds,
+    //     scene: this.info.scenes.find(z => auxScene.includes(z.name)),
+    //     soundDuration: this.exerciseConfig.soundDuration,
+    //     gnomes,
+    //     maxSecondsBetweenAnswers: this.exerciseConfig.maxSecondsBetweenAnswers,
+    //     secondsToStartAnswer: this.exerciseConfig.secondsToStartAnswer,
+    //     timeBetweenSounds: this.exerciseConfig.timeBetweenSounds
+    //   };
+    // }
+  }
+}
+
+function forcedTrapsType(arg0: any, forcedTrapsType: any) {
+  throw new Error('Function not implemented.');
 }
