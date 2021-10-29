@@ -1,9 +1,8 @@
-import { PostMessageBridgeFactory } from "ngox-post-message";
+import {PostMessageBridgeFactory} from "ngox-post-message";
 
 export interface ColorfullHeightsExercise {
   targetBird: BirdInfo;
-  quantity: number;
-  optionsBirds: { quantity: number, bird: BirdInfo }[];
+  optionsBirds: BirdInfo[];
 }
 
 export type BirdColor = 'yellow' | 'blue' | 'red' | 'violet' | 'green';
@@ -11,74 +10,50 @@ export type BirdType = 'cóndor' | 'cotorra' | 'lechuza' | 'gordo' | 'pelado';
 export type TrapType = 'Equal shape' | 'Equal color' | 'different color and shape';
 
 
-
-export class BirdInfo {
+export interface BirdInfo {
   color: BirdColor;
   type: BirdType;
-  constructor(color:BirdColor, type:BirdType) {
-    this.color=color;
-    this.type=type
-  }
- setType(bird:BirdInfo) {
-    return bird.type;
- } 
-
- setColor(color:BirdColor){
-   return color;
- }
 }
 
 
-
 export interface Bonus {
-  numberOfCorrectAnswersForBonus:number,
-  timeEarnPerBonus:number,
-  isAble?:boolean,
+  numberOfCorrectAnswersForBonus: number,
+  timeEarnPerBonus: number,
+  isAble?: boolean,
 }
 
 
 export interface TrapsInterface {
-  
-  
-    forcedTrapsType:string[],
-    quantity:number
-  
-    
- 
+  forcedTrapsType: TrapType[],
+  quantity: number
 }
-
-
-
 
 
 export interface NivelationColorfulHeightInfo {
-  birdsQuantity:number, 
-  colorsToUse:BirdColor[],
-  birdsToUse:BirdType[],
-  statementChangeFromExercise?:number,
-  probabilityOfStatementChange?:number,
-  minMultipleBirds?:number,
-  maxMultipleBirds?:number,
-  totalGameTime:number,
-  bonusRequirmentsAndTimeEarn:Bonus[],
-  forcesTraps:TrapsInterface[]
+  birdsQuantity: number,
+  colorsToUse: BirdColor[],
+  birdsToUse: BirdType[],
+  statementChangeFromExercise?: number,
+  probabilityOfStatementChange?: number,
+  minMultipleBirds?: number,
+  maxMultipleBirds?: number,
+  totalGameTime: number,
+  bonusRequirmentsAndTimeEarn: Bonus[],
+  forcesTraps: TrapsInterface[]
 }
-
-
 
 
 export interface BirdsAux {
-  type:BirdType,
-  svgBird:string,
-  svgBirdHappy:string,
-  svgBirdSad:string,
-  svgWings:string,
-  svgWingsUp:string,
-  isDouble:boolean,
-  pathWithReplaces:Replaces[],
-  currentColor?:string;
+  type: BirdType,
+  svgBird: string,
+  svgBirdHappy: string,
+  svgBirdSad: string,
+  svgWings: string,
+  svgWingsUp: string,
+  isDouble: boolean,
+  pathWithReplaces: Replaces[],
+  currentColor?: string;
 }
-
 
 
 export interface Replaces {

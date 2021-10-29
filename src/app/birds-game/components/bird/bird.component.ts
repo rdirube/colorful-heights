@@ -44,7 +44,6 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
 
 
   ngOnInit(): void { 
-    console.log(this.bird,JSON.stringify(this.bird))  
   }
 
 
