@@ -47,6 +47,7 @@ export class AppComponent extends BaseMicroLessonApp {
       }
     });
     preloader.addResourcesToLoad(this.getGameResourcesToLoad());
+    console.log("se instancio coloful")
   }
 
 

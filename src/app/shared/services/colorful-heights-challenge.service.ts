@@ -10,7 +10,7 @@ import {
 import { anyElement, ExerciseOx, PreloaderOxService, randomBetween, shuffle } from 'ox-core';
 import { BirdColor, BirdInfo, BirdsAux, BirdType, ColorfullHeightsExercise, NivelationColorfulHeightInfo, TrapType, TrapsInterface } from '../models/types';
 import { ExpandableInfo, Showable } from 'ox-types';
-
+import { sameBird, sameColor,sameShape} from '../models/functions';
 
 
 
@@ -29,7 +29,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   public exerciseConfig!: NivelationColorfulHeightInfo;
   public allBirds: BirdInfo[] = [];
   public answerBird!: BirdInfo;
-  public answerBirdOptions: BirdInfo[]=[];
+  public answerBirdOptions: BirdInfo[] = [];
   public optionBirds!: BirdInfo;
   public exercise: ColorfullHeightsExercise | undefined;
   stopPlayTimeEmitter = new EventEmitter<boolean>();
@@ -79,22 +79,23 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
 
 
-  filterColor(): BirdInfo {
-    const colorFilteredBirds = this.allBirds.filter(z => z.color !== this.answerBird.color);
+  filterColor(): BirdColor {
+    const colorFilteredBirds = this.exerciseConfig.colorsToUse.filter(z => !sameColor(z, this.answerBird.color));
     const colorFilteredBird = anyElement(colorFilteredBirds);
     return colorFilteredBird
   }
 
-  filterType(): BirdInfo {
-    const typeFilterBirds = this.allBirds.filter(z => z.type !== this.answerBird.type);
+  filterType(): BirdType {
+    const typeFilterBirds = this.exerciseConfig.birdsToUse.filter(t => !sameShape(t,this.answerBird.type))
     const typeFilterBird = anyElement(typeFilterBirds);
     return typeFilterBird
   }
 
-
   setAnswerBird(): void {
     this.answerBird = new BirdInfo(anyElement(this.exerciseConfig.colorsToUse), anyElement(this.exerciseConfig.birdsToUse));
   }
+
+
 
 
 
@@ -168,11 +169,11 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
         this.feedback.endFeedback.subscribe(x => {
           // this.exerciseIndex++;
         });
-        this.exerciseConfig.birdsToUse.forEach(b => {
-          this.exerciseConfig.colorsToUse.forEach(c => {
-            this.allBirds.push(new BirdInfo(c, b));
-          })
-        })
+        // this.exerciseConfig.birdsToUse.forEach(b => {
+        //   this.exerciseConfig.colorsToUse.forEach(c => {
+        //     this.allBirds.push(new BirdInfo(c, b));
+        //   })
+        // })
         this.setInitialExercise();
         break;
       default:
@@ -208,23 +209,26 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   private setInitialExercise(): void {
     this.answerBirdOptions = [];
     this.setAnswerBird();
-    this.answerBirdOptions.push(this.answerBird)
+    this.answerBirdOptions.push(this.answerBird);
     for (let i = 0; i < this.exerciseConfig.forcesTraps[0].quantity; i++) {
       let trapTypeDrafted = anyElement(this.exerciseConfig.forcesTraps[0].forcedTrapsType);
       if (trapTypeDrafted === 'Equal shape') {
-        this.answerBirdOptions.push(new BirdInfo(this.filterColor().color, this.answerBird.type));
+        this.answerBirdOptions.push(new BirdInfo(this.filterColor(), this.answerBird.type));
       } else if (trapTypeDrafted === 'Equal color') {
-        this.answerBirdOptions.push(new BirdInfo(this.answerBird.color, this.filterType().type));
+        this.answerBirdOptions.push(new BirdInfo(this.answerBird.color, this.filterType()));
       } else if (trapTypeDrafted === "different color and shape") {
-        this.answerBirdOptions.push(new BirdInfo(this.filterColor().color, this.filterType().type));
+        this.answerBirdOptions.push(new BirdInfo(this.filterColor(), this.filterType()));
       }
+    
+      console.log(trapTypeDrafted);
     }
-    const allBirdsWithNoAnswer = this.allBirds.filter(bird => bird !== this.answerBird);
-    if (this.exerciseConfig.birdsQuantity > this.exerciseConfig.forcesTraps[0].quantity + 1) {
-      this.answerBirdOptions.fill(anyElement(allBirdsWithNoAnswer), this.exerciseConfig.forcesTraps[0].quantity);
-    }
-    this.answerBirdOptions = shuffle(this.answerBirdOptions);   
-    console.log(allBirdsWithNoAnswer);
+    //    for(let i = 0; this.exerciseConfig.birdsQuantity > this.exerciseConfig.forcesTraps[0].quantity + 1 + i ; i++) {
+    //     if (this.exerciseConfig.birdsQuantity > this.exerciseConfig.forcesTraps[0].quantity + 1) {
+    //      this.answerBirdOptions.push(new BirdInfo(anyElement(this.exerciseConfig.colorsToUse),anyElement(this.exerciseConfig.birdsToUse)))
+    //    }
+    // }
+    this.answerBirdOptions = shuffle(this.answerBirdOptions);
+    console.log(this.answerBird);
     console.log(this.answerBirdOptions);
     //   const gnomeCount = randomBetween(this.exerciseConfig.gnomeMinCount, this.exerciseConfig.gnomeMaxCount);
     //   this.exerciseConfig.forcedGnomes.forEach(z => {
@@ -259,3 +263,4 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 function forcedTrapsType(arg0: any, forcedTrapsType: any) {
   throw new Error('Function not implemented.');
 }
+

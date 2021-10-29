@@ -19,11 +19,7 @@ import { take } from 'rxjs/operators';
 export class BirdComponent extends SubscriberOxDirective implements OnInit {
 
   @ViewChild(LoadedSvgComponent) loadedSvgComponent!: LoadedSvgComponent;
-  @Input('testInput')
-  set asdasdas(b: string) {
-    console.log('scv has changed.')
-    console.log(this.svgBird, b);
-  }
+  
   @Input() bird!: BirdsAux;
   @Input() isAnswer!: boolean;
   @Input() wings!: string;
@@ -47,7 +43,8 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   }
 
 
-  ngOnInit(): void {   
+  ngOnInit(): void { 
+    console.log(this.bird,JSON.stringify(this.bird))  
   }
 
 
