@@ -7,7 +7,7 @@ import {
   LevelService,
   SubLevelService
 } from 'micro-lesson-core';
-import {anyElement, ExerciseOx, PreloaderOxService, shuffle} from 'ox-core';
+import {anyElement, equalArrays, ExerciseOx, PreloaderOxService, shuffle} from 'ox-core';
 import {
   BirdColor,
   BirdInfo,
@@ -67,11 +67,9 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     this.cachedExercises.push(this.generateNextChallenge(0));
   }
 
-
   protected equalsExerciseData(exerciseData: ColorfullHeightsExercise, exerciseDoneData: ColorfullHeightsExercise): boolean {
-    return exerciseData.targetBird === exerciseDoneData.targetBird;
+    return equalArrays(exerciseData.optionsBirds, exerciseDoneData.optionsBirds);
   }
-
 
   private getSublevelConfig(sublevel: number): any {
     return this.appInfo.getMicroLessonLevelConfiguration(this.levelService.currentLevel.value)
@@ -101,7 +99,6 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     currentOptions.push(trapToAdd);
   }
 
-
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
     const answerBird: BirdInfo = this.getAnswerBird();
     const answerBirdOptions: BirdInfo[] = [answerBird];
@@ -118,15 +115,12 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
         optionsBirds: shuffle(answerBirdOptions),
         targetBird: answerBird
       } as ColorfullHeightsExercise, 1, {
-      maxTimeToBonus: 0,
-      freeTime: 0
-    }, []);
+        maxTimeToBonus: 0,
+        freeTime: 0
+      }, []);
   }
 
-
   beforeStartGame(): void {
-    // this.info = JSON.parse(this.preloaderService.getResourceData('gnome-game/jsons/gnomes-and-scenes-info.json'));
-    // this.allGnomes = this.info.gnomes;
     const gameCase = this.appInfo.microLessonInfo.extraInfo.exerciseCase;
     switch (gameCase) {
       case 'created-config':
@@ -147,7 +141,6 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
         throw new Error('Wrong game case recived from Wumbox');
     }
   }
-
 
   getGeneralTitle(): Showable {
     return undefined as any;
@@ -172,12 +165,14 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     };
   }
 
-
   private setInitialExercise(): void {
     this.validColors = this.exerciseConfig.colorsToUse;
     this.validShapes = this.exerciseConfig.birdsToUse;
   }
 
+  //////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////* TRAPS *///////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////
   private generateDifferentColorAndShapeTrap(currentOptions: BirdInfo[], answer: BirdInfo): BirdInfo {
     const auxValidColors = this.validColors.filter(z => z !== answer.color);
     const auxValidShapes = this.validShapes.filter(z => z !== answer.type);

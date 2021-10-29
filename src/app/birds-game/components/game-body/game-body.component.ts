@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import anime from 'animejs';
-import {ChallengeService} from 'micro-lesson-core';
+import {ChallengeService, GameActionsService, HintService, MicroLessonMetricsService} from 'micro-lesson-core';
 import {
   BirdInfo,
   Bonus,
@@ -17,18 +17,16 @@ import {
   Replaces,
   BirdType,
   BirdColor,
-  NivelationColorfulHeightInfo
+  NivelationColorfulHeightInfo, ColorfullHeightsExercise
 } from 'src/app/shared/models/types';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
-import {ExerciseOx, PreloaderOxService, randomBetween, shuffle, anyElement} from 'ox-core';
-import {timer, zip} from 'rxjs';
-import {TryButtonComponent, LoadedSvgComponent} from 'micro-lesson-components';
-import {OxTextInfo} from 'ox-types';
-import {Typographies, TextComponent} from 'typography-ox';
+import {ExerciseOx,} from 'ox-core';
+import {timer} from 'rxjs';
+import {ExerciseData, OxTextInfo} from 'ox-types';
+import {TextComponent} from 'typography-ox';
 import {SubscriberOxDirective} from 'micro-lesson-components';
 import {StickComponent} from '../stick/stick.component';
-import {sameBird, sameShape, sameColor, sameParsedColor} from 'src/app/shared/models/functions';
-import {THIS_EXPR} from '@angular/compiler/src/output/output_ast';
+import {filter, take} from 'rxjs/operators';
 
 
 @Component({
@@ -49,64 +47,65 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   baseClass: string = 'base-show';
   public avaiableBirdsPerExercise: number[] = [];
   public nestsPerExercise: boolean[] = [];
-  public allBirds: BirdsAux[] =
-    [{
-      type: 'cóndor',
-      svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg',
-      svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg',
-      svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg',
-      svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg',
-      svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_2.svg',
-      isDouble: false,
-      pathWithReplaces: undefined as any
-    },
-      {
-        type: 'cotorra',
-        svgBird: 'colorful-heights/svg/Pajaritos/cotorra.svg',
-        svgBirdHappy: 'colorful-heights/svg/Pajaritos/cotorra_happy.svg',
-        svgBirdSad: 'colorful-heights/svg/Pajaritos/cotorra_sad.svg',
-        svgWings: 'colorful-heights/svg/Pajaritos/cotorra_alas_1.svg',
-        svgWingsUp: 'colorful-heights/svg/Pajaritos/cotorra_alas_2.svg',
-        isDouble: false,
-        pathWithReplaces: undefined as any
-      },
-      {
-        type: 'gordo',
-        svgBird: 'colorful-heights/svg/Pajaritos/gordo.svg',
-        svgBirdHappy: 'colorful-heights/svg/Pajaritos/gordo_happy.svg',
-        svgBirdSad: 'colorful-heights/svg/Pajaritos/gordo_sad.svg',
-        svgWings: 'colorful-heights/svg/Pajaritos/gordo_alas_1.svg',
-        svgWingsUp: 'colorful-heights/svg/Pajaritos/gordo_alas_2.svg',
-        isDouble: false,
-        pathWithReplaces: undefined as any
-      },
-      {
-        type: 'lechuza',
-        svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg",
-        svgBirdHappy: "colorful-heights/svg/Pajaritos/lechuza_happy.svg",
-        svgBirdSad: "colorful-heights/svg/Pajaritos/lechuza_sad.svg",
-        svgWings: 'colorful-heights/svg/Pajaritos/lechuza_alas_1.svg',
-        svgWingsUp: "colorful-heights/svg/Pajaritos/lechuza_alas_2.svg",
-        isDouble: false,
-        pathWithReplaces: undefined as any
-      },
-      {
-        type: 'pelado',
-        svgBird: "colorful-heights/svg/Pajaritos/pelado.svg",
-        svgBirdHappy: "colorful-heights/svg/Pajaritos/pelado_happy.svg",
-        svgBirdSad: "colorful-heights/svg/Pajaritos/pelado_sad.svg",
-        svgWings: 'colorful-heights/svg/Pajaritos/pelado_alas_1.svg',
-        svgWingsUp: 'colorful-heights/svg/Pajaritos/pelado_alas_2.svg',
-        isDouble: true,
-        pathWithReplaces: undefined as any
-      }];
+  // public allBirds: BirdsAux[] =
+  //   [{
+  //     type: 'cóndor',
+  //     svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg',
+  //     svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg',
+  //     svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg',
+  //     svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg',
+  //     svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_2.svg',
+  //     isDouble: false,
+  //     pathWithReplaces: undefined as any
+  //   },
+  //     {
+  //       type: 'cotorra',
+  //       svgBird: 'colorful-heights/svg/Pajaritos/cotorra.svg',
+  //       svgBirdHappy: 'colorful-heights/svg/Pajaritos/cotorra_happy.svg',
+  //       svgBirdSad: 'colorful-heights/svg/Pajaritos/cotorra_sad.svg',
+  //       svgWings: 'colorful-heights/svg/Pajaritos/cotorra_alas_1.svg',
+  //       svgWingsUp: 'colorful-heights/svg/Pajaritos/cotorra_alas_2.svg',
+  //       isDouble: false,
+  //       pathWithReplaces: undefined as any
+  //     },
+  //     {
+  //       type: 'gordo',
+  //       svgBird: 'colorful-heights/svg/Pajaritos/gordo.svg',
+  //       svgBirdHappy: 'colorful-heights/svg/Pajaritos/gordo_happy.svg',
+  //       svgBirdSad: 'colorful-heights/svg/Pajaritos/gordo_sad.svg',
+  //       svgWings: 'colorful-heights/svg/Pajaritos/gordo_alas_1.svg',
+  //       svgWingsUp: 'colorful-heights/svg/Pajaritos/gordo_alas_2.svg',
+  //       isDouble: false,
+  //       pathWithReplaces: undefined as any
+  //     },
+  //     {
+  //       type: 'lechuza',
+  //       svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg",
+  //       svgBirdHappy: "colorful-heights/svg/Pajaritos/lechuza_happy.svg",
+  //       svgBirdSad: "colorful-heights/svg/Pajaritos/lechuza_sad.svg",
+  //       svgWings: 'colorful-heights/svg/Pajaritos/lechuza_alas_1.svg',
+  //       svgWingsUp: "colorful-heights/svg/Pajaritos/lechuza_alas_2.svg",
+  //       isDouble: false,
+  //       pathWithReplaces: undefined as any
+  //     },
+  //     {
+  //       type: 'pelado',
+  //       svgBird: "colorful-heights/svg/Pajaritos/pelado.svg",
+  //       svgBirdHappy: "colorful-heights/svg/Pajaritos/pelado_happy.svg",
+  //       svgBirdSad: "colorful-heights/svg/Pajaritos/pelado_sad.svg",
+  //       svgWings: 'colorful-heights/svg/Pajaritos/pelado_alas_1.svg',
+  //       svgWingsUp: 'colorful-heights/svg/Pajaritos/pelado_alas_2.svg',
+  //       isDouble: true,
+  //       pathWithReplaces: undefined as any
+  //     }];
   public birdToSelect!: BirdsAux;
   public svgBird: string[] = [];
-  public answerBirds!: BirdsAux[];
+  public answerBirds: BirdsAux[] = [];
   public duration!: number;
   public exerciseConfig!: NivelationColorfulHeightInfo;
   public birdsQuantity: number = 4;
   public correctAnswerCounter: number = 0;
+  public exercise!: ColorfullHeightsExercise;
   public bonusValuesList: Bonus[] = [{numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true}, {
     numberOfCorrectAnswersForBonus: 10, timeEarnPerBonus: 40, isAble: true
   }, {
@@ -126,36 +125,39 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   public colorsAvaiable: string[] = ["#406faf", "#e81e25", "#ffc807", "#8b2c90", "#73be44"];
 
 
-  constructor(private challengeService: ColorfulHeightsChallengeService, stickComponent: StickComponent,
+  constructor(private challengeService: ColorfulHeightsChallengeService,
+              private metricsService: MicroLessonMetricsService<any>,
+              private gameActions: GameActionsService<any>,
+              private hintService: HintService,
               private cdr: ChangeDetectorRef) {
     super();
+
     this.addSubscription(this.challengeService.startTime, x => {
-      timer(1300).subscribe(z => {
-        anime({
-          targets: '.birdImage',
-          translateY: ['100%', '0%'],
-          duration: 1050,
-          easing: 'easeInOutExpo'
-        });
+
+      anime({
+        targets: '.birdImage',
+        translateY: ['100%', '0%'],
+        duration: 1050,
+        easing: 'easeInOutExpo',
+        delay: 1300
       });
-    });
-    this.addSubscription(this.challengeService.startTime, x => {
-      timer(1200).subscribe(z => {
-        anime({
-          targets: '.button-hint',
-          translateX: ['100%', '0%'],
-          duration: 700,
-          easing: 'easeInOutExpo'
-        });
+
+      anime({
+        targets: '.button-hint',
+        translateX: ['100%', '0%'],
+        duration: 700,
+        easing: 'easeInOutExpo',
+        delay: 1200
       });
-      timer(1200).subscribe(z => {
-        anime({
-          targets: '.button-menu',
-          translateX: ['-100%', '0%'],
-          duration: 700,
-          easing: 'easeInOutExpo'
-        });
+      anime({
+        targets: '.button-menu',
+        translateX: ['-100%', '0%'],
+        duration: 700,
+        easing: 'easeInOutExpo',
+        delay: 1200
+
       });
+
     });
     this.addSubscription(this.challengeService.clickBirdEvent, (z => {
         timer(1200).subscribe(v => {
@@ -163,11 +165,61 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         });
       }
     ));
+    this.addSubscription(this.challengeService.currentExercise.pipe(filter(x => x !== undefined)),
+      (exercise: ExerciseOx<ColorfullHeightsExercise>) => {
+        this.exercise = exercise.exerciseData;
+        console.log(exercise);
+        this.addMetric();
+        this.hintService.usesPerChallenge = 1;
+        this.hintService.hintAvailable.next(true);
+        if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
+          this.showCountDown = true;
+        } else {
+          // this.playSequence();
+        }
+      });
   }
 
+  private addMetric(): void {
+    const myMetric: ExerciseData = {
+      schemaType: 'multiple-choice',
+      schemaData: undefined,
+      // schemaData: {
+      //   statement: {parts: []},``
+      //   additionalInfo: [],
+      //   presentationOrder: 'ordered',
+      //   processingCriteria: {
+      //     type: this.challengeService.exerciseConfig.invertedGnomes
+      //       ? 'inverse-presentation-order' : 'presentation-order'
+      //   },
+      //   stimulus: this.challengeService.exercise.sequenceGnomeIds.map(this.gnomeIdToStimulus.bind(this))
+      // } as WorkingMemorySchemaData,
+      userInput: {
+        answers: [],
+        requestedHints: 0,
+        surrendered: false
+      },
+      finalStatus: 'to-answer',
+      maxHints: 1,
+      secondsInExercise: 0,
+      initialTime: new Date(),
+      finishTime: undefined as any,
+      firstInteractionTime: undefined as any
+    };
+    this.addSubscription(this.gameActions.actionToAnswer.pipe(take(1)), z => {
+      myMetric.firstInteractionTime = new Date();
+    });
+    this.addSubscription(this.gameActions.checkedAnswer.pipe(take(1)),
+      z => {
+        myMetric.finishTime = new Date();
+        console.log('Finish time');
+      });
+    this.metricsService.addMetric(myMetric as ExerciseData);
+    this.metricsService.currentMetrics.exercises++;
+  }
 
   ngOnInit(): void {
-    this.birdToSelectGenerator(4);
+    // this.birdToSelectGenerator(4);
   }
 
 
@@ -198,13 +250,13 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
   birdToSelectGenerator(birds: number): void {
     this.answerBirds = [];
-    this.challengeService.answerBirdOptions.forEach((e, i) => {
-      const foundBird = this.allBirds.find(z => z.type === this.challengeService.answerBirdOptions[i].type)!;
-      this.answerBirds.push(foundBird);
-    });
+    // this.challengeService.answerBirdOptions.forEach((e, i) => {
+    //   const foundBird = this.allBirds.find(z => z.type === this.challengeService.answerBirdOptions[i].type)!;
+    //   this.answerBirds.push(foundBird);
+    // });
     this.replacePathBirds();
-    this.birdToSelect = this.answerBirds.find(z => sameShape(z.type, this.challengeService.answerBird.type) &&
-      sameParsedColor(z.currentColor!, this.colorsParseMethod(this.challengeService.answerBird.color, 0)))!;
+    // this.birdToSelect = this.answerBirds.find(z => sameShape(z.type, this.challengeService.answerBird.type) &&
+    //   sameParsedColor(z.currentColor!, this.colorsParseMethod(this.challengeService.answerBird.color, 0)))!;
     console.log('I have just Updated the birds and they are', this.answerBirds);
     // console.log(this.answerBirds);
     // console.log(this.birdToSelect);
@@ -258,66 +310,73 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
 
   replacePathBirds(): void {
-    this.answerBirds.forEach((b, i) => {
-      b.pathWithReplaces = [{
-        path: b.svgBird,
-        replaces: new Map<string, string>()
-      }, {path: b.svgBirdHappy, replaces: new Map<string, string>()},
-        {path: b.svgWings, replaces: new Map<string, string>()},
-        {path: b.svgWingsUp, replaces: new Map<string, string>()}];
-      b.pathWithReplaces.forEach(o =>
-        o.replaces.set("#406faf", this.colorsParseMethod(this.challengeService.answerBirdOptions[i].color, i))
-      );
-      this.answerBirds[i].currentColor = this.colorsParseMethod(this.challengeService.answerBirdOptions[i].color, i);
-    });
+    // this.answerBirds.forEach((b, i) => {
+    //   b.pathWithReplaces = [{
+    //     path: b.svgBird,
+    //     replaces: new Map<string, string>()
+    //   }, {path: b.svgBirdHappy, replaces: new Map<string, string>()},
+    //     {path: b.svgWings, replaces: new Map<string, string>()},
+    //     {path: b.svgWingsUp, replaces: new Map<string, string>()}];
+    //   // b.pathWithReplaces.forEach(o =>
+    //   //   o.replaces.set("#406faf", this.colorsParseMethod(this.challengeService.answerBirdOptions[i].color, i))
+    //   // );
+    //   // this.answerBirds[i].currentColor = this.colorsParseMethod(this.challengeService.answerBirdOptions[i].color, i);
+    // });
   }
-
 
   startGame(): void {
     this.showCountDown = false;
     console.log(' Start game');
+    this.raiseAnimation();
   }
 
-
-  @HostListener('document:keydown', ['$event'])
-  asdsad($event: KeyboardEvent) {
-    if ($event.key === 'k') {
-      this.birdToSelectGenerator(1);
-    }
-    if ($event.key === 't') {
-      this.treeClass = 'tree-show';
-      this.baseClass = 'base-hide';
-      timer(800).subscribe(z => {
-        this.challengeService.startTime.emit();
-      });
-    }
-    if ($event.key === 'b') {
-      this.treeClass = 'tree-hide';
-      this.baseClass = 'base-show';
-    }
-    if ($event.key === 'p') {
-      anime({
-        targets: '.birdImage',
-        translateY: '100%',
-        easing: 'linear',
-        duration: 250,
-      });
-    }
-    if ($event.key === 'o') {
-      anime({
-        targets: '.birdImage',
-        translateY: ['65%', '0'],
-        duration: 750,
-        easing: 'easeInOutElastic'
-      });
-    }
-    if ($event.key === 's') {
-      this.correctAnswerCounter = 0;
-      console.log(this.correctAnswerCounter);
-    }
-    if ($event.key === 'l') {
-      this.cdr.detectChanges();
-    }
+  private raiseAnimation(): void {
+    this.treeClass = 'tree-show';
+    this.baseClass = 'base-hide';
+    timer(800).subscribe(z => {
+      this.gameHasStarted();
+    });
   }
+
+  private gameHasStarted() {
+    this.challengeService.startTime.emit();
+  }
+
+  // @HostListener('document:keydown', ['$event'])
+  // asdsad($event: KeyboardEvent) {
+  //   if ($event.key === 'k') {
+  //     this.birdToSelectGenerator(1);
+  //   }
+  //   if ($event.key === 't') {
+  //
+  //   }
+  //   if ($event.key === 'b') {
+  //     this.treeClass = 'tree-hide';
+  //     this.baseClass = 'base-show';
+  //   }
+  //   if ($event.key === 'p') {
+  //     anime({
+  //       targets: '.birdImage',
+  //       translateY: '100%',
+  //       easing: 'linear',
+  //       duration: 250,
+  //     });
+  //   }
+  //   if ($event.key === 'o') {
+  //     anime({
+  //       targets: '.birdImage',
+  //       translateY: ['65%', '0'],
+  //       duration: 750,
+  //       easing: 'easeInOutElastic'
+  //     });
+  //   }
+  //   if ($event.key === 's') {
+  //     this.correctAnswerCounter = 0;
+  //     console.log(this.correctAnswerCounter);
+  //   }
+  //   if ($event.key === 'l') {
+  //     this.cdr.detectChanges();
+  //   }
+  // }
 }
 
