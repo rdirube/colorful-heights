@@ -43,8 +43,8 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
 
   showCountDown: boolean | undefined;
-  treeClass: string = 'tree-hide';
-  baseClass: string = 'base-show';
+  treeClass: string = 'tree-hide no-transition';
+  baseClass: string = 'base-show no-transition';
   public avaiableBirdsPerExercise: number[] = [];
   public nestsPerExercise: boolean[] = [];
   public exerciseConfig!: NivelationColorfulHeightInfo;

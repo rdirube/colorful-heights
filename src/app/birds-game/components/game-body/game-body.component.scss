@@ -10,6 +10,9 @@
 .base-show {
   top: 0vh;
 }
+.no-transition {
+  transition: 0s !important;
+}
 
 .clock {
   width: 15vh;
