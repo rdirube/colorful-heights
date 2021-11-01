@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import anime, {random} from 'animejs';
 import {LoadedSvgComponent} from 'micro-lesson-components';
-import {BirdsAux, BirdType} from 'src/app/shared/models/types';
+import {BirdsAux, BirdType, Replaces, BirdState, BirdInfo} from 'src/app/shared/models/types';
 import {anyElement, PreloaderOxService} from 'ox-core';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
 import {SubscriberOxDirective} from 'micro-lesson-components';
@@ -18,9 +18,15 @@ import {take} from 'rxjs/operators';
 
 export class BirdComponent extends SubscriberOxDirective implements OnInit {
 
+
   @ViewChild(LoadedSvgComponent) loadedSvgComponent!: LoadedSvgComponent;
 
-  @Input() bird!: BirdsAux;
+  @Input('birdInfo') 
+  set setBirdInfo(b: BirdInfo) {
+    this.bird = b;
+    this.updatePathAndReplaces();
+  }
+  bird!: BirdInfo;
   @Input() isAnswer!: boolean;
   @Input() wings!: string;
   @Input() svgBird!: string;
@@ -28,7 +34,13 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   public isHappy: number = 0;
   public wingsUpActivate: boolean = false;
   private readonly ruteBirdAsset: string = "colorful-heights/svg/Pajaritos/";
+  public birdState:BirdState = "";
 
+
+
+  public bodyPathWithReplaces!: Replaces;
+  public wings1PathWithReplaces!: Replaces;
+  public wings2PathWithReplaces!: Replaces;
 
 //   type: 'lechuza',
 //   svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg",
@@ -44,7 +56,7 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   constructor(private elementRef: ElementRef, private preloaderService: PreloaderOxService, private challengeService: ColorfulHeightsChallengeService) {
     super();
     this.addSubscription(this.challengeService.clickBirdEvent, x => {
-      this.isHappy = 1;
+      this.birdState = "happy";
       interval(200).pipe(take(4)).subscribe(w => {
         this.wingAnimationMethod();
       });
@@ -64,16 +76,16 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
   }
 
 
-  birdSelectMethod(isDouble: boolean) {
-    if (isDouble) {
-      this.isDoubleCounter++;
-      if (this.isDoubleCounter === 2) {
-        this.isDoubleCounter = 0;
-        this.challengeService.clickBirdEvent.emit();
-      }
-    } else {
+  birdSelectMethod() {
+    // if (isDouble) {
+    //   this.isDoubleCounter++;
+    //   if (this.isDoubleCounter === 2) {
+    //     this.isDoubleCounter = 0;
+    //     this.challengeService.clickBirdEvent.emit();
+    //   }
+    // } else {
       this.challengeService.clickBirdEvent.emit();
-    }
+    
   }
 
 
@@ -92,18 +104,47 @@ export class BirdComponent extends SubscriberOxDirective implements OnInit {
     return "colorful-heights/svg/Pajaritos/" + bird + svgType + ".svg";
   }
 
-  // replacePathBirds(): void {
-  //   this.pathWithReplaces = [{
-  //     path: this.bird.svgBird,
-  //     replaces: new Map<string, string>()
-  //   }, { path: this.bird.svgBirdHappy, replaces: new Map<string, string>() },
-  //   { path: this.bird.svgWings, replaces: new Map<string, string>() },
-  //   { path: this.bird.svgWingsUp, replaces: new Map<string, string>() }]
-  //   const colorSelected = anyElement(this.colorsAvaiable);
-  //   this.pathWithReplaces.forEach(o =>
-  //     o.replaces.set("#406faf", colorSelected)
-  //   )
-  // }
+  colorsParseMethod(color: string): string {
+    let birdColorParsed!: string;
+    switch (color) {
+      case 'azul':
+        birdColorParsed = "#406faf";
+        break;
+      case 'rojo':
+        birdColorParsed = "#e81e25";
+        break;
+      case 'amarillo':
+        birdColorParsed = "#ffc807";
+        break;
+      case 'violeta':
+        birdColorParsed = "#8b2c90";
+        break;
+      default:
+        birdColorParsed = "#73be44";
+    }
+    return birdColorParsed;
+  }
+
+  private assignPathAndReplaceTo(state: string, replaces: Map<string, string>): Replaces {
+    return {
+      path: this.svgBirdGenerator(this.bird.type, state),
+      replaces
+    }
+  }
+
+  updatePathAndReplaces() {
+    const replaces = this.getReplaces();
+    this.bodyPathWithReplaces = this.assignPathAndReplaceTo(this.birdState, replaces);
+    this.wings1PathWithReplaces = this.assignPathAndReplaceTo('alas 1', replaces);
+    this.wings2PathWithReplaces = this.assignPathAndReplaceTo('alas 2', replaces);
+  }
+
+
+  getReplaces(): Map<string, string> {
+    const replaces = new Map<string, string>();
+    replaces.set("#406faf",this.colorsParseMethod(this.bird.color))
+    return replaces;
+  }
 
 
   // @HostListener('document:keydown', ['$event'])

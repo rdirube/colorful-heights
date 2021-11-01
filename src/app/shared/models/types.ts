@@ -8,11 +8,13 @@ export interface ColorfullHeightsExercise {
 export type BirdColor = 'yellow' | 'blue' | 'red' | 'violet' | 'green';
 export type BirdType = 'cóndor' | 'cotorra' | 'lechuza' | 'gordo' | 'pelado';
 export type TrapType = 'Equal shape' | 'Equal color' | 'different color and shape';
+export type BirdState = "" | "happy" | "sad"; 
 
 
 export interface BirdInfo {
   color: BirdColor;
   type: BirdType;
+  isDouble?:boolean
 }
 
 
@@ -46,7 +48,6 @@ export interface NivelationColorfulHeightInfo {
 export interface BirdsAux {
   type: BirdType,
   isDouble: boolean,
-  pathWithReplaces: Replaces[],
   currentColor?: BirdColor;
 }
 
@@ -55,3 +56,5 @@ export interface Replaces {
   path: string;
   replaces: Map<string, string>;
 }
+
+

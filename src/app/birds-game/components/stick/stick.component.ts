@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { BirdsAux , Replaces} from 'src/app/shared/models/types';
+import { BirdInfo, BirdsAux , Replaces} from 'src/app/shared/models/types';
 import { SubscriberOxDirective } from 'micro-lesson-components';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 import anime from 'animejs'
@@ -14,7 +14,7 @@ import { timer } from 'rxjs';
 export class StickComponent extends SubscriberOxDirective implements OnInit {
 
   @Input() stickSvg: string = '';
-  @Input() bird!: BirdsAux;
+  @Input() bird!: BirdInfo
   public isAnswer:boolean = true;
   @Input() wings!:string;
   @Input() svgBird!: string;  

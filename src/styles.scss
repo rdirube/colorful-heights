@@ -84,16 +84,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .bird-1-double {
   @extend .bird;
-  top: -10vh;
-  left: 8vh;
+  top: -11vh;
+  left: 6.5vh;
   transform: rotate(-15deg);
 
 }
 
 .bird-2 {
   @extend .bird;
-  top: -9vh;
-  left: 19vh;
+  top: -11vh;
+  left: 20vh;
   transform: rotate(15deg);
   opacity:0;
 }
@@ -108,7 +108,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .bird-2-hole {
   @extend .bird;
-  transform:translate(-0.7vh, 3.3vh) rotate(-15deg);
+  transform:translate(-3.6vh, 0.2vh) rotate(-15deg);
   opacity:0;
 }
 
@@ -121,13 +121,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .bird-double-hole {
   @extend .bird;
-  transform: translate(8.5vh,4.1vh) rotate( 
+  transform: translate(7.3vh,0.2vh) rotate( 
     15deg);
 }
 
 .bird-hole {
   @extend .bird;
-  transform: translate(1.7vh, 0.5vh);
+  overflow: visible;
+  transform: translate(1.7vh, -1.4vh);
 }
 
 .birdImage {

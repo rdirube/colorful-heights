@@ -47,65 +47,23 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   baseClass: string = 'base-show';
   public avaiableBirdsPerExercise: number[] = [];
   public nestsPerExercise: boolean[] = [];
-  // public allBirds: BirdsAux[] =
-  //   [{
-  //     type: 'cóndor',
-  //     svgBird: 'colorful-heights/svg/Pajaritos/cóndor.svg',
-  //     svgBirdHappy: 'colorful-heights/svg/Pajaritos/cóndor_happy.svg',
-  //     svgBirdSad: 'colorful-heights/svg/Pajaritos/cóndor_sad.svg',
-  //     svgWings: 'colorful-heights/svg/Pajaritos/cóndor_alas_1.svg',
-  //     svgWingsUp: 'colorful-heights/svg/Pajaritos/cóndor_alas_2.svg',
-  //     isDouble: false,
-  //     pathWithReplaces: undefined as any
-  //   },
-  //     {
-  //       type: 'cotorra',
-  //       svgBird: 'colorful-heights/svg/Pajaritos/cotorra.svg',
-  //       svgBirdHappy: 'colorful-heights/svg/Pajaritos/cotorra_happy.svg',
-  //       svgBirdSad: 'colorful-heights/svg/Pajaritos/cotorra_sad.svg',
-  //       svgWings: 'colorful-heights/svg/Pajaritos/cotorra_alas_1.svg',
-  //       svgWingsUp: 'colorful-heights/svg/Pajaritos/cotorra_alas_2.svg',
-  //       isDouble: false,
-  //       pathWithReplaces: undefined as any
-  //     },
-  //     {
-  //       type: 'gordo',
-  //       svgBird: 'colorful-heights/svg/Pajaritos/gordo.svg',
-  //       svgBirdHappy: 'colorful-heights/svg/Pajaritos/gordo_happy.svg',
-  //       svgBirdSad: 'colorful-heights/svg/Pajaritos/gordo_sad.svg',
-  //       svgWings: 'colorful-heights/svg/Pajaritos/gordo_alas_1.svg',
-  //       svgWingsUp: 'colorful-heights/svg/Pajaritos/gordo_alas_2.svg',
-  //       isDouble: false,
-  //       pathWithReplaces: undefined as any
-  //     },
-  //     {
-  //       type: 'lechuza',
-  //       svgBird: "colorful-heights/svg/Pajaritos/lechuza.svg",
-  //       svgBirdHappy: "colorful-heights/svg/Pajaritos/lechuza_happy.svg",
-  //       svgBirdSad: "colorful-heights/svg/Pajaritos/lechuza_sad.svg",
-  //       svgWings: 'colorful-heights/svg/Pajaritos/lechuza_alas_1.svg',
-  //       svgWingsUp: "colorful-heights/svg/Pajaritos/lechuza_alas_2.svg",
-  //       isDouble: false,
-  //       pathWithReplaces: undefined as any
-  //     },
-  //     {
-  //       type: 'pelado',
-  //       svgBird: "colorful-heights/svg/Pajaritos/pelado.svg",
-  //       svgBirdHappy: "colorful-heights/svg/Pajaritos/pelado_happy.svg",
-  //       svgBirdSad: "colorful-heights/svg/Pajaritos/pelado_sad.svg",
-  //       svgWings: 'colorful-heights/svg/Pajaritos/pelado_alas_1.svg',
-  //       svgWingsUp: 'colorful-heights/svg/Pajaritos/pelado_alas_2.svg',
-  //       isDouble: true,
-  //       pathWithReplaces: undefined as any
-  //     }];
-  public birdToSelect!: BirdsAux;
-  public svgBird: string[] = [];
-  public answerBirds: BirdsAux[] = [];
-  public duration!: number;
   public exerciseConfig!: NivelationColorfulHeightInfo;
-  public birdsQuantity: number = 4;
+  public answer4!:BirdInfo;
+  public answer5!:BirdInfo;
   public correctAnswerCounter: number = 0;
-  public exercise!: ColorfullHeightsExercise;
+  public exercise: ColorfullHeightsExercise =  {
+    targetBird: {
+      color:'blue',
+      type: 'lechuza'
+    },
+    optionsBirds: [
+      {color:'blue',
+      type: 'pelado'},{color:'red',
+      type: 'cóndor'},{color:'yellow',
+      type: 'cotorra'}
+    ]
+  }
+  
   public bonusValuesList: Bonus[] = [{numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true}, {
     numberOfCorrectAnswersForBonus: 10, timeEarnPerBonus: 40, isAble: true
   }, {
@@ -116,13 +74,17 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
   public correctCountertext = new OxTextInfo;
 
-  public answerModifidied4and5(birdIndex: number): BirdsAux {
-    const answerBird = this.birdsQuantity === 4 ? this.answerBirds[birdIndex] : this.answerBirds[birdIndex + 1];
+
+  public answerModifidied4and5(birdIndex: number): BirdInfo {
+    const answerBird = this.challengeService.exerciseConfig?.birdsQuantity === 4 ? this.exercise.optionsBirds[birdIndex] : this.exercise.optionsBirds[birdIndex + 1];
     return answerBird;
   }
 
-  public answerTest!: string[];
-  public colorsAvaiable: string[] = ["#406faf", "#e81e25", "#ffc807", "#8b2c90", "#73be44"];
+  public replaceBirds4and5(){
+    this.answer4 = this.answerModifidied4and5(2);
+    this.answer5 = this.answerModifidied4and5(3);
+  }
+
 
 
   constructor(private challengeService: ColorfulHeightsChallengeService,
@@ -133,7 +95,6 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     super();
 
     this.addSubscription(this.challengeService.startTime, x => {
-
       anime({
         targets: '.birdImage',
         translateY: ['100%', '0%'],
@@ -168,17 +129,25 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     this.addSubscription(this.challengeService.currentExercise.pipe(filter(x => x !== undefined)),
       (exercise: ExerciseOx<ColorfullHeightsExercise>) => {
         this.exercise = exercise.exerciseData;
-        console.log(exercise);
+        console.log(this.exercise);
+        console.log(this.exercise.optionsBirds);
         this.addMetric();
         this.hintService.usesPerChallenge = 1;
         this.hintService.hintAvailable.next(true);
+        this.replaceBirds4and5();
+
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
         } else {
           // this.playSequence();
         }
       });
+
+
   }
+
+ 
+
 
   private addMetric(): void {
     const myMetric: ExerciseData = {
@@ -219,7 +188,7 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.birdToSelectGenerator(4);
+
   }
 
 
@@ -227,37 +196,19 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   }
 
 
-  colorsParseMethod(color: string, i: number): string {
-    let birdColorParsed!: string;
-    switch (color) {
-      case 'azul':
-        birdColorParsed = "#406faf";
-        break;
-      case 'rojo':
-        birdColorParsed = "#e81e25";
-        break;
-      case 'amarillo':
-        birdColorParsed = "#ffc807";
-        break;
-      case 'violeta':
-        birdColorParsed = "#8b2c90";
-        break;
-      default:
-        birdColorParsed = "#73be44";
-    }
-    return birdColorParsed;
-  }
+  
+
+
 
   birdToSelectGenerator(birds: number): void {
-    this.answerBirds = [];
     // this.challengeService.answerBirdOptions.forEach((e, i) => {
     //   const foundBird = this.allBirds.find(z => z.type === this.challengeService.answerBirdOptions[i].type)!;
     //   this.answerBirds.push(foundBird);
     // });
-    this.replacePathBirds();
+    
+
     // this.birdToSelect = this.answerBirds.find(z => sameShape(z.type, this.challengeService.answerBird.type) &&
     //   sameParsedColor(z.currentColor!, this.colorsParseMethod(this.challengeService.answerBird.color, 0)))!;
-    console.log('I have just Updated the birds and they are', this.answerBirds);
     // console.log(this.answerBirds);
     // console.log(this.birdToSelect);
     // console.log(this.birdToSelect.currentColor);
@@ -277,7 +228,6 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         z.isAble = false;
       }
     });
-
   }
 
 

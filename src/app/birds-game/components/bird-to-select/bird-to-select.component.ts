@@ -5,7 +5,7 @@ import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorfu
 import { SubscriberOxDirective } from 'micro-lesson-components';
 import anime from 'animejs';
 import { timer } from 'rxjs';
-import { BirdsAux } from 'src/app/shared/models/types';
+import { BirdInfo, BirdsAux } from 'src/app/shared/models/types';
 
 
 @Component({
@@ -17,7 +17,7 @@ import { BirdsAux } from 'src/app/shared/models/types';
 
 export class BirdToSelectComponent extends SubscriberOxDirective implements OnInit {
   @Input() counterOriginalText!:number;
-  @Input('birdToSelect') birdToSelect!: BirdsAux;
+  @Input('birdToSelect') birdToSelect!: BirdInfo | undefined;
   public correctCountertext= new OxTextInfo;
   public isAnswer:boolean = false;
   @ViewChild('counterText') counterText!: TextComponent;
@@ -27,9 +27,7 @@ export class BirdToSelectComponent extends SubscriberOxDirective implements OnIn
   constructor(private challegeService:ColorfulHeightsChallengeService) {
      super()
     this.addSubscription(this.challegeService.startTime, x => {
-     timer(1000).subscribe(z => {
-       this.birdToSelectAnimationAppearence();
-     })
+       this.birdToSelectAnimationAppearence();     
     })
 
     this.addSubscription(this.challegeService.activateCounter, x => {
@@ -52,8 +50,9 @@ birdToSelectAnimationAppearence() {
   anime({
     targets:'.container-bird-to-select',
     duration:1000,
-    top:'25px',
+    top:'5vh',
     easing: 'easeOutElastic(1, .8)',
+    delay:1300
   })
 }
 

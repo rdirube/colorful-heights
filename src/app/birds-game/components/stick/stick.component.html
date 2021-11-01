@@ -4,9 +4,9 @@
                   <!-- <app-bird class='bird-1 myAbsolute' [bird]="bird" [isAnswer]="isAnswer"></app-bird>
                   <app-bird class='bird-2 myAbsolute'  [bird]="bird" [isAnswer]="isAnswer"></app-bird> -->
                   <app-bird
-           
-                  [ngClass]= "bird.isDouble ? 'bird-1-double myAbsolute':'bird-1 myAbsolute'" [bird]="bird" [isAnswer]="isAnswer" 
+                  [ngClass]= 'bird.isDouble ? "bird-1-double myAbsolute" : "bird-1 myAbsolute"' [birdInfo]="bird" [isAnswer]="isAnswer" 
                   ></app-bird>
-                  <app-bird [ngClass]= "bird.isDouble ? 'bird-2-double myAbsolute':'bird-2 myAbsolute'"  [bird]="bird" [isAnswer]="isAnswer" 
+                  <app-bird [ngClass]='bird.isDouble ? "bird-2-double myAbsolute" : "bird-2 myAbsolute"'   [birdInfo]="bird" [isAnswer]="isAnswer" 
                   ></app-bird>
   </div>
+  
