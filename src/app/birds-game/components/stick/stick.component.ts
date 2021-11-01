@@ -16,9 +16,7 @@ export class StickComponent extends SubscriberOxDirective implements OnInit {
   @Input() stickSvg: string = '';
   @Input() bird!: BirdInfo
   public isAnswer:boolean = true;
-  @Input() wings!:string;
-  @Input() svgBird!: string;  
-  @Input() pathWithReplaces!:Replaces;
+  @Input () hintInput!:boolean;
    
   constructor(private challengeService:ColorfulHeightsChallengeService) {
     super();

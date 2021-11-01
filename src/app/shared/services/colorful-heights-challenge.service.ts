@@ -27,7 +27,6 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
   public resources = new Map<string, string>();
   public exerciseConfig!: NivelationColorfulHeightInfo;
-  public exercise: ColorfullHeightsExercise | undefined;
   public arrayDoubleValues: number[] = [];
   public validColors: BirdColor[] = [];
   public validShapes: BirdType[] = [];
@@ -51,7 +50,6 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     super(gameActionsService, subLevelService, preloaderService);
     gameActionsService.restartGame.subscribe(z => {
       this.cachedExercises = [];
-      this.exercise = undefined;
       // this.setInitialExercise();
     });
     gameActionsService.showNextChallenge.subscribe(z => {
@@ -113,7 +111,8 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     return new ExerciseOx(
       {
         optionsBirds: this.doubleBirdFilterMethod(shuffle(answerBirdOptions)),
-        targetBird: answerBird
+        targetBird: answerBird,
+        hintBird: anyElement(answerBirdOptions.filter(z => z !== answerBird))
       } as ColorfullHeightsExercise, 1, {
       maxTimeToBonus: 0,
       freeTime: 0

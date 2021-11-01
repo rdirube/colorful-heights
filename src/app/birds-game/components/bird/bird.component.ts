@@ -9,17 +9,17 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import anime, {random} from 'animejs';
-import {ClickableOxDirective, LoadedSvgComponent} from 'micro-lesson-components';
-import {BirdsAux, BirdType, Replaces, BirdState, BirdInfo} from 'src/app/shared/models/types';
-import {anyElement, PreloaderOxService} from 'ox-core';
-import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
-import {SubscriberOxDirective} from 'micro-lesson-components';
-import {interval, Subscription, timer} from 'rxjs';
-import {take} from 'rxjs/operators';
-import {ColorfulHeightsAnswerService} from '../../../shared/services/colorful-heights-answer.service';
-import {FeedbackOxService, GameActionsService, SoundOxService} from 'micro-lesson-core';
-import {sameBird} from '../../../shared/models/functions';
+import anime, { random } from 'animejs';
+import { ClickableOxDirective, LoadedSvgComponent } from 'micro-lesson-components';
+import { BirdsAux, BirdType, Replaces, BirdState, BirdInfo } from 'src/app/shared/models/types';
+import { anyElement, PreloaderOxService } from 'ox-core';
+import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
+import { SubscriberOxDirective } from 'micro-lesson-components';
+import { interval, Subscription, timer } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { ColorfulHeightsAnswerService } from '../../../shared/services/colorful-heights-answer.service';
+import { FeedbackOxService, GameActionsService, SoundOxService } from 'micro-lesson-core';
+import { sameBird } from '../../../shared/models/functions';
 
 
 @Component({
@@ -41,7 +41,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.birdState = '';
     this.updatePathAndReplaces();
   }
-
+  @Input() hintInput!: boolean;
   bird!: BirdInfo;
   @Input() isOption!: boolean;
   public isDoubleCounter: number = 0;
@@ -56,12 +56,12 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   private wingAnimationSub: Subscription | undefined;
 
   constructor(private elementRef: ElementRef,
-              private gameActions: GameActionsService<any>,
-              private feedbackService: FeedbackOxService,
-              private soundOxService: SoundOxService,
-              private answerService: ColorfulHeightsAnswerService,
-              private preloaderService: PreloaderOxService,
-              private challengeService: ColorfulHeightsChallengeService) {
+    private gameActions: GameActionsService<any>,
+    private feedbackService: FeedbackOxService,
+    private soundOxService: SoundOxService,
+    private answerService: ColorfulHeightsAnswerService,
+    private preloaderService: PreloaderOxService,
+    private challengeService: ColorfulHeightsChallengeService) {
     super(soundOxService, preloaderService, elementRef);
     this.changeOpacityByInteractable = false;
     this.forceNoAnimations = true;
@@ -90,6 +90,12 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
         timer(600).subscribe(t => this.feedbackService.endFeedback.emit());
       }
     });
+
+    this.addSubscription(this.gameActions.showHint, z => {
+      if (sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.hintBird)) {
+        this.hintDissapear();
+      }
+    })
   }
 
 
@@ -186,6 +192,19 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     }
     this.wingAnimationSub = undefined;
   }
+
+
+  hintDissapear() {
+    anime({
+      targets: this.elementRef.nativeElement,
+      scale: 0,
+      duration: 200,
+      easing: 'easeInOutSine'
+    })
+  }
+
+
+
 }
 
 

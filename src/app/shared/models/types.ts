@@ -1,6 +1,7 @@
 import {PostMessageBridgeFactory} from "ngox-post-message";
 
 export interface ColorfullHeightsExercise {
+  hintBird: BirdInfo;
   targetBird: BirdInfo;
   optionsBirds: BirdInfo[];
 }

@@ -9,7 +9,7 @@ import {
 } from 'micro-lesson-core';
 import {BirdInfo, Bonus, ColorfullHeightsExercise} from 'src/app/shared/models/types';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
-import {ExerciseOx,} from 'ox-core';
+import {anyElement, ExerciseOx,} from 'ox-core';
 import {timer} from 'rxjs';
 import {ExerciseData, ScreenTypeOx} from 'ox-types';
 import {TextComponent} from 'typography-ox';
@@ -37,9 +37,10 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   showCountDown: boolean | undefined;
   treeClass: string = 'tree-hide no-transition';
   baseClass: string = 'base-show no-transition';
-  public answer4!: BirdInfo;
-  public answer5!: BirdInfo;
+  public modifiedAnswerForIndex3!: BirdInfo;
+  public modifiedAnswerForIndex4!: BirdInfo;
   public correctAnswerCounter: number = 0;
+  public hintList:boolean[]=[]
   public exercise: ColorfullHeightsExercise = {
     targetBird: {
       color: 'blue',
@@ -56,7 +57,10 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         color: 'yellow',
         type: 'cotorra'
       }
-    ]
+    ], hintBird: {
+      color: 'yellow',
+      type: 'cotorra'
+    }
   };
 
   public bonusValuesList: Bonus[] = [{numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true}, {
@@ -71,9 +75,9 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     return answerBird;
   }
 
-  public replaceBirds4and5() {
-    this.answer4 = this.answerModifidied4and5(2);
-    this.answer5 = this.answerModifidied4and5(3);
+  public replaceBirds3and4() {
+    this.modifiedAnswerForIndex3 = this.answerModifidied4and5(2);
+    this.modifiedAnswerForIndex4 = this.answerModifidied4and5(3);
   }
 
 
@@ -108,7 +112,9 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     // ));
     this.addSubscription(this.gameActions.showHint, z => {
       console.log('HERE YOU HAVE TO MAKE THE HINT ACTINO¶');
+    
     });
+      
     this.addSubscription(this.challengeService.currentExercise.pipe(filter(x => x !== undefined)),
       (exercise: ExerciseOx<ColorfullHeightsExercise>) => {
         console.log('OTRO EJERCICIOS  ');
@@ -118,7 +124,7 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         this.addMetric();
         this.hintService.usesPerChallenge = this.exercise.optionsBirds.length > 2 ? 1 : 0;
         this.hintService.checkHintAvailable();
-        this.replaceBirds4and5();
+        this.replaceBirds3and4();
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
         } else {
@@ -312,6 +318,8 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
   private birdsUp() {
     this.gameActions.showNextChallenge.emit();
+    this.hintList.forEach( z => z = false);
+    console.log(this.hintList)
     anime(
       {
         targets: '.birdImage',

@@ -17,7 +17,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
 
 
   public isTimeRunning: boolean = false;
-  public duration: number = 20000;
+  public duration: number = 200000;
   public currentMsSecond: number = 0;
   public animations: any[] = [];
   public isPaused: boolean = false;

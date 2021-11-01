@@ -13,8 +13,8 @@ export class HoleComponent implements OnInit {
   @Output() loadedBirdSvgParent = new EventEmitter();
   @Input() bird!: BirdInfo;
   public isAnswer: boolean = true;
-  @Input() svgBird!: string;
-  @Input() pathWithReplaces!:Replaces;
+  @Input () hintInput!:boolean;
+
 
 
 
