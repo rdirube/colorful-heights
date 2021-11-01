@@ -1,32 +1,23 @@
-import {
-  Component,
-  HostListener,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  ViewChildren,
-  QueryList,
-  ChangeDetectorRef
-} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import anime from 'animejs';
-import {ChallengeService, GameActionsService, HintService, MicroLessonMetricsService} from 'micro-lesson-core';
 import {
-  BirdInfo,
-  Bonus,
-  BirdsAux,
-  Replaces,
-  BirdType,
-  BirdColor,
-  NivelationColorfulHeightInfo, ColorfullHeightsExercise
-} from 'src/app/shared/models/types';
+  FeedbackOxService,
+  GameActionsService,
+  HintService,
+  MicroLessonMetricsService,
+  SoundOxService
+} from 'micro-lesson-core';
+import {BirdInfo, Bonus, ColorfullHeightsExercise} from 'src/app/shared/models/types';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
 import {ExerciseOx,} from 'ox-core';
 import {timer} from 'rxjs';
-import {ExerciseData, OxTextInfo} from 'ox-types';
+import {ExerciseData, ScreenTypeOx} from 'ox-types';
 import {TextComponent} from 'typography-ox';
 import {SubscriberOxDirective} from 'micro-lesson-components';
 import {StickComponent} from '../stick/stick.component';
 import {filter, take} from 'rxjs/operators';
+import {ClockComponent} from '../clock/clock.component';
+import {BirdToSelectComponent} from '../bird-to-select/bird-to-select.component';
 
 
 @Component({
@@ -38,115 +29,106 @@ import {filter, take} from 'rxjs/operators';
 
 export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
+  @ViewChild(BirdToSelectComponent) birdToSelectComponent!: BirdToSelectComponent;
+  @ViewChild(ClockComponent) clockComponent!: ClockComponent;
   @ViewChild('counterText') counterText!: TextComponent;
   @ViewChildren(StickComponent) stickComponent!: QueryList<StickComponent>;
-
 
   showCountDown: boolean | undefined;
   treeClass: string = 'tree-hide no-transition';
   baseClass: string = 'base-show no-transition';
-  public avaiableBirdsPerExercise: number[] = [];
-  public nestsPerExercise: boolean[] = [];
-  public exerciseConfig!: NivelationColorfulHeightInfo;
-  public answer4!:BirdInfo;
-  public answer5!:BirdInfo;
+  public answer4!: BirdInfo;
+  public answer5!: BirdInfo;
   public correctAnswerCounter: number = 0;
-  public exercise: ColorfullHeightsExercise =  {
+  public exercise: ColorfullHeightsExercise = {
     targetBird: {
-      color:'blue',
+      color: 'blue',
       type: 'lechuza'
     },
     optionsBirds: [
-      {color:'blue',
-      type: 'pelado'},{color:'red',
-      type: 'cóndor'},{color:'yellow',
-      type: 'cotorra'}
+      {
+        color: 'blue',
+        type: 'pelado'
+      }, {
+        color: 'red',
+        type: 'cóndor'
+      }, {
+        color: 'yellow',
+        type: 'cotorra'
+      }
     ]
-  }
-  
+  };
+
   public bonusValuesList: Bonus[] = [{numberOfCorrectAnswersForBonus: 5, timeEarnPerBonus: 20, isAble: true}, {
     numberOfCorrectAnswersForBonus: 10, timeEarnPerBonus: 40, isAble: true
   }, {
     numberOfCorrectAnswersForBonus: 15, timeEarnPerBonus: 60,
     isAble: true
   }];
-  public pathWithReplaces!: Replaces[];
-
-  public correctCountertext = new OxTextInfo;
-
 
   public answerModifidied4and5(birdIndex: number): BirdInfo {
     const answerBird = this.challengeService.exerciseConfig?.birdsQuantity === 4 ? this.exercise.optionsBirds[birdIndex] : this.exercise.optionsBirds[birdIndex + 1];
     return answerBird;
   }
 
-  public replaceBirds4and5(){
+  public replaceBirds4and5() {
     this.answer4 = this.answerModifidied4and5(2);
     this.answer5 = this.answerModifidied4and5(3);
   }
-
 
 
   constructor(private challengeService: ColorfulHeightsChallengeService,
               private metricsService: MicroLessonMetricsService<any>,
               private gameActions: GameActionsService<any>,
               private hintService: HintService,
+              private soundService: SoundOxService,
+              private feedbackService: FeedbackOxService,
               private cdr: ChangeDetectorRef) {
     super();
-
-    this.addSubscription(this.challengeService.startTime, x => {
-      anime({
-        targets: '.birdImage',
-        translateY: ['100%', '0%'],
-        duration: 1050,
-        easing: 'easeInOutExpo',
-        delay: 1300
-      });
-
-      anime({
-        targets: '.button-hint',
-        translateX: ['100%', '0%'],
-        duration: 700,
-        easing: 'easeInOutExpo',
-        delay: 1200
-      });
-      anime({
-        targets: '.button-menu',
-        translateX: ['-100%', '0%'],
-        duration: 700,
-        easing: 'easeInOutExpo',
-        delay: 1200
-
-      });
-
+    this.feedbackService.playFeedBackSounds = false;
+    this.addSubscription(this.feedbackService.endFeedback, z => {
+      this.birdsDown();
     });
-    this.addSubscription(this.challengeService.clickBirdEvent, (z => {
-        timer(1200).subscribe(v => {
-          this.birdAnimationGenerator();
-        });
+    this.addSubscription(this.gameActions.checkedAnswer, z => {
+      if (z.correctness === 'correct') {
+        this.soundService.playRightSound(ScreenTypeOx.Game);
+      } else {
+        this.soundService.playWrongSound(ScreenTypeOx.Game);
       }
-    ));
+    });
+    // this.addSubscription(this.challengeService.startTime, x => {
+    //   this.startAnimations();
+    // });
+    // Todo check this
+    // this.addSubscription(this.challengeService.clickBirdEvent, (z => {
+    //     timer(1200).subscribe(v => {
+    //       this.birdAnimationGenerator();
+    //     });
+    //   }
+    // ));
+    this.addSubscription(this.gameActions.showHint, z => {
+      console.log('HERE YOU HAVE TO MAKE THE HINT ACTINO¶');
+    });
     this.addSubscription(this.challengeService.currentExercise.pipe(filter(x => x !== undefined)),
       (exercise: ExerciseOx<ColorfullHeightsExercise>) => {
+        console.log('OTRO EJERCICIOS  ');
         this.exercise = exercise.exerciseData;
-        console.log(this.exercise);
-        console.log(this.exercise.optionsBirds);
+        // console.log(this.exercise);
+        // console.log(this.exercise.optionsBirds);
         this.addMetric();
-        this.hintService.usesPerChallenge = 1;
-        this.hintService.hintAvailable.next(true);
+        this.hintService.usesPerChallenge = this.exercise.optionsBirds.length > 2 ? 1 : 0;
+        this.hintService.checkHintAvailable();
         this.replaceBirds4and5();
-
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
         } else {
+          // this.animationBirdsTimeline()
           // this.playSequence();
         }
       });
 
 
   }
-
- 
 
 
   private addMetric(): void {
@@ -188,40 +170,10 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 
 
-  ngAfterViewInit(): void {
-  }
-
-
-  
-
-
-
-  birdToSelectGenerator(birds: number): void {
-    // this.challengeService.answerBirdOptions.forEach((e, i) => {
-    //   const foundBird = this.allBirds.find(z => z.type === this.challengeService.answerBirdOptions[i].type)!;
-    //   this.answerBirds.push(foundBird);
-    // });
-    
-
-    // this.birdToSelect = this.answerBirds.find(z => sameShape(z.type, this.challengeService.answerBird.type) &&
-    //   sameParsedColor(z.currentColor!, this.colorsParseMethod(this.challengeService.answerBird.color, 0)))!;
-    // console.log(this.answerBirds);
-    // console.log(this.birdToSelect);
-    // console.log(this.birdToSelect.currentColor);
-    // console.log(this.colorsParseMethod(this.challengeService.answerBird.color,0))
-    // const shuffledBirds = shuffle(this.allBirds);
-    // this.birdToSelect = shuffledBirds[0];
-    // this.answerBirds.push(this.birdToSelect);
-    // const allBirdsWithoutCorrect = shuffledBirds.filter(z => z !== this.birdToSelect);
-    // allBirdsWithoutCorrect.forEach((z, i) => z.isDouble = i % 4 === 0);
-    // for (let i = 0; i < birds - 1; i++) {
-    //   this.answerBirds.push(allBirdsWithoutCorrect[Math.floor(Math.random() * (this.allBirds.length - 1))])
-    // }
-    // this.answerBirds = shuffle(this.answerBirds);
+  birdToSelectGenerator(): void {
     this.bonusValuesList.forEach(z => {
       if (z.numberOfCorrectAnswersForBonus === this.correctAnswerCounter && z.isAble) {
         this.challengeService.bonusTime.emit(z.timeEarnPerBonus);
@@ -233,8 +185,8 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
 
   birdAnimationGenerator() {
     this.correctAnswerCounter++;
-    this.challengeService.activateCounter.emit(this.correctAnswerCounter);
-    this.animationBirdsTimeline();
+    // TODO check this is the answer coutner
+    // this.challengeService.activateCounter.emit(this.correctAnswerCounter);
   }
 
 
@@ -248,7 +200,7 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
       easing: 'linear',
       duration: 250,
       complete: (anim) => {
-        this.birdToSelectGenerator(4);
+
       }
     })
       .add({
@@ -256,22 +208,6 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
         duration: 950,
         easing: 'easeInOutElastic',
       });
-  }
-
-
-  replacePathBirds(): void {
-    // this.answerBirds.forEach((b, i) => {
-    //   b.pathWithReplaces = [{
-    //     path: b.svgBird,
-    //     replaces: new Map<string, string>()
-    //   }, {path: b.svgBirdHappy, replaces: new Map<string, string>()},
-    //     {path: b.svgWings, replaces: new Map<string, string>()},
-    //     {path: b.svgWingsUp, replaces: new Map<string, string>()}];
-    //   // b.pathWithReplaces.forEach(o =>
-    //   //   o.replaces.set("#406faf", this.colorsParseMethod(this.challengeService.answerBirdOptions[i].color, i))
-    //   // );
-    //   // this.answerBirds[i].currentColor = this.colorsParseMethod(this.challengeService.answerBirdOptions[i].color, i);
-    // });
   }
 
   startGame(): void {
@@ -289,7 +225,10 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   }
 
   private gameHasStarted() {
-    this.challengeService.startTime.emit();
+    this.birdToSelectComponent.birdToSelectAnimationAppearence();
+    this.clockComponent.startTime();
+    this.startAnimations();
+    // this.challengeService.startTime.emit();
   }
 
   // @HostListener('document:keydown', ['$event'])
@@ -328,5 +267,61 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
   //     this.cdr.detectChanges();
   //   }
   // }
+
+
+  private startAnimations() {
+    anime({
+      targets: '.birdImage',
+      translateY: ['100%', '0%'],
+      duration: 1050,
+      easing: 'easeInOutExpo',
+      delay: 1300
+    });
+
+    anime({
+      targets: '.button-hint',
+      translateX: ['100%', '0%'],
+      duration: 700,
+      easing: 'easeInOutExpo',
+      delay: 1200
+    });
+    anime({
+      targets: '.button-menu',
+      translateX: ['-100%', '0%'],
+      duration: 700,
+      easing: 'easeInOutExpo',
+      delay: 1200
+
+    });
+  }
+
+
+  private birdsDown() {
+    anime({
+      targets: '.birdImage',
+      translateY: '125%',
+      easing: 'linear',
+      duration: 250,
+      complete: (anim) => {
+        this.birdsUp();
+      }
+    });
+    console.log("hola");
+  }
+
+
+  private birdsUp() {
+    this.gameActions.showNextChallenge.emit();
+    anime(
+      {
+        targets: '.birdImage',
+        translateY: ['100%', '0%'],
+        duration: 1050,
+        easing: 'easeInOutExpo',
+      }
+    );
+  }
+
+
 }
 

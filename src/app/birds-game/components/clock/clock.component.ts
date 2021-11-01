@@ -1,9 +1,11 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
-import { timer } from 'rxjs';
+import {Component, OnInit, AfterViewInit, Input} from '@angular/core';
+import {timer} from 'rxjs';
 import anime from 'animejs';
-import { listenOrNotOperator } from '@ngneat/transloco/lib/shared';
-import { SubscriberOxDirective } from 'micro-lesson-components';
-import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
+import {listenOrNotOperator} from '@ngneat/transloco/lib/shared';
+import {SubscriberOxDirective} from 'micro-lesson-components';
+import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
+import {GameActionsService, MicroLessonCommunicationService} from 'micro-lesson-core';
+import {GameAskForScreenChangeBridge, ScreenTypeOx} from 'ox-types';
 
 
 @Component({
@@ -15,15 +17,15 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
 
 
   public isTimeRunning: boolean = false;
-  public duration:number = 20000;
+  public duration: number = 20000;
   public currentMsSecond: number = 0;
-  public animations: any[] = []
+  public animations: any[] = [];
   public isPaused: boolean = false;
   public progressAnimationPie!: number;
   public progressAnimationBorder!: number;
 
   public pieAnimation!: any;
-  public borderAnimation!:any;
+  public borderAnimation!: any;
 
 
   public playPauseMethod() {
@@ -42,72 +44,34 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
     this.pieAnimation.play();
     this.borderAnimation.play();
   }
-  
 
-  
-  public addTimeMethod(bonus:number) {
-    this.pauseTime()
-    this.goBackMethod(this.pieAnimation,bonus)
-    this.goBackMethod(this.borderAnimation,bonus)
+
+  public addTimeMethod(bonus: number) {
+    this.pauseTime();
+    this.goBackMethod(this.pieAnimation, bonus);
+    this.goBackMethod(this.borderAnimation, bonus);
     this.playTime();
   }
-  
 
 
-  public goBackMethod(animation:any, bonus:number) {
+  public goBackMethod(animation: any, bonus: number) {
     animation.seek(((this.progressAnimationBorder - bonus) * this.duration) / 100);
   }
 
 
+  constructor(private challengeService: ColorfulHeightsChallengeService,
+              private gameActions: GameActionsService<any>,
+              private microLessonCommunication: MicroLessonCommunicationService<any>) {
+    super();
 
+    // this.addSubscription(this.challengeService.startTime, x => {
+    // });
 
-  constructor(private challengeService:ColorfulHeightsChallengeService) {
-    super()
-    const animationPieTimeLine = anime.timeline({
-      targets: '.svg-inner-pie',
-      duration:this.duration+2500
-    })
-    const animationBorderPie = anime.timeline({
-      targets: '.timer',
-      duration:this.duration+2500
-    })       
-    this.addSubscription(this.challengeService.startTime, x=> {
-      this.pieAnimation =
-      animationPieTimeLine.add({
-        duration:2500,
-        backgroundColor: "rgb(119, 198, 110)"
-      })
-      .add({
-        duration: this.duration,
-        strokeDashoffset: [anime.setDashoffset, 0],
-        easing: 'linear',
-        update: (anim) => {
-          this.progressAnimationPie = Math.round(anim.progress)
-        },
-        keyframes: [{ fill: 'rgb(253, 218, 13)' , easing:'linear'}, { fill: 'rgb(250, 0, 0)' , easing:'linear'}],    
-      })
-
-      this.borderAnimation = animationBorderPie.add({
-        targets: '.timer',
-        duration:2500,
-        backgroundColor: "rgb(119, 198, 110)"
-      }).add({
-        targets: '.timer',
-        duration: this.duration,
-        update: (anim) => {
-          this.progressAnimationBorder = Math.round(anim.progress)
-        },
-        keyframes: [{ borderColor: 'rgb(253, 218, 13)' , easing:'linear'}, { borderColor: 'rgb(250, 0, 0)' , easing:'linear'}],  
-      })   
-    })
-
-    
 
     this.addSubscription(this.challengeService.bonusTime, x => {
       this.addTimeMethod(x);
-    })
+    });
   }
-
 
 
   ngOnInit(): void {
@@ -120,9 +84,53 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
   }
 
 
+  startTime() {
+    const animationPieTimeLine = anime.timeline({
+      targets: '.svg-inner-pie',
+      duration: this.duration + 2500
+    });
+    const animationBorderPie = anime.timeline({
+      targets: '.timer',
+      duration: this.duration + 2500
+    });
+    this.pieAnimation =
+      animationPieTimeLine.add({
+        duration: 2500,
+        backgroundColor: "rgb(119, 198, 110)"
+      })
+        .add({
+          duration: this.duration,
+          strokeDashoffset: [anime.setDashoffset, 0],
+          easing: 'linear',
+          update: (anim) => {
+            this.progressAnimationPie = Math.round(anim.progress);
+          },
+          keyframes: [{fill: 'rgb(253, 218, 13)', easing: 'linear'}, {fill: 'rgb(250, 0, 0)', easing: 'linear'}],
+        });
 
-
-
+    this.borderAnimation = animationBorderPie.add({
+      targets: '.timer',
+      duration: 2500,
+      backgroundColor: "rgb(119, 198, 110)"
+    }).add({
+      targets: '.timer',
+      duration: this.duration,
+      update: (anim) => {
+        this.progressAnimationBorder = Math.round(anim.progress);
+      },
+      keyframes: [{borderColor: 'rgb(253, 218, 13)', easing: 'linear'}, {
+        borderColor: 'rgb(250, 0, 0)',
+        easing: 'linear'
+      }],
+    });
+    animationPieTimeLine.finished.then(z => {
+      timer(1000).subscribe(aa => {
+        this.gameActions.microLessonCompleted.emit();
+        timer(500).subscribe(zzz =>
+          this.microLessonCommunication.sendMessageMLToManager(GameAskForScreenChangeBridge, ScreenTypeOx.GameComplete));
+      });
+    });
+  }
 }
 
 

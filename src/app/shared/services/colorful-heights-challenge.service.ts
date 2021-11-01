@@ -33,14 +33,14 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   public validShapes: BirdType[] = [];
 
   // TODO check all this events
-  stopPlayTimeEmitter = new EventEmitter<boolean>();
-  addTimeEmitter = new EventEmitter<void>();
-  startTime = new EventEmitter<void>();
+  // stopPlayTimeEmitter = new EventEmitter<boolean>();
+  // addTimeEmitter = new EventEmitter<void>();
+  // startTime = new EventEmitter<void>();
   bonusTime = new EventEmitter<number>();
-  activateCounter = new EventEmitter<number>();
-  doubleBirdSwitch = new EventEmitter<void>();
-  clickBirdEvent = new EventEmitter<void>();
-  restoreBirds = new EventEmitter<void>();
+  // activateCounter = new EventEmitter<number>();
+  // doubleBirdSwitch = new EventEmitter<void>();
+  // clickBirdEvent = new EventEmitter<void>();
+  // restoreBirds = new EventEmitter<void>();
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
     subLevelService: SubLevelService,
