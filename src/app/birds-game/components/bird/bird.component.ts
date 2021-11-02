@@ -198,7 +198,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     anime({
       targets: this.elementRef.nativeElement,
       scale: 0,
-      duration: 200,
+      duration: 150,
       easing: 'easeInOutSine'
     })
   }

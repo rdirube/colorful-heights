@@ -83,46 +83,56 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 .bird-1-double {
-  @extend .bird;
-  top: -11vh;
+  height: 19vh;
+  width: 19vh;
+  overflow: hidden;
+  top: -8.5vh;
   left: 6.5vh;
   transform: rotate(-15deg);
 
 }
 
 .bird-2 {
-  @extend .bird;
-  top: -11vh;
-  left: 20vh;
-  transform: rotate(15deg);
+  overflow: hidden;
+  height: 19vh;
+  width: 19vh;
+}
+
+.bird-2-normal {
+  
   opacity:0;
 }
 
 .bird-2-double {
     @extend .bird-2;  
     opacity: 1;
+    top: -8.5vh;
+    left: 20vh;
+    transform: rotate(15deg);
 }
 
 
 
 
 .bird-2-hole {
-  @extend .bird;
-  transform:translate(-3.6vh, 0.2vh) rotate(-15deg);
+  @extend .bird-2;
+  transform:translate(-3.6vh, 0.2vh);
   opacity:0;
 }
 
 .bird-2-double-hole {
   @extend .bird-2-hole;
-
+  height: 19vh;
+  width: 19vh;
   opacity: 1;
+  transform: translate(-1vh,2vh)rotate(-15deg);
 }
 
 
 .bird-double-hole {
-  @extend .bird;
-  transform: translate(7.3vh,0.2vh) rotate( 
-    15deg);
+  @extend .bird-2;
+  transform: translate(7.3vh,2vh) rotate(15deg);
+
 }
 
 .bird-hole {
