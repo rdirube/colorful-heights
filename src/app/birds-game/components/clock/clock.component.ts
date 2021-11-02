@@ -1,9 +1,9 @@
-import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {timer} from 'rxjs';
 import anime from 'animejs';
 import {SubscriberOxDirective} from 'micro-lesson-components';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
-import {GameActionsService, MicroLessonCommunicationService} from 'micro-lesson-core';
+import {GameActionsService, MicroLessonCommunicationService, SoundOxService} from 'micro-lesson-core';
 import {GameAskForScreenChangeBridge, ScreenTypeOx} from 'ox-types';
 import {TextComponent} from 'typography-ox';
 
@@ -27,6 +27,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
 
   constructor(private challengeService: ColorfulHeightsChallengeService,
               private gameActions: GameActionsService<any>,
+              private soundService: SoundOxService,
               private microLessonCommunication: MicroLessonCommunicationService<any>) {
     super();
   }
@@ -74,6 +75,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
   textAnimation(secondsAdded: number) {
     this.bonusText = '+' + secondsAdded;
     anime.remove(this.bonusTextComponent.textElement.nativeElement);
+    this.soundService.playSoundEffect('colorful-heights/sounds/bonus.mp3', ScreenTypeOx.Game);
     anime({
       targets: this.bonusTextComponent.textElement.nativeElement,
       duration: 1300,

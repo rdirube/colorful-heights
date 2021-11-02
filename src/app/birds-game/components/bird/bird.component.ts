@@ -62,6 +62,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.forceNoAnimations = true;
     this.toStyle = this.htmlSpanElement;
     this.realClick = this.birdSelectMethod;
+    this.clickSoundPath = 'colorful-heights/sounds/bird_sound_colorful_heights.mp3';
     this.addSubscription(this.challengeService.currentExercise, z => this.interactable = true);
     this.addSubscription(this.gameActions.checkedAnswer, z => {
       this.interactable = false;

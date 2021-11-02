@@ -3,7 +3,8 @@ import {CommunicationOxService, I18nService, PreloaderOxService, ResourceOx, Res
 import {ResourceFinalStateOxBridge, ScreenTypeOx} from 'ox-types';
 import {
   AppInfoOxService,
-  BaseMicroLessonApp, ChallengeService,
+  BaseMicroLessonApp,
+  ChallengeService,
   EndGameService,
   GameActionsService,
   InWumboxService,
@@ -66,11 +67,12 @@ export class AppComponent extends BaseMicroLessonApp {
       'lechuza.svg', 'lechuza_alas_1.svg', 'lechuza_alas_2.svg', 'lechuza_happy.svg', 'lechuza_sad.svg', 'pelado.svg', 'pelado_alas_1.svg', 'pelado_alas_2.svg', 'pelado_happy.svg', 'pelado_sad.svg'];
     // const animationSvgs = [];
     // animationSvgs.forEach(z => svg.push('gnome-game/svg/Fondos/sorpresas/' + z));
-
+    const sounds = ['bonus.mp3', 'bird_sound_colorful_heights.mp3'].map( z => 'colorful-heights/sounds/' + z);
     return svgFondo.map(x => new ResourceOx('colorful-heights/svg/Elementos fondo/' + x, ResourceType.Svg,
       [ScreenTypeOx.Game], true))
       .concat(svgBirds.map(x => new ResourceOx('colorful-heights/svg/Pajaritos/' + x, ResourceType.Svg,
         [ScreenTypeOx.Game], true)))
+      .concat(getResourceArrayFromUrlList(sounds, ResourceType.Audio, true))
       .concat(getResourceArrayFromUrlList(['mini-lessons/executive-functions/svg/buttons/Home.svg',
         'mini-lessons/executive-functions/svg/buttons/Hint.svg',
         'mini-lessons/executive-functions/svg/buttons/saltear.svg'], ResourceType.Svg, false))

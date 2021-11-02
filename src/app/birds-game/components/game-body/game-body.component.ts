@@ -52,6 +52,8 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     this.modifiedAnswerForIndex4 = this.answerModifidied4and5(3);
   }
 
+  private itWasCorrect!: boolean;
+
   constructor(private challengeService: ColorfulHeightsChallengeService,
               private metricsService: MicroLessonMetricsService<any>,
               private gameActions: GameActionsService<any>,
@@ -62,14 +64,16 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
     this.feedbackService.playFeedBackSounds = false;
     this.addSubscription(this.feedbackService.endFeedback, z => {
       this.birdsDown();
-      this.checkBonus();
-    });
-    this.addSubscription(this.gameActions.checkedAnswer, z => {
-      if (z.correctness === 'correct') {
-        this.correctAnswerCounter++;
+      if (this.itWasCorrect) {
         this.soundService.playRightSound(ScreenTypeOx.Game);
       } else {
         this.soundService.playWrongSound(ScreenTypeOx.Game);
+      }
+    });
+    this.addSubscription(this.gameActions.checkedAnswer, z => {
+      this.itWasCorrect = z.correctness === 'correct';
+      if (this.itWasCorrect) {
+        this.correctAnswerCounter++;
       }
     });
 
@@ -190,6 +194,7 @@ export class GameBodyComponent extends SubscriberOxDirective implements OnInit {
       easing: 'linear',
       duration: 250,
       complete: () => {
+        this.checkBonus();
         this.birdsUp();
       }
     });
