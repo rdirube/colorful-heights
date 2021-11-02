@@ -1,11 +1,11 @@
-import {Component, OnInit, AfterViewInit, Input} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import {timer} from 'rxjs';
 import anime from 'animejs';
-import {listenOrNotOperator} from '@ngneat/transloco/lib/shared';
 import {SubscriberOxDirective} from 'micro-lesson-components';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
 import {GameActionsService, MicroLessonCommunicationService} from 'micro-lesson-core';
 import {GameAskForScreenChangeBridge, ScreenTypeOx} from 'ox-types';
+import {TextComponent} from 'typography-ox';
 
 
 @Component({
@@ -13,111 +13,50 @@ import {GameAskForScreenChangeBridge, ScreenTypeOx} from 'ox-types';
   templateUrl: './clock.component.html',
   styleUrls: ['./clock.component.scss']
 })
-export class ClockComponent extends SubscriberOxDirective implements OnInit, AfterViewInit {
+export class ClockComponent extends SubscriberOxDirective implements OnInit {
 
 
-  public isTimeRunning: boolean = false;
-  public duration: number = 200000;
-  public currentMsSecond: number = 0;
-  public animations: any[] = [];
+  @ViewChild(TextComponent) bonusTextComponent!: TextComponent;
+
+  public duration!: number;
   public isPaused: boolean = false;
-  public progressAnimationPie!: number;
-  public progressAnimationBorder!: number;
 
   public pieAnimation!: any;
   public borderAnimation!: any;
-
-
-  public playPauseMethod() {
-    this.isPaused ? this.playTime() : this.pauseTime();
-  }
-
-
-  public pauseTime() {
-    this.isPaused = true;
-    this.pieAnimation.pause();
-    this.borderAnimation.pause();
-  }
-
-  public playTime() {
-    this.isPaused = false;
-    this.pieAnimation.play();
-    this.borderAnimation.play();
-  }
-
-
-  public addTimeMethod(bonus: number) {
-    this.pauseTime();
-    this.goBackMethod(this.pieAnimation, bonus);
-    this.goBackMethod(this.borderAnimation, bonus);
-    this.playTime();
-  }
-
-
-  public goBackMethod(animation: any, bonus: number) {
-    animation.seek(((this.progressAnimationBorder - bonus) * this.duration) / 100);
-  }
-
+  bonusText!: string;
 
   constructor(private challengeService: ColorfulHeightsChallengeService,
               private gameActions: GameActionsService<any>,
               private microLessonCommunication: MicroLessonCommunicationService<any>) {
     super();
-
-    // this.addSubscription(this.challengeService.startTime, x => {
-    // });
-
-
-    this.addSubscription(this.challengeService.bonusTime, x => {
-      this.addTimeMethod(x);
-    });
   }
-
 
   ngOnInit(): void {
-    this.isTimeRunning = true;
-
   }
 
-
-  ngAfterViewInit(): void {
-  }
-
-
-  startTime() {
+  startTime(time: number) {
+    this.duration = time;
     const animationPieTimeLine = anime.timeline({
       targets: '.svg-inner-pie',
-      duration: this.duration + 2500
     });
     const animationBorderPie = anime.timeline({
       targets: '.timer',
-      duration: this.duration + 2500
     });
-    this.pieAnimation =
-      animationPieTimeLine.add({
-        duration: 2500,
-        backgroundColor: "rgb(119, 198, 110)"
-      })
-        .add({
-          duration: this.duration,
-          strokeDashoffset: [anime.setDashoffset, 0],
-          easing: 'linear',
-          update: (anim) => {
-            this.progressAnimationPie = Math.round(anim.progress);
-          },
-          keyframes: [{fill: 'rgb(253, 218, 13)', easing: 'linear'}, {fill: 'rgb(250, 0, 0)', easing: 'linear'}],
-        });
-
+    this.pieAnimation = animationPieTimeLine.add({
+      backgroundColor: "rgb(119, 198, 110)"
+    })
+      .add({
+        duration: this.duration,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        easing: 'linear',
+        keyframes: [{fill: 'rgb(253, 218, 13)', easing: 'linear'}, {fill: 'rgb(250, 0, 0)', easing: 'linear'}],
+      });
     this.borderAnimation = animationBorderPie.add({
       targets: '.timer',
-      duration: 2500,
       backgroundColor: "rgb(119, 198, 110)"
     }).add({
       targets: '.timer',
       duration: this.duration,
-      update: (anim) => {
-        this.progressAnimationBorder = Math.round(anim.progress);
-      },
       keyframes: [{borderColor: 'rgb(253, 218, 13)', easing: 'linear'}, {
         borderColor: 'rgb(250, 0, 0)',
         easing: 'linear'
@@ -131,6 +70,54 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit, Aft
       });
     });
   }
+
+  textAnimation(secondsAdded: number) {
+    this.bonusText = '+' + secondsAdded;
+    anime.remove(this.bonusTextComponent.textElement.nativeElement);
+    anime({
+      targets: this.bonusTextComponent.textElement.nativeElement,
+      duration: 1300,
+      scale: [0.25, 1],
+      translateX: ['-120%', '0'],
+      translateY: ['-130%', '0'],
+      endDelay: 1000,
+      complete: () => {
+        anime({
+          targets: this.bonusTextComponent.textElement.nativeElement,
+          scale: 0,
+          duration: 0
+        });
+      }
+    });
+  }
+
+  public pauseTime() {
+    this.isPaused = true;
+    this.pieAnimation.pause();
+    this.borderAnimation.pause();
+  }
+
+  public playTime() {
+    this.isPaused = false;
+    this.pieAnimation.play();
+    this.borderAnimation.play();
+  }
+
+  // Bonus is in seconds
+  public addTimeMethod(secondsToAdd: number) {
+    const timeToAdd = secondsToAdd * 1000;
+    const percentageToAdd = (timeToAdd * 100) / this.duration;
+    this.pauseTime();
+    this.textAnimation(secondsToAdd);
+    this.goBackMethod(this.pieAnimation, percentageToAdd);
+    this.goBackMethod(this.borderAnimation, percentageToAdd);
+    this.playTime();
+  }
+
+  public goBackMethod(animation: any, bonus: number) {
+    animation.seek(((Math.round(this.borderAnimation.progress) - bonus) * this.duration) / 100);
+  }
+
 }
 
 

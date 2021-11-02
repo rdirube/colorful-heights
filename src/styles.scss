@@ -116,6 +116,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .bird-2-hole {
   @extend .bird-2;
+  width: 0;
   transform:translate(-3.6vh, 0.2vh);
   opacity:0;
 }
@@ -135,18 +136,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 }
 
-.bird-hole {
-  @extend .bird;
-  overflow: visible;
-  transform: translate(1.7vh, -1.4vh);
-}
 
 .birdImage {
   transform:translateY(100%);
   position: absolute;
 
 }
-
+.bird-hole {
+  @extend .bird;
+  overflow: visible;
+  height: 95%;
+  transform: translate(-0.75vh, -0.4vh);
+}
 .hintOn {
   opacity: 0;
 }

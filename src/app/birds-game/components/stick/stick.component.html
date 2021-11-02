@@ -1,13 +1,11 @@
   <div style="position: relative;" fxLayoutAlign="space-between center" fxLayout="row" >
   <mlc-loaded-svg class="stick myAbsolute"
                   style="z-index: 1" [path]="stickSvg"></mlc-loaded-svg>
-                  <!-- <app-bird class='bird-1 myAbsolute' [bird]="bird" [isOption]="isOption"></app-bird>
-                  <app-bird class='bird-2 myAbsolute'  [bird]="bird" [isOption]="isOption"></app-bird> -->
                   <app-bird
                     [ngClass]= 'bird.isDouble ? "bird-1-double myAbsolute" : "bird-1 myAbsolute"' [birdInfo]="bird"
-                    [isOption]="isAnswer" [hintInput]="hintInput" 
+                    [isOption]="isAnswer"
                   ></app-bird>
                   <app-bird [ngClass]='bird.isDouble ? "bird-2-double myAbsolute" : "bird-2-normal myAbsolute"' [birdInfo]="bird"
-                            [isOption]="isAnswer" [hintInput]="hintInput" 
+                            [isOption]="isAnswer"
                   ></app-bird>
   </div>

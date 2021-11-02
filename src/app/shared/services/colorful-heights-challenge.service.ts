@@ -27,19 +27,8 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
   public resources = new Map<string, string>();
   public exerciseConfig!: NivelationColorfulHeightInfo;
-  public arrayDoubleValues: number[] = [];
   public validColors: BirdColor[] = [];
   public validShapes: BirdType[] = [];
-
-  // TODO check all this events
-  // stopPlayTimeEmitter = new EventEmitter<boolean>();
-  // addTimeEmitter = new EventEmitter<void>();
-  // startTime = new EventEmitter<void>();
-  bonusTime = new EventEmitter<number>();
-  // activateCounter = new EventEmitter<number>();
-  // doubleBirdSwitch = new EventEmitter<void>();
-  // clickBirdEvent = new EventEmitter<void>();
-  // restoreBirds = new EventEmitter<void>();
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
     subLevelService: SubLevelService,
@@ -67,11 +56,6 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
   protected equalsExerciseData(exerciseData: ColorfullHeightsExercise, exerciseDoneData: ColorfullHeightsExercise): boolean {
     return equalArrays(exerciseData.optionsBirds, exerciseDoneData.optionsBirds);
-  }
-
-  private getSublevelConfig(sublevel: number): any {
-    return this.appInfo.getMicroLessonLevelConfiguration(this.levelService.currentLevel.value)
-      .sublevelConfigurations[sublevel - 1].properties as any;
   }
 
   getAnswerBird(): BirdInfo {
@@ -125,15 +109,6 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
       case 'created-config':
         this.currentSubLevelPregeneratedExercisesNeeded = 1;
         this.exerciseConfig = this.appInfo.microLessonInfo.creatorInfo?.microLessonGameInfo.properties;
-        // this.exerciseIndex = 0;
-        this.feedback.endFeedback.subscribe(x => {
-          // this.exerciseIndex++;
-        });
-        // this.exerciseConfig.birdsToUse.forEach(b => {
-        //   this.exerciseConfig.colorsToUse.forEach(c => {
-        //     this.allBirds.push(new BirdInfo(c, b));
-        //   })
-        // })
         this.setInitialExercise();
         break;
       default:
@@ -167,6 +142,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   private setInitialExercise(): void {
     this.validColors = this.exerciseConfig.colorsToUse;
     this.validShapes = this.exerciseConfig.birdsToUse;
+    this.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach( z => z.isAble = true);
   }
 
   //////////////////////////////////////////////////////////////////////////////////

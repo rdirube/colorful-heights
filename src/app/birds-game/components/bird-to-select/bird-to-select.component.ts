@@ -1,13 +1,8 @@
 import {Component, OnInit, Input, ViewChild} from '@angular/core';
-import {OxTextInfo, PartCorrectness, UserAnswer} from 'ox-types';
-import {Typographies, TextComponent} from 'typography-ox';
-import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
+import { TextComponent} from 'typography-ox';
 import {SubscriberOxDirective} from 'micro-lesson-components';
 import anime from 'animejs';
-import {timer} from 'rxjs';
-import {BirdInfo, BirdsAux} from 'src/app/shared/models/types';
-import {GameActionsService} from 'micro-lesson-core';
-
+import {BirdInfo} from 'src/app/shared/models/types';
 
 @Component({
   selector: 'app-bird-to-select',
@@ -15,43 +10,21 @@ import {GameActionsService} from 'micro-lesson-core';
   styleUrls: ['./bird-to-select.component.scss']
 })
 
-
 export class BirdToSelectComponent extends SubscriberOxDirective implements OnInit {
+
   @Input() counterOriginalText!: number;
   @Input('birdToSelect') birdToSelect!: BirdInfo | undefined;
-  public correctCountertext = new OxTextInfo;
   public isAnswer: boolean = false;
   @ViewChild('counterText') counterText!: TextComponent;
 
-
-  constructor(private challegeService: ColorfulHeightsChallengeService,
-              private gameActions: GameActionsService<any>) {
+  constructor() {
     super();
-    // this.addSubscription(this.challegeService.startTime, x => {
-    //   this.birdToSelectAnimationAppearence();
-    // });
-
-    this.addSubscription(this.gameActions.checkedAnswer, (x: {
-      correctness: PartCorrectness;
-      answer: UserAnswer;
-    }) => {
-      if (x.correctness === 'correct') {
-        this.correctCountertext.originalText = ++this.counterOriginalText + "";
-        this.counterText.setOriginalText = this.correctCountertext.originalText;
-      }
-    });
   }
-
 
   ngOnInit(): void {
-    this.correctCountertext.color = "white";
-    this.correctCountertext.fontSize = "4vh";
-    this.correctCountertext.originalText = this.counterOriginalText + "";
-    this.correctCountertext.font = "dinnMedium";
   }
 
-
-  birdToSelectAnimationAppearence() {
+  birdToSelectAnimationAppearence(): void {
     anime({
       targets: '.container-bird-to-select',
       duration: 1000,
@@ -60,6 +33,5 @@ export class BirdToSelectComponent extends SubscriberOxDirective implements OnIn
       delay: 1300
     });
   }
-
 
 }

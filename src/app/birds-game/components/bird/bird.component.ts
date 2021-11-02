@@ -1,25 +1,20 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
   Input,
   OnDestroy,
   OnInit,
-  Output,
   ViewChild
 } from '@angular/core';
-import anime, { random } from 'animejs';
-import { ClickableOxDirective, LoadedSvgComponent } from 'micro-lesson-components';
-import { BirdsAux, BirdType, Replaces, BirdState, BirdInfo } from 'src/app/shared/models/types';
-import { anyElement, PreloaderOxService } from 'ox-core';
-import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
-import { SubscriberOxDirective } from 'micro-lesson-components';
-import { interval, Subscription, timer } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { ColorfulHeightsAnswerService } from '../../../shared/services/colorful-heights-answer.service';
-import { FeedbackOxService, GameActionsService, SoundOxService } from 'micro-lesson-core';
-import { sameBird } from '../../../shared/models/functions';
+import {ClickableOxDirective} from 'micro-lesson-components';
+import {BirdType, Replaces, BirdState, BirdInfo, BirdColor} from 'src/app/shared/models/types';
+import { PreloaderOxService} from 'ox-core';
+import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
+import {interval, Subscription, timer} from 'rxjs';
+import {take} from 'rxjs/operators';
+import {ColorfulHeightsAnswerService} from '../../../shared/services/colorful-heights-answer.service';
+import {FeedbackOxService, GameActionsService, SoundOxService} from 'micro-lesson-core';
+import {sameBird} from '../../../shared/models/functions';
 
 
 @Component({
@@ -31,20 +26,20 @@ import { sameBird } from '../../../shared/models/functions';
 
 export class BirdComponent extends ClickableOxDirective implements OnInit, OnDestroy {
 
-
   @ViewChild('htmlSpanElement') htmlSpanElement!: ElementRef;
-  @ViewChild(LoadedSvgComponent) loadedSvgComponent!: LoadedSvgComponent;
 
   @Input('birdInfo')
   set setBirdInfo(b: BirdInfo) {
     this.bird = b;
     this.birdState = '';
+    this.isDoubleCounter = 0;
     this.updatePathAndReplaces();
+    this.elementRef.nativeElement.style.transform = '';
   }
-  @Input() hintInput!: boolean;
+
   bird!: BirdInfo;
   @Input() isOption!: boolean;
-  public isDoubleCounter: number = 0;
+  private isDoubleCounter: number = 0;
 
   public wingsUpActivate: boolean = false;
   public birdState: BirdState = "";
@@ -56,12 +51,12 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   private wingAnimationSub: Subscription | undefined;
 
   constructor(private elementRef: ElementRef,
-    private gameActions: GameActionsService<any>,
-    private feedbackService: FeedbackOxService,
-    private soundOxService: SoundOxService,
-    private answerService: ColorfulHeightsAnswerService,
-    private preloaderService: PreloaderOxService,
-    private challengeService: ColorfulHeightsChallengeService) {
+              private gameActions: GameActionsService<any>,
+              private feedbackService: FeedbackOxService,
+              private soundOxService: SoundOxService,
+              private answerService: ColorfulHeightsAnswerService,
+              private preloaderService: PreloaderOxService,
+              private challengeService: ColorfulHeightsChallengeService) {
     super(soundOxService, preloaderService, elementRef);
     this.changeOpacityByInteractable = false;
     this.forceNoAnimations = true;
@@ -70,7 +65,6 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.addSubscription(this.challengeService.currentExercise, z => this.interactable = true);
     this.addSubscription(this.gameActions.checkedAnswer, z => {
       this.interactable = false;
-      console.log('check answer rin bird');
       const isCorrect = z.correctness === 'correct';
       this.destroyWingAnimationSub();
       const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
@@ -78,7 +72,6 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
         this.birdState = isCorrect ? "happy" : 'sad';
         this.setBodyByState(this.getReplaces());
       }
-
       if (isCorrect) {
         this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
           this.wingAnimationMethod();
@@ -86,20 +79,22 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
             this.feedbackService.endFeedback.emit();
           }
         });
-      } else {
+      } else if (!this.isOption) {
         timer(600).subscribe(t => this.feedbackService.endFeedback.emit());
       }
     });
 
     this.addSubscription(this.gameActions.showHint, z => {
       if (sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.hintBird)) {
-        this.hintDissapear();
+        this.hintAnimation();
       }
-    })
+    });
   }
 
 
   ngOnInit(): void {
+    this.playSound = this.isOption;
+    this.cantClickSound = false;
   }
 
 
@@ -107,8 +102,8 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.wingsUpActivate = !this.wingsUpActivate;
   }
 
-
   birdSelectMethod() {
+    if (!this.isOption) return;
     if (this.bird.isDouble && this.isDoubleCounter < 1) {
       this.isDoubleCounter++;
     } else {
@@ -121,38 +116,23 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
 
   svgBirdGenerator(bird: BirdType, extraWords: string[] = []): string {
     return "colorful-heights/svg/Pajaritos/" + [bird as string].concat(extraWords.filter(z => z.length > 0)).join('_') + ".svg";
-    // return "colorful-heights/svg/Pajaritos/" + [bird as string].concat(extraWords).join('_') + ".svg";
   }
 
-  // svgBirdGenerator(bird: BirdType, svgType: string = ''): string {
-  //   if (svgType === "happy" || svgType === "sad") {
-  //     svgType = "_" + svgType;
-  //   } else if (svgType.length > 0) {
-  //     const wingTypeSolution = svgType.split(" ");
-  //     svgType = "_" + wingTypeSolution[0] + "_" + wingTypeSolution[1];
-  //   }
-  //   return "colorful-heights/svg/Pajaritos/" + bird + svgType + ".svg";
-  // }
-
-  colorsParseMethod(color: string): string {
-    let birdColorParsed!: string;
+  colorsParseMethod(color: BirdColor): string {
     switch (color) {
       case 'azul':
-        birdColorParsed = "#406faf";
-        break;
+        return "#406faf";
       case 'rojo':
-        birdColorParsed = "#e81e25";
-        break;
+        return "#e81e25";
       case 'amarillo':
-        birdColorParsed = "#ffc807";
-        break;
+        return "#ffc807";
       case 'violeta':
-        birdColorParsed = "#8b2c90";
-        break;
+        return "#8b2c90";
+      case 'verde':
+        return "#73be44";
       default:
-        birdColorParsed = "#73be44";
+        throw new Error('A color not listed came in ' + color);
     }
-    return birdColorParsed;
   }
 
   private assignPathAndReplaceTo(state: string[], replaces: Map<string, string>): Replaces {
@@ -194,16 +174,10 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   }
 
 
-  hintDissapear() {
-    anime({
-      targets: this.elementRef.nativeElement,
-      scale: 0,
-      duration: 150,
-      easing: 'easeInOutSine'
-    })
+  hintAnimation() {
+    this.elementRef.nativeElement.style.transition = 'transform 0.15s';
+    this.elementRef.nativeElement.style.transform = 'scale(0)';
   }
-
-
 
 }
 

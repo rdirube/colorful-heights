@@ -1,7 +1,11 @@
 <div class="container-bird-to-select" fxLayoutAlign="center center">
   <div class="correct-counter myAbsolute" fxLayoutAlign="start center">
     <div style="width: 6vh;" fxLayoutAlign="center center">
-      <ox-text #counterText class="counter" [oxTextInfo]="correctCountertext"></ox-text>
+      <ox-text #counterText class="counter"
+               [originalText]="'' + counterOriginalText"
+               color="white"
+               font="dinnMedium"
+               fontSize="4vh"></ox-text>
     </div>
   </div>
     <mlc-loaded-svg class="myAbsolute" fxFlex="grow" fxFlexFill

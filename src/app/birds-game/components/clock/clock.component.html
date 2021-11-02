@@ -4,23 +4,27 @@
 </div> -->
 <div class="clock-container" fxLayoutAlign="center center" style="position: relative">
 
-    <mlc-loaded-svg style="position: absolute" class="clock"
-        path="colorful-heights/svg/Elementos fondo/reloj/Reloj1.svg">
-    </mlc-loaded-svg>
-    
-    <div class="timer" style="position: relative">
+  <mlc-loaded-svg style="position: absolute" class="clock"
+                  path="colorful-heights/svg/Elementos fondo/reloj/Reloj1.svg">
+  </mlc-loaded-svg>
 
-        <svg  class="svg-pie" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255 255">
-            <path  class="svg-path"
-                   d="M127.5 252.932c-69.162 0-125.432-56.27-125.432-125.432S58.338 2.068 127.5 2.068s125.432 56.27 125.432 125.434c0 69.162-56.27 125.43-125.432 125.43zm0-214.299c-49 0-88.865 39.867-88.865 88.867S78.5 216.367 127.5 216.367c49.002 0 88.867-39.865 88.867-88.865 0-49.004-39.865-88.869-88.867-88.869z"></path>
-            <circle class = "svg-inner-pie" cx="127" cy="127" r="136" stroke-width="272"
-                    stroke-dasharray="2000" fill="rgb(119, 198, 110)"></circle>
-          </svg>
-       
+  <div class="timer" style="position: relative">
 
-    </div>
-    <!-- <div class="blue" (click)="pauseAction()"></div> -->
-   
+    <svg class="svg-pie" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255 255">
+      <path class="svg-path"
+            d="M127.5 252.932c-69.162 0-125.432-56.27-125.432-125.432S58.338 2.068 127.5 2.068s125.432 56.27 125.432 125.434c0 69.162-56.27 125.43-125.432 125.43zm0-214.299c-49 0-88.865 39.867-88.865 88.867S78.5 216.367 127.5 216.367c49.002 0 88.867-39.865 88.867-88.865 0-49.004-39.865-88.869-88.867-88.869z"></path>
+      <circle class="svg-inner-pie" cx="127" cy="127" r="136" stroke-width="272"
+              stroke-dasharray="2000" fill="rgb(119, 198, 110)"></circle>
+    </svg>
+
+
+  </div>
+  <ox-text
+    [originalText]="bonusText"
+    class="bonus-text"
+    color="rgb(119, 198, 110)"
+    font="dinnMedium"
+    fontSize="4.5vh"></ox-text>
 </div>
 <!-- 
 <div class="button restart" fxLayoutAlign="center center"
