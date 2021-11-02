@@ -1,0 +1,9 @@
+<div fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
+  <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="nestGroupInfo[0]"
+             [bird]="nestGroupInfo[0]" >
+  </app-stick>
+  <app-hole class="hole"  *ngIf="nestGroupInfo[1]" [bird]="nestGroupInfo[1]"
+  ></app-hole>
+  <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="nestGroupInfo[2]" [bird]="nestGroupInfo[2]" >
+  </app-stick>
+</div>

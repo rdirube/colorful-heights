@@ -151,3 +151,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .hintOn {
   opacity: 0;
 }
+
+.just-show-me {
+  box-shadow: 0 0 0 100vw rgb(0 0 0 / 29%)
+}
+.tree-show {
+  top: -10vh;
+}
+.tree-hide {
+  top: -96vh;
+}
+.base-hide {
+  top: 86vh;
+}
+.base-show {
+  top: 0vh;
+}
+.no-transition {
+  transition: 0s !important;
+}
+
+.clock {
+  width: 19vh;
+  height: 19vh;
+}
+

@@ -56,4 +56,8 @@ export interface Replaces {
   replaces: Map<string, string>;
 }
 
+export interface NestGroupInfo {
+  birdsPerNest: BirdInfo[];
+}
+
 
