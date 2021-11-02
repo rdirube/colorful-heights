@@ -1,3 +1,5 @@
+import {Observable, Subscription} from 'rxjs';
+
 export interface ColorfullHeightsExercise {
   hintBird: BirdInfo;
   targetBird: BirdInfo;
@@ -56,8 +58,10 @@ export interface Replaces {
   replaces: Map<string, string>;
 }
 
-export interface NestGroupInfo {
-  birdsPerNest: BirdInfo[];
+export interface TutorialStep {
+  text: string;
+  actions: () => void,
+  completedSub: Observable<any>;
 }
 
 

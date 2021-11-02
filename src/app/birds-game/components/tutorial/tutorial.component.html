@@ -49,7 +49,12 @@
     </div>
   </div>
   <div class="text-tutorial-container" style="position: absolute" fxLayoutAlign="center center" >
-    <ox-text #tutorialText [oxTextInfo]="gnomesTutorialText" class="tutorial-text" style="position: absolute">
+    <ox-text #tutorialText
+             [originalText]="text"
+             font="dinnMedium"
+             color="white"
+             fontSize="4vh"
+             class="tutorial-text" style="position: absolute">
     </ox-text>
   </div>
 </div>
