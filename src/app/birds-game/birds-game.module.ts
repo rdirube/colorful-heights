@@ -10,6 +10,7 @@ import { BirdToSelectComponent } from './components/bird-to-select/bird-to-selec
 import { TutorialComponent } from './components/tutorial/tutorial.component';
 import { BaseBodyDirective } from './directives/base-body.directive';
 import { NestGroupComponent } from './components/nest-group/nest-group.component';
+import { NestDirective } from './directives/nest.directive';
 
 
 
@@ -24,6 +25,7 @@ import { NestGroupComponent } from './components/nest-group/nest-group.component
     TutorialComponent,
     BaseBodyDirective,
     NestGroupComponent,
+    NestDirective,
   ],
   exports: [
     GameBodyComponent,

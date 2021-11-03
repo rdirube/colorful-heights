@@ -5,6 +5,9 @@ import {OxTextInfo} from 'ox-types';
 import {Observable, Subscription, timer} from 'rxjs';
 import anime from 'animejs';
 import {TextComponent} from 'typography-ox';
+import {NestGroupComponent} from '../nest-group/nest-group.component';
+import {BirdComponent} from '../bird/bird.component';
+import {TutorialService} from '../../services/tutorial.service';
 
 @Component({
   selector: 'app-tutorial',
@@ -14,6 +17,7 @@ import {TextComponent} from 'typography-ox';
 export class TutorialComponent extends BaseBodyDirective implements OnInit, AfterViewInit {
 
   @ViewChild('tutorialText') tutorialText!: TextComponent;
+  @ViewChild(NestGroupComponent) nestGroup!: NestGroupComponent;
 
   targetBird: BirdInfo = {
     color: 'azul',
@@ -37,28 +41,44 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   text: string = '';
   private steps: TutorialStep[] = [];
 
-  constructor() {
+  constructor(private tutorialService: TutorialService) {
     super();
-    this.addStep('Bienvenidos', () => {
-      console.log('this is an action method');
-    }, timer(4000));
-    this.addStep('Bienvenidos 222222222', () => {
-      console.log('this is an action method');
-    }, timer(4000));
-
-
+    this.addSubscription(this.tutorialService.birdsInstanciated, z => {
+      console.log(this.tutorialService.birdComponents);
+      this.tutorialService.birdComponents.forEach( bird => {
+        bird.realClick = () => this.tutorialBirdClick(bird);
+      })
+    });
+    this.tutorialService.usingTutorial = true;
+    this.setSteps();
     this.replaceBirds3and4(this.optionsBirds);
     this.treeClass = 'tree-show no-transition';
     this.baseClass = 'base-hide no-transition';
   }
 
   ngOnInit(): void {
+    // this.bird.realClick = () => this.tutorialBirdClick(this.bird);
   }
+
+  tutorialBirdClick(bird: BirdComponent) {
+    if (!bird.isOption) return;
+    if (bird.bird.isDouble && bird.isDoubleCounter < 1) {
+      bird.isDoubleCounter++;
+    } else {
+      console.log('I have been clicked', bird);
+      // TRY CLICK
+      // bird.answerService.setBirdAsAnswer(bird.bird, bird.svgBirdGenerator(bird.bird.type, []));
+      // bird.gameActions.actionToAnswer.emit();
+      // bird.answerService.onTryAnswer();
+    }
+  }
+
 
   ngAfterViewInit(): void {
     this.birdsUpAnimation(400);
     this.birdToSelectComponent.birdToSelectAnimationAppearence();
     this.executeCurrentStep();
+    console.log(this.nestGroup);
   }
 
   private addStep(text: string, actions: () => void, completedSub: Observable<any>) {
@@ -97,4 +117,15 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     });
   }
 
+  private setSteps() {
+    this.addStep('Bienvenidos', () => {
+      console.log('this is an action method');
+    }, timer(4000));
+    this.addStep('Bienvenidos 222222222', () => {
+      console.log('this is an action method');
+    }, timer(4000));
+    this.addStep('3333333 222222222', () => {
+      console.log('this is an action method');
+    }, timer(4000));
+  }
 }

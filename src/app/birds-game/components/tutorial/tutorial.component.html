@@ -18,26 +18,7 @@
             <div insideRatio style="width: 100%; height: 100%; z-index: 1;" fxLayoutAlign="center center"
                  fxLayout="column" fxLayoutGap="7vh">
               <app-clock></app-clock>
-              <div fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
-                <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="optionsBirds"
-                           [bird]="optionsBirds[0]" >
-                </app-stick>
-                <app-hole class="hole"  *ngIf="optionsBirds[2] || optionsBirds[4]" [bird]="optionsBirds[2]"
-                ></app-hole>
-                <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="optionsBirds[1]"
-                           [bird]="optionsBirds[1]" >
-                </app-stick>
-              </div>
-              <div  fxLayoutAlign="center center" style="position: relative;width: 100%; height: 25vh;">
-                <app-stick class="stick-left" stickSvg="rama_izquierda.svg" *ngIf="optionsBirds[3]"
-                           [bird]="modifiedAnswerForIndex3" >
-                </app-stick>
-                <app-hole class="hole" *ngIf="optionsBirds[5]" [bird]="optionsBirds[5]"
-                ></app-hole>
-                <app-stick class="stick-right" stickSvg="rama_derecha.svg" *ngIf="optionsBirds[3]"
-                           [bird]="modifiedAnswerForIndex4" >
-                </app-stick>
-              </div>
+              <app-nest-group class="full-width" [nestGroupInfo]="optionsBirds"></app-nest-group>
             </div>
           </mlc-ratio-container>
         </div>

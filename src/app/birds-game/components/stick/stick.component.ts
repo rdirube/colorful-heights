@@ -4,6 +4,8 @@ import { SubscriberOxDirective } from 'micro-lesson-components';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 import anime from 'animejs'
 import { timer } from 'rxjs';
+import {NestDirective} from '../../directives/nest.directive';
+import {TutorialService} from '../../services/tutorial.service';
 
 
 @Component({
@@ -11,22 +13,15 @@ import { timer } from 'rxjs';
   templateUrl: './stick.component.html',
   styleUrls: ['./stick.component.scss']
 })
-export class StickComponent extends SubscriberOxDirective implements OnInit {
+export class StickComponent extends NestDirective implements OnInit {
 
   @Input() stickSvg: string = '';
-  @Input() bird!: BirdInfo
-  public isAnswer:boolean = true;
-  @Input () hintInput!:boolean;
-   
-  constructor(private challengeService:ColorfulHeightsChallengeService) {
-    super();
-  }
 
+  constructor(tutorialService: TutorialService) {
+    super(tutorialService);
+  }
 
   ngOnInit(): void {
     this.stickSvg = 'colorful-heights/svg/Elementos fondo/' + this.stickSvg;
   }
-
-
-
 }

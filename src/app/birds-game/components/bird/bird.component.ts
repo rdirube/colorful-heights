@@ -38,8 +38,8 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   }
 
   bird!: BirdInfo;
-  @Input() isOption!: boolean;
-  private isDoubleCounter: number = 0;
+  @Input() isOption: boolean = true;
+  public isDoubleCounter: number = 0;
 
   public wingsUpActivate: boolean = false;
   public birdState: BirdState = "";
@@ -84,7 +84,6 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
         timer(600).subscribe(t => this.feedbackService.endFeedback.emit());
       }
     });
-
     this.addSubscription(this.gameActions.showHint, z => {
       if (sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.hintBird)) {
         this.hintAnimation();

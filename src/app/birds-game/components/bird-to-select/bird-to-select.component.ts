@@ -14,7 +14,6 @@ export class BirdToSelectComponent extends SubscriberOxDirective implements OnIn
 
   @Input() counterOriginalText!: number;
   @Input('birdToSelect') birdToSelect!: BirdInfo | undefined;
-  public isAnswer: boolean = false;
   @ViewChild('counterText') counterText!: TextComponent;
 
   constructor() {

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BirdInfo, BirdsAux , Replaces} from 'src/app/shared/models/types';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
+import {NestDirective} from '../../directives/nest.directive';
+import {TutorialService} from '../../services/tutorial.service';
 
 
 @Component({
@@ -8,31 +10,13 @@ import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorfu
   templateUrl: './hole.component.html',
   styleUrls: ['./hole.component.scss']
 })
-export class HoleComponent implements OnInit {
+export class HoleComponent extends NestDirective implements OnInit {
 
-  @Output() loadedBirdSvgParent = new EventEmitter();
-  @Input() bird!: BirdInfo;
-  public isAnswer: boolean = true;
-  @Input () hintInput!:boolean;
-
-
-
-
-  constructor(private challengeService:ColorfulHeightsChallengeService) {
+  constructor(tutorialService: TutorialService) {
+    super(tutorialService);
   }
-
 
   ngOnInit(): void {
   }
-
-
-  loadedBirdSvgParentMethod() {
-    this.loadedBirdSvgParent.emit()
-  }
-
-
-
-  
- 
 
 }

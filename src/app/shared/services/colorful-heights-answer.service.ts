@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AnswerService, GameActionsService, MicroLessonMetricsService} from 'micro-lesson-core';
 import {ColorfulHeightsChallengeService} from './colorful-heights-challenge.service';
 import {ExpandedShowable, PartCorrectness, UserAnswer} from 'ox-types';
@@ -39,7 +39,8 @@ export class ColorfulHeightsAnswerService extends AnswerService {
   }
 
   setBirdAsAnswer(bird: BirdInfo, birdImage: string) {
-    const isCorrectAnswer = sameBird(this.challenge.currentExercise.value.exerciseData.targetBird, bird);
+    const isCorrectAnswer = this.challenge.currentExercise.value !== undefined &&
+      sameBird(this.challenge.currentExercise.value.exerciseData.targetBird, bird);
     this.currentAnswer = {
       parts: [
         {
@@ -56,6 +57,6 @@ export class ColorfulHeightsAnswerService extends AnswerService {
           ]
         }
       ]
-    }
+    };
   }
 }
