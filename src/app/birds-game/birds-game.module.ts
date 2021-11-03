@@ -11,6 +11,7 @@ import { TutorialComponent } from './components/tutorial/tutorial.component';
 import { BaseBodyDirective } from './directives/base-body.directive';
 import { NestGroupComponent } from './components/nest-group/nest-group.component';
 import { NestDirective } from './directives/nest.directive';
+import { MagnifierGlassComponent } from './components/magnifier-glass/magnifier-glass.component';
 
 
 
@@ -26,6 +27,7 @@ import { NestDirective } from './directives/nest.directive';
     BaseBodyDirective,
     NestGroupComponent,
     NestDirective,
+    MagnifierGlassComponent,
   ],
   exports: [
     GameBodyComponent,

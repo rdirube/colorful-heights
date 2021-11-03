@@ -68,7 +68,8 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
       this.interactable = false;
       const isCorrect = z.correctness === 'correct';
       this.destroyWingAnimationSub();
-      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect, this.endFedbackEmitter)
+      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect,
+        () => this.feedbackService.endFeedback.emit())
       // const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
       // if (isAnswerBird) {
       //   this.birdState = isCorrect ? "happy" : 'sad';
@@ -164,31 +165,24 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
 
 
   public birdOptionCorrectCheck(birdOption: BirdInfo, birdCorrectAnswer: BirdInfo, 
-    isCorrect: boolean, endFedbackEmitter: ()=> void = () => {}) {
+    isCorrect: boolean, whenFinishes?: () => void) {
     const isAnswerBird = sameBird(birdOption, birdCorrectAnswer);
     if (isAnswerBird) {
       this.birdState = isCorrect ? "happy" : 'sad';
       this.setBodyByState(this.getReplaces());
     }
     if(isCorrect) {
+      this.destroyWingAnimationSub();
       this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
       this.wingsUpActivate = !this.wingsUpActivate;
-        if (w === 3 && !this.isOption) {
-          endFedbackEmitter();
+        if (w === 3 && !this.isOption && whenFinishes) {
+          whenFinishes();
         }
       });
-    } else if (!this.isOption) {
-      timer(600).subscribe(t => endFedbackEmitter());
+    } else if (!this.isOption && whenFinishes) {
+      timer(600).subscribe(t => whenFinishes());
     }
   };
-
-  
-
-  public endFedbackEmitter() {
-    this.feedbackService.endFeedback.emit();
-  }
-
-
 
   ngOnDestroy(): void {
     super.ngOnDestroy();

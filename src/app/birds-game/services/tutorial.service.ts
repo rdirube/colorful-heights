@@ -24,7 +24,7 @@ export class TutorialService {
     }
   }
 
-  generateTutorialExercise(birdQuantity: number, doubleQuantity: number): ColorfullHeightsExercise {
+  generateTutorialExercise(birdQuantity: number, doubleQuantity: number, forceCorrectDouble: boolean = false): ColorfullHeightsExercise {
     const birds: BirdInfo[] = [this.challengeService.getRandomBird()];
     let check = 0;
     do {
@@ -32,12 +32,12 @@ export class TutorialService {
       if (!birds.some(z => sameBird(z, birdToAdd))) {
         birds.push(birdToAdd);
       }
-    } while (birds.length < birdQuantity && check++ < 1000);
-    this.checkValidation(check);
+      this.checkValidation(++check);
+    } while (birds.length < birdQuantity);
     birds.forEach((bird, index) => bird.isDouble = index < doubleQuantity);
     return {
       optionsBirds: shuffle(birds),
-      targetBird: anyElement(birds),
+      targetBird: forceCorrectDouble ? anyElement(birds) : birds.find( z => z.isDouble) as BirdInfo,
       hintBird: undefined as any
     };
   }
@@ -46,5 +46,9 @@ export class TutorialService {
     if (check > 999) {
       throw new Error('There was an error generating tutorial exercise.');
     }
+  }
+
+  setClicksOn(b: boolean) {
+    this.birdComponents.forEach( z => z.interactable = b);
   }
 }

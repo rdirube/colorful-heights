@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {BaseBodyDirective} from '../../directives/base-body.directive';
-import {BirdInfo, TutorialStep} from '../../../shared/models/types';
-import {OxTextInfo} from 'ox-types';
+import {BirdInfo, MagnifierPosition, TutorialStep} from '../../../shared/models/types';
 import {Observable, Subscription, timer} from 'rxjs';
 import anime from 'animejs';
 import {TextComponent} from 'typography-ox';
@@ -16,31 +15,29 @@ import {TutorialService} from '../../services/tutorial.service';
 })
 export class TutorialComponent extends BaseBodyDirective implements OnInit, AfterViewInit {
 
+
+
+
   @ViewChild('tutorialText') tutorialText!: TextComponent;
   @ViewChild(NestGroupComponent) nestGroup!: NestGroupComponent;
 
-  targetBird: BirdInfo = {
-    color: 'azul',
-    type: 'lechuza'
-  };
-  optionsBirds: BirdInfo[] = [
-    {
-      color: 'azul',
-      type: 'pelado'
-    }, {
-      color: 'rojo',
-      type: 'cóndor'
-    }, {
-      color: 'amarillo',
-      type: 'cotorra'
-    },
-  ];
+  exercise = this.tutorialService.generateTutorialExercise(3, 1);
 
   private currentStep = 0;
 
   text: string = '';
   private steps: TutorialStep[] = [];
   private clicksOn: boolean = false;
+
+  public readonly magnifierPositions: MagnifierPosition[] = [{
+    width: '30vh',
+    height: '29vh',
+    top: '43vh',
+    left: '10vh',
+    borderRadius: '20%',
+    flexPosition: 'center center'
+  }];
+  private magnifierIndex: number = 0;
 
   constructor(private tutorialService: TutorialService) {
     super();
@@ -52,12 +49,22 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     });
     this.tutorialService.usingTutorial = true;
     this.setSteps();
-    this.replaceBirds3and4(this.optionsBirds);
+    // this.replaceBirds3and4(this.optionsBirds AS ANY);
     this.treeClass = 'tree-show no-transition';
     this.baseClass = 'base-hide no-transition';
   }
 
   ngOnInit(): void {
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  asdasdasdsad($event: KeyboardEvent): void {
+    if ($event.key === 'n') {
+      this.magnifierIndex++;
+      if (this.magnifierIndex >= this.magnifierPositions.length ) {
+        this.magnifierIndex = 0;
+      }
+    }
   }
 
   tutorialBirdClick(bird: BirdComponent) {
@@ -120,22 +127,20 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
   private setSteps() {
     this.addStep('Bienvenidos', () => {
-      console.log('this is an action method');
     }, timer(4000));
     this.addStep('Bienvenidos 222222222', () => {
-      console.log('this is an action method');
+      this.setNewExercise();
     }, timer(4000));
     this.addStep('3333333 222222222', () => {
       console.log('this is an action method');
     }, timer(4000));
   }
 
+
   private setNewExercise() {
     this.birdsDownAnimation(() => {
-      const exercise = this.tutorialService.generateTutorialExercise(3, 1);
-      this.targetBird = exercise.targetBird;
-      this.optionsBirds = exercise.optionsBirds;
-      this.birdsUpAnimation(0, () => this.clicksOn = true);
+      this.exercise = this.tutorialService.generateTutorialExercise(3, 1);
+      this.birdsUpAnimation(0, () => this.tutorialService.setClicksOn(true));
     });
   }
 }

@@ -30,6 +30,9 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   public validColors: BirdColor[] = [];
   public validShapes: BirdType[] = [];
 
+  private readonly allColors = ['amarillo', 'azul', 'rojo', 'violeta', 'verde'];
+  private readonly allTypes = ['cóndor', 'cotorra', 'lechuza', 'gordo', 'pelado'];
+
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
     subLevelService: SubLevelService,
     private preloaderService: PreloaderOxService,
@@ -59,7 +62,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   }
 
   getRandomBird(): BirdInfo {
-    return { color: anyElement(this.exerciseConfig.colorsToUse), type: anyElement(this.exerciseConfig.birdsToUse) };
+    return { color: anyElement(this.exerciseConfig?.colorsToUse || this.allColors), type: anyElement(this.exerciseConfig?.birdsToUse || this.allTypes) };
   }
 
   private generateTrap(t: TrapType, currentOptions: BirdInfo[], answer: BirdInfo): BirdInfo {

@@ -12,8 +12,8 @@ export class BaseBodyDirective extends SubscriberOxDirective {
   @ViewChild(ClockComponent) clockComponent!: ClockComponent;
   @ViewChild(BirdToSelectComponent) birdToSelectComponent!: BirdToSelectComponent;
 
-  public modifiedAnswerForIndex3!: BirdInfo;
-  public modifiedAnswerForIndex4!: BirdInfo;
+  // public modifiedAnswerForIndex3!: BirdInfo;
+  // public modifiedAnswerForIndex4!: BirdInfo;
 
   treeClass: string = 'tree-hide no-transition';
   baseClass: string = 'base-show no-transition';
@@ -27,16 +27,16 @@ export class BaseBodyDirective extends SubscriberOxDirective {
   }
 
 
-  protected answerModifidied4and5(birdIndex: number, birdQuantity: number, optionBirds: BirdInfo[] = []): BirdInfo {
-    const answerBird = birdQuantity === 4 ? optionBirds[birdIndex]
-      : optionBirds[birdIndex + 1];
-    return answerBird as BirdInfo;
-  }
+  // protected answerModifidied4and5(birdIndex: number, birdQuantity: number, optionBirds: BirdInfo[] = []): BirdInfo {
+  //   const answerBird = birdQuantity === 4 ? optionBirds[birdIndex]
+  //     : optionBirds[birdIndex + 1];
+  //   return answerBird as BirdInfo;
+  // }
 
-  protected replaceBirds3and4(optionBirds: BirdInfo[] = []) {
-    this.modifiedAnswerForIndex3 = this.answerModifidied4and5(2, optionBirds.length, optionBirds);
-    this.modifiedAnswerForIndex4 = this.answerModifidied4and5(3, optionBirds.length, optionBirds);
-  }
+  // protected replaceBirds3and4(optionBirds: BirdInfo[] = []) {
+  //   this.modifiedAnswerForIndex3 = this.answerModifidied4and5(2, optionBirds.length, optionBirds);
+  //   this.modifiedAnswerForIndex4 = this.answerModifidied4and5(3, optionBirds.length, optionBirds);
+  // }
 
   protected birdsUpAnimation(delay: number = 0, complete: () => void = () => {}): void {
     anime({

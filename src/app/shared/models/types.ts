@@ -65,3 +65,10 @@ export interface TutorialStep {
 }
 
 
+export interface MagnifierPosition {
+  width: string,
+  height: string,
+  transform: string,
+  borderRadius: string,
+  flexPosition: string
+}
