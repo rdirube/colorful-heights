@@ -38,18 +38,20 @@ export class BaseBodyDirective extends SubscriberOxDirective {
     this.modifiedAnswerForIndex4 = this.answerModifidied4and5(3, optionBirds.length, optionBirds);
   }
 
-  protected birdsUpAnimation(delay: number = 0): void {
+  protected birdsUpAnimation(delay: number = 0, complete: () => void = () => {}): void {
     anime({
         targets: '.birdImage',
         translateY: ['100%', '0%'],
         duration: 1050,
         easing: 'easeInOutExpo',
-        delay
+        delay,
+        complete
       }
     );
   }
 
-  protected birdsDownAnimation(complete = () => {}): void {
+  protected birdsDownAnimation(complete = () => {
+  }): void {
     anime({
       targets: '.birdImage',
       translateY: '125%',
