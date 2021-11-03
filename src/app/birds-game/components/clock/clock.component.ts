@@ -37,6 +37,14 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
 
   startTime(time: number) {
     this.duration = time;
+    if (this.pieAnimation) {
+      this.pauseTime();
+      this.pieAnimation.seek(0);
+      this.borderAnimation.seek(0);
+      this.playTime();
+      return;
+    }
+
     const animationPieTimeLine = anime.timeline({
       targets: '.svg-inner-pie',
     });

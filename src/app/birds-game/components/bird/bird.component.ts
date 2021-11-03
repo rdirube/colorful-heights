@@ -67,7 +67,8 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.addSubscription(this.gameActions.checkedAnswer, z => {
       this.interactable = false;
       const isCorrect = z.correctness === 'correct';
-      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect, this.endFedbackEmitter)
+      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect,
+        this.endFedbackEmitter.bind(this))
       // const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
       // if (isAnswerBird) {
       //   this.birdState = isCorrect ? "happy" : 'sad';
@@ -163,7 +164,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
 
 
   public birdOptionCorrectCheck(birdOption: BirdInfo, birdCorrectAnswer: BirdInfo, 
-    isCorrect: boolean, endFedbackEmitter: ()=> void = () => {}) {
+    isCorrect: boolean, endFeedbackEmitter: ()=> void = () => {}) {
     this.destroyWingAnimationSub();
     const isAnswerBird = sameBird(birdOption, birdCorrectAnswer);
     if (isAnswerBird)  {
@@ -174,11 +175,11 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
       this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
       this.wingsUpActivate = !this.wingsUpActivate;
         if (w === 3 && !this.isOption) {
-          endFedbackEmitter();
+          endFeedbackEmitter();
         }
       });
     } else if (!this.isOption) {
-      timer(600).subscribe(t => endFedbackEmitter());
+      timer(600).subscribe(t => endFeedbackEmitter());
     }
   };
 
