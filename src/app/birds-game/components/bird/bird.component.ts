@@ -6,15 +6,15 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {ClickableOxDirective} from 'micro-lesson-components';
-import {BirdType, Replaces, BirdState, BirdInfo, BirdColor} from 'src/app/shared/models/types';
-import { PreloaderOxService} from 'ox-core';
-import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
-import {interval, Subscription, timer} from 'rxjs';
-import {take} from 'rxjs/operators';
-import {ColorfulHeightsAnswerService} from '../../../shared/services/colorful-heights-answer.service';
-import {FeedbackOxService, GameActionsService, SoundOxService} from 'micro-lesson-core';
-import {sameBird} from '../../../shared/models/functions';
+import { ClickableOxDirective } from 'micro-lesson-components';
+import { BirdType, Replaces, BirdState, BirdInfo, BirdColor } from 'src/app/shared/models/types';
+import { PreloaderOxService } from 'ox-core';
+import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
+import { interval, Subscription, timer } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { ColorfulHeightsAnswerService } from '../../../shared/services/colorful-heights-answer.service';
+import { FeedbackOxService, GameActionsService, SoundOxService } from 'micro-lesson-core';
+import { sameBird } from '../../../shared/models/functions';
 
 
 @Component({
@@ -51,12 +51,12 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   private wingAnimationSub: Subscription | undefined;
 
   constructor(private elementRef: ElementRef,
-              private gameActions: GameActionsService<any>,
-              private feedbackService: FeedbackOxService,
-              private soundOxService: SoundOxService,
-              private answerService: ColorfulHeightsAnswerService,
-              private preloaderService: PreloaderOxService,
-              private challengeService: ColorfulHeightsChallengeService) {
+    private gameActions: GameActionsService<any>,
+    private feedbackService: FeedbackOxService,
+    private soundOxService: SoundOxService,
+    private answerService: ColorfulHeightsAnswerService,
+    private preloaderService: PreloaderOxService,
+    private challengeService: ColorfulHeightsChallengeService) {
     super(soundOxService, preloaderService, elementRef);
     this.changeOpacityByInteractable = false;
     this.forceNoAnimations = true;
@@ -68,21 +68,22 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
       this.interactable = false;
       const isCorrect = z.correctness === 'correct';
       this.destroyWingAnimationSub();
-      const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
-      if (isAnswerBird) {
-        this.birdState = isCorrect ? "happy" : 'sad';
-        this.setBodyByState(this.getReplaces());
-      }
-      if (isCorrect) {
-        this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
-          this.wingAnimationMethod();
-          if (w === 3 && !this.isOption) {
-            this.feedbackService.endFeedback.emit();
-          }
-        });
-      } else if (!this.isOption) {
-        timer(600).subscribe(t => this.feedbackService.endFeedback.emit());
-      }
+      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect, this.endFedbackEmitter)
+      // const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
+      // if (isAnswerBird) {
+      //   this.birdState = isCorrect ? "happy" : 'sad';
+      //   this.setBodyByState(this.getReplaces());
+      // }
+      // if (isCorrect) {
+      //   this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
+      //     this.wingAnimationMethod();
+      //     if (w === 3 && !this.isOption) {
+      //       this.feedbackService.endFeedback.emit();
+      //     }
+      //   });
+      // } else if (!this.isOption) {
+      //   timer(600).subscribe(t => this.feedbackService.endFeedback.emit());
+      // }
     });
     this.addSubscription(this.gameActions.showHint, z => {
       if (sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.hintBird)) {
@@ -159,6 +160,34 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     replaces.set("#406faf", this.colorsParseMethod(this.bird.color));
     return replaces;
   }
+
+
+
+  public birdOptionCorrectCheck(birdOption: BirdInfo, birdCorrectAnswer: BirdInfo, 
+    isCorrect: boolean, endFedbackEmitter: ()=> void = () => {}) {
+    const isAnswerBird = sameBird(birdOption, birdCorrectAnswer);
+    if (isAnswerBird) {
+      this.birdState = isCorrect ? "happy" : 'sad';
+      this.setBodyByState(this.getReplaces());
+    }
+    if(isCorrect) {
+      this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
+      this.wingsUpActivate = !this.wingsUpActivate;
+        if (w === 3 && !this.isOption) {
+          endFedbackEmitter();
+        }
+      });
+    } else if (!this.isOption) {
+      timer(600).subscribe(t => endFedbackEmitter());
+    }
+  };
+
+  
+
+  public endFedbackEmitter() {
+    this.feedbackService.endFeedback.emit();
+  }
+
 
 
   ngOnDestroy(): void {
