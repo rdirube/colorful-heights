@@ -60,20 +60,18 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     super(soundOxService, preloaderService, elementRef);
     this.changeOpacityByInteractable = false;
     this.forceNoAnimations = true;
-    this.toStyle = this.htmlSpanElement;
+    this.toStyle =this.htmlSpanElement;
     this.realClick = this.birdSelectMethod;
     this.clickSoundPath = 'colorful-heights/sounds/bird_sound_colorful_heights.mp3';
     this.addSubscription(this.challengeService.currentExercise, z => this.interactable = true);
     this.addSubscription(this.gameActions.checkedAnswer, z => {
       this.interactable = false;
       const isCorrect = z.correctness === 'correct';
-      this.destroyWingAnimationSub();
-      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect,
-        () => this.feedbackService.endFeedback.emit())
+      this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect, this.endFedbackEmitter)
       // const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
       // if (isAnswerBird) {
       //   this.birdState = isCorrect ? "happy" : 'sad';
-      //   this.setBodyByState(this.getReplaces());
+      //   this.setBodyByState(this.getReplaces())
       // }
       // if (isCorrect) {
       //   this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
@@ -165,24 +163,32 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
 
 
   public birdOptionCorrectCheck(birdOption: BirdInfo, birdCorrectAnswer: BirdInfo, 
-    isCorrect: boolean, whenFinishes?: () => void) {
+    isCorrect: boolean, endFedbackEmitter: ()=> void = () => {}) {
+    this.destroyWingAnimationSub();
     const isAnswerBird = sameBird(birdOption, birdCorrectAnswer);
-    if (isAnswerBird) {
+    if (isAnswerBird)  {
       this.birdState = isCorrect ? "happy" : 'sad';
       this.setBodyByState(this.getReplaces());
     }
     if(isCorrect) {
-      this.destroyWingAnimationSub();
       this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
       this.wingsUpActivate = !this.wingsUpActivate;
-        if (w === 3 && !this.isOption && whenFinishes) {
-          whenFinishes();
+        if (w === 3 && !this.isOption) {
+          endFedbackEmitter();
         }
       });
-    } else if (!this.isOption && whenFinishes) {
-      timer(600).subscribe(t => whenFinishes());
+    } else if (!this.isOption) {
+      timer(600).subscribe(t => endFedbackEmitter());
     }
   };
+
+  
+
+  public endFedbackEmitter() {
+    this.feedbackService.endFeedback.emit();
+  }
+
+
 
   ngOnDestroy(): void {
     super.ngOnDestroy();

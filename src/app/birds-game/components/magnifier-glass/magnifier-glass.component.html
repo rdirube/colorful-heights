@@ -1,6 +1,7 @@
-<div *ngIf="magnifierPosition" class="full-size" style="position: relative">
+<div  class="full-size" style="position: relative">
   <div #box [ngStyle]="{'width': magnifierPosition.width,
-  'height': magnifierPosition.height, 'transform': magnifierPosition.transform}"
+  'height': magnifierPosition.height, 'transform': magnifierPosition.transform, 
+  'border-radius':magnifierPosition.borderRadius}"
        [ngClass]="{'box-on': boxOn}"
        style="transition: 1s"></div>
 </div>

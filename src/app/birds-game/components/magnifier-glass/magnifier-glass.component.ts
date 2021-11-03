@@ -19,4 +19,7 @@ export class MagnifierGlassComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+
+
 }

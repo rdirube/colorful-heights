@@ -23,7 +23,7 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
   exercise = this.tutorialService.generateTutorialExercise(3, 1);
 
-  private currentStep = 0;
+  public currentStep = 0;
 
   text: string = '';
   private steps: TutorialStep[] = [];
@@ -32,11 +32,34 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   public readonly magnifierPositions: MagnifierPosition[] = [{
     width: '30vh',
     height: '29vh',
-    top: '43vh',
-    left: '10vh',
+    transform: 'translate(118vh, 9vh)',
     borderRadius: '20%',
     flexPosition: 'center center'
+  },
+   {
+    width: '30vh',
+    height: '29vh',
+    transform: 'translate(17.5vh, 42vh)',
+    borderRadius: '20%',
+    flexPosition: 'center center'
+   },
+  {
+    width: '30vh',
+    height: '29vh',
+    transform: 'translate(103.5vh, 44vh)',
+    borderRadius: '20%',
+    flexPosition: 'center center'
+  },{
+  width: '30vh',
+  height: '29vh',
+  transform: 'translate(60vh, 50vh)',
+  borderRadius: '20%',
+  flexPosition: 'center center'
   }];
+  // 'translate(17.5vh, 42vh)' width 30vh : height 29vh bird left
+  //  translate(118vh, 9vh) width 30vh : height 28vh select-bird
+  //  translate(103.5vh, 44vh) : bird right
+  // translate(60vh, 50vh) bird center;
   private magnifierIndex: number = 0;
 
   constructor(private tutorialService: TutorialService) {
@@ -134,6 +157,9 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     this.addStep('3333333 222222222', () => {
       console.log('this is an action method');
     }, timer(4000));
+    this.addStep('last-step', ()=> {
+     
+    },timer(2000))
   }
 
 
