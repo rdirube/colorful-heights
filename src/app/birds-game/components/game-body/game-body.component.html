@@ -1,52 +1,38 @@
 <div fxFlex="grow" fxLayoutAlign="center center" style="position: relative; background: red">
   <div class="myAbsolute full-width" style="height: 13vh; z-index: 10" fxLayoutAlign="space-between">
-    <mlc-to-in-game-menu-button style="width: 13vh;"
-                                svgPath="mini-lessons/executive-functions/svg/buttons/Home.svg"></mlc-to-in-game-menu-button>
-    <mlc-hint-button style="width: 13vh;"
-                     svgPath="mini-lessons/executive-functions/svg/buttons/Hint.svg"></mlc-hint-button>
+    <mlc-to-in-game-menu-button class='button-menu'style="width: 13vh; transform: translateX(-100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Home.svg">
+    </mlc-to-in-game-menu-button>
+    <mlc-hint-button class='button-hint' style="width: 13vh; transform: translateX(100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Hint.svg">
+    </mlc-hint-button>
   </div>
   <div fxFlex="grow" fxFlexFill class="myAbsolute">
-    <div fxFlex="grow" fxFlexFill style="position: relative">
-      <div
-        class="myAbsolute"
-        fxFlex="grow" fxFlexFill
-        [ngClass]="treeClass"
-        style="z-index: 1; transition: 2s">
-       
+    <div fxFlex="grow" fxFlexFill style="position: relative" *ngIf="exercise">
+
+      <div insideRatio style="width:100%; height:25vh;padding-top: 2vh; padding-right: 2vh;top:10vh;overflow: hidden;"
+        class="myAbsolute" fxLayoutAlign="end center">
+        <app-bird-to-select [birdToSelect]="exercise.targetBird"  [counterOriginalText]="correctAnswerCounter"
+          class="bird-select-container"></app-bird-to-select>
+      </div> 
+      <div class="myAbsolute" fxFlex="grow" fxFlexFill [ngClass]="treeClass" style="z-index: 1; transition: 2s">
         <div fxFlex="grow" fxFlexFill style="position: relative" fxLayoutAlign="center center">
-          <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"
-                          forceViewBoxTo="''"
-                          path="colorful-heights/svg/Elementos fondo/arbol.svg">
+          <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute" forceViewBoxTo="''"
+            path="colorful-heights/svg/Elementos fondo/arbol.svg">
           </mlc-loaded-svg>
           <mlc-ratio-container ratio="4-3" style="position: relative; top: 10vh;">
-            <div insideRatio style="width: 100%; height: 100%; z-index: 1;"
-                 fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="10vh">
-             <app-clock ></app-clock>
-              <div fxLayoutAlign="center center" fxLayoutGap="5.5vh">
-                <app-stick class="stick" stickSvg="rama_izquierda.svg"></app-stick>
-                <app-hole class="hole" ></app-hole>
-                <app-stick class="stick" stickSvg="rama_derecha.svg"></app-stick>
-              </div>              <div fxLayoutAlign="center center" fxLayoutGap="5.5vh">
-                <app-stick class="stick" stickSvg="rama_izquierda.svg"></app-stick>
-                <app-hole class="hole" ></app-hole>
-                <app-stick class="stick" stickSvg="rama_derecha.svg"></app-stick>
-              </div>
+            <div insideRatio style="width: 100%; height: 100%; z-index: 1;" fxLayoutAlign="center center"
+              fxLayout="column" fxLayoutGap="7vh">
+              <app-clock></app-clock>
+              <app-nest-group class="full-width" [nestGroupInfo]="topNestInfo"></app-nest-group>
+              <app-nest-group class="full-width" [nestGroupInfo]="botNestInfo"></app-nest-group>
             </div>
           </mlc-ratio-container>
         </div>
       </div>
-<!--      <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"-->
-<!--                      forceViewBoxTo="''" style="z-index: 1; transition: 2s"-->
-<!--                      path="colorful-heights/svg/Elementos fondo/arbol.svg">-->
-<!--      </mlc-loaded-svg>-->
-      <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute"
-                      [ngClass]="baseClass"
-                      forceViewBoxTo="''" style="transition: 2s"
-                      path="colorful-heights/svg/Elementos fondo/Base.svg">
+      <mlc-loaded-svg fxFlex="grow" fxFlexFill class="myAbsolute" [ngClass]="baseClass" forceViewBoxTo="''"
+        style="transition: 2s" path="colorful-heights/svg/Elementos fondo/Base.svg">
       </mlc-loaded-svg>
     </div>
   </div>
 </div>
-<app-count-down *ngIf="showCountDown"
-                (started)="startGame()"
-                class="myAbsolute" fxFlex="grow" style="z-index: 123"></app-count-down>
+<app-count-down *ngIf="showCountDown" (started)="startGame()" class="myAbsolute" fxFlex="grow" style="z-index: 123">
+</app-count-down>

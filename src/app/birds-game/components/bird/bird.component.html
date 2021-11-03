@@ -1,3 +1,18 @@
-<mlc-loaded-svg class="bird birdImage"
-  path="colorful-heights/svg/Pajaritos/gordo_azul.svg"></mlc-loaded-svg>
-<!--  path="colorful-heights/svg/Pajaritos/cotorra_amarillo.svg"></mlc-loaded-svg>-->
+<div
+  fxFlex="grow" fxFlexFill
+  style="position: relative;" >
+  <mlc-loaded-svg [ngClass]="isOption && !bird.isDouble ? 'bird birdImage': 'bird-to-select birdImage'"
+                  fxFlex="grow" fxFlexFill
+                  [pathWithReplaces]="bodyPathWithReplaces"></mlc-loaded-svg>
+  <mlc-loaded-svg [pathWithReplaces]="wings1PathWithReplaces"
+                  fxFlex="grow" fxFlexFill
+                  [ngClass]="isOption ? 'bird birdImage normal': 'bird-to-select birdImage'"
+                  [ngStyle]="{'opacity':wingsUpActivate ? '0':'1'}"></mlc-loaded-svg>
+  <mlc-loaded-svg
+    fxFlex="grow" fxFlexFill
+    [pathWithReplaces]="wings2PathWithReplaces" [ngClass]="isOption ? 'bird birdImage up': 'bird-to-select birdImage'"
+    [ngStyle]="{'opacity':wingsUpActivate ? '1':'0'}"></mlc-loaded-svg>
+  <!--   path="colorful-heights/svg/Pajaritos/cotorra_amarillo.svg"></mlc-loaded-svg> -->
+  <span class="myAbsolute" #htmlSpanElement style="width: 0;"></span>
+
+</div>

@@ -10,9 +10,20 @@
 .base-show {
   top: 0vh;
 }
+.no-transition {
+  transition: 0s !important;
+}
 
 .clock {
   width: 15vh;
   height: 15vh;
 }
 
+.button-menu {
+  transform: translateX(-100%);
+}
+
+.button-hint {
+  transform: translateX(-100%);
+
+}

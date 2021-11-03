@@ -20,6 +20,8 @@
   left: 0;
 }
 
+
+
 * {
   user-select: none;
 }
@@ -28,18 +30,149 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+
 .bird {
   overflow: hidden;
   height: 23vh;
   width: 23vh;
 }
 
+
 .stick {
   width: 47vh;
   height: 15vh;
+  position: absolute;
+  top:6vh;
 }
+
 
 .hole {
   width: 26vh;
   height: 27vh;
 }
+
+
+.bird-select-container {
+  width: 29vh;
+  height: 30vh;
+  left:50vh;
+  top: 17vh;
+}
+
+.stick-left {
+  @extend .stick;
+  right:85vh;
+}
+
+.stick-right {
+  @extend .stick;
+  right:1vh;
+}
+
+.bird-to-select {
+  width:19vh;
+  height:19vh;
+  overflow: hidden;
+}
+
+.bird-1 {
+ @extend .bird;
+  top: -12vh;
+  left: 13vh;
+}
+
+
+.bird-1-double {
+  height: 19vh;
+  width: 19vh;
+  overflow: hidden;
+  top: -8.5vh;
+  left: 6.5vh;
+  transform: rotate(-15deg);
+
+}
+
+.bird-2 {
+  overflow: hidden;
+  height: 19vh;
+  width: 19vh;
+}
+
+.bird-2-normal {
+  
+  opacity:0;
+}
+
+.bird-2-double {
+    @extend .bird-2;  
+    opacity: 1;
+    top: -8.5vh;
+    left: 20vh;
+    transform: rotate(15deg);
+}
+
+
+
+
+.bird-2-hole {
+  @extend .bird-2;
+  width: 0;
+  transform:translate(-3.6vh, 0.2vh);
+  opacity:0;
+}
+
+.bird-2-double-hole {
+  @extend .bird-2-hole;
+  height: 19vh;
+  width: 19vh;
+  opacity: 1;
+  transform: translate(-1vh,2vh)rotate(-15deg);
+}
+
+
+.bird-double-hole {
+  @extend .bird-2;
+  transform: translate(7.3vh,2vh) rotate(15deg);
+
+}
+
+
+.birdImage {
+  transform:translateY(100%);
+  position: absolute;
+
+}
+.bird-hole {
+  @extend .bird;
+  overflow: visible;
+  height: 95%;
+  transform: translate(-0.75vh, -0.4vh);
+}
+.hintOn {
+  opacity: 0;
+}
+
+.just-show-me {
+  box-shadow: 0 0 0 100vw rgb(0 0 0 / 29%)
+}
+.tree-show {
+  top: -10vh;
+}
+.tree-hide {
+  top: -96vh;
+}
+.base-hide {
+  top: 86vh;
+}
+.base-show {
+  top: 0vh;
+}
+.no-transition {
+  transition: 0s !important;
+}
+
+.clock {
+  width: 19vh;
+  height: 19vh;
+}
+

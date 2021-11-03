@@ -1,0 +1,29 @@
+.correct-counter {
+    color: white;
+    background-color: #82461e;
+    border-radius: 25px;
+    width: 12vh;
+    height: 5vh;
+    top: 8vh;
+    z-index: 20;
+  }
+
+  .counter {
+    margin-left:3vh;
+    margin-top: 0.5vh;
+  }
+
+.bird-to-select {
+    height:19vh;
+    width:19vh;
+    overflow: hidden;
+    top: -0.6vh;
+}
+
+.container-bird-to-select {
+    position: relative;
+     width:35vh;
+     height:20vh;
+     overflow: hidden;
+     top:-21vh;
+}

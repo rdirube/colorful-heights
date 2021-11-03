@@ -6,6 +6,11 @@ import { BirdComponent } from './components/bird/bird.component';
 import { StickComponent } from './components/stick/stick.component';
 import { HoleComponent } from './components/hole/hole.component';
 import { ClockComponent } from './components/clock/clock.component';
+import { BirdToSelectComponent } from './components/bird-to-select/bird-to-select.component';
+import { TutorialComponent } from './components/tutorial/tutorial.component';
+import { BaseBodyDirective } from './directives/base-body.directive';
+import { NestGroupComponent } from './components/nest-group/nest-group.component';
+import { NestDirective } from './directives/nest.directive';
 
 
 
@@ -15,15 +20,23 @@ import { ClockComponent } from './components/clock/clock.component';
     BirdComponent,
     StickComponent,
     HoleComponent,
-    ClockComponent
+    ClockComponent,
+    BirdToSelectComponent,
+    TutorialComponent,
+    BaseBodyDirective,
+    NestGroupComponent,
+    NestDirective,
   ],
   exports: [
     GameBodyComponent,
-    ClockComponent
+    ClockComponent,
+    TutorialComponent
   ],
   imports: [
     CommonModule,
     SharedModule
+  ], providers:[
+    StickComponent
   ]
 })
 export class BirdsGameModule { }

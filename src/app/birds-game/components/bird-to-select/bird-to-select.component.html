@@ -1,0 +1,18 @@
+<div class="container-bird-to-select" fxLayoutAlign="center center">
+  <div class="correct-counter myAbsolute" fxLayoutAlign="start center">
+    <div style="width: 6vh;" fxLayoutAlign="center center">
+      <ox-text #counterText class="counter"
+               [originalText]="'' + counterOriginalText"
+               color="white"
+               font="dinnMedium"
+               fontSize="4vh"></ox-text>
+    </div>
+  </div>
+    <mlc-loaded-svg class="myAbsolute" fxFlex="grow" fxFlexFill
+                    style="z-index: 25" path="colorful-heights/svg/Elementos fondo/Muestra pajaritos.svg"></mlc-loaded-svg>
+    <div class="bird-to-select myAbsolute"
+         fxLayoutAlign="center center"
+         style=" border-radius: 50%; ; z-index: 25; width: 100%;">
+      <app-bird *ngIf="birdToSelect" class="bird-to-select" [birdInfo]="birdToSelect" [isOption]="false"></app-bird>
+    </div>
+  </div>
