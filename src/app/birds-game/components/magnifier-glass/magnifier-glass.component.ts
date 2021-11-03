@@ -9,7 +9,7 @@ import {MagnifierPosition} from '../../../shared/models/types';
 export class MagnifierGlassComponent implements OnInit {
 
   @Input() magnifierPosition!: MagnifierPosition;
-  boxOn = true;
+  @Input() boxOn!:boolean;
 
   constructor(private element: ElementRef) {
     this.element.nativeElement.className = 'myAbsolute full-size';

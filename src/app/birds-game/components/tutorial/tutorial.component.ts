@@ -21,20 +21,29 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   @ViewChild('tutorialText') tutorialText!: TextComponent;
   @ViewChild(NestGroupComponent) nestGroup!: NestGroupComponent;
 
-  exercise = this.tutorialService.generateTutorialExercise(3, 1);
+  exercise = this.tutorialService.generateTutorialExercise(3, 0);
 
-  public currentStep = 0;
-
+  private currentStep = 0;
+  public magnifierIndex:number = 0;
   text: string = '';
   private steps: TutorialStep[] = [];
   private clicksOn: boolean = false;
+  public boxOn:boolean = false;
+  
+
 
   public readonly magnifierPositions: MagnifierPosition[] = [{
-    width: '30vh',
-    height: '29vh',
+    width: '0vh',
+    height: '0vh',
     transform: 'translate(118vh, 9vh)',
     borderRadius: '20%',
     flexPosition: 'center center'
+  },{
+    width: '145vh',
+    height: '29vh',
+    transform: 'translate(0vh, 45vh)',
+    borderRadius: '10px',
+    flexPosition: 'center center'   
   },
    {
     width: '30vh',
@@ -49,7 +58,8 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     transform: 'translate(103.5vh, 44vh)',
     borderRadius: '20%',
     flexPosition: 'center center'
-  },{
+  },
+  {
   width: '30vh',
   height: '29vh',
   transform: 'translate(60vh, 50vh)',
@@ -60,7 +70,6 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   //  translate(118vh, 9vh) width 30vh : height 28vh select-bird
   //  translate(103.5vh, 44vh) : bird right
   // translate(60vh, 50vh) bird center;
-  private magnifierIndex: number = 0;
 
   constructor(private tutorialService: TutorialService) {
     super();
@@ -78,7 +87,10 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   }
 
   ngOnInit(): void {
+    
   }
+
+
 
   @HostListener('document:keydown', ['$event'])
   asdasdasdsad($event: KeyboardEvent): void {
@@ -90,13 +102,15 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     }
   }
 
+
+
   tutorialBirdClick(bird: BirdComponent) {
     if (!bird.isOption || this.clicksOn) return;
     if (bird.bird.isDouble && bird.isDoubleCounter < 1) {
       bird.isDoubleCounter++;
     } else {
       console.log('I have been clicked', bird);
-      this.setNewExercise();
+      
       // TRY CLICK
       // bird.answerService.setBirdAsAnswer(bird.bird, bird.svgBirdGenerator(bird.bird.type, []));
       // bird.gameActions.actionToAnswer.emit();
@@ -151,21 +165,25 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   private setSteps() {
     this.addStep('Bienvenidos', () => {
     }, timer(4000));
-    this.addStep('Bienvenidos 222222222', () => {
-      this.setNewExercise();
-    }, timer(4000));
-    this.addStep('3333333 222222222', () => {
-      console.log('this is an action method');
-    }, timer(4000));
-    this.addStep('last-step', ()=> {
-     
-    },timer(2000))
+    this.addStep('El objetivo del juego consiste en alimentar al pajaro que nos indique la ventana ubicada arriba a la derecha', 
+    ()=> {}, timer(5500))
+    this.addStep('Visualiza el pajaro indicado en la parte superior', () => {
+      this.boxOn = true;
+    }, timer(4000) 
+    )  
+    this.addStep('Haz click en pajaro de las opciones señaladas que coincida en forma y color con el indicado en el paso anterior', () => {
+      this.magnifierIndex++;
+     } , timer(4000));
+    this.addStep('Los pájaros pueden ser dobles, en caso de coincidir con el , clickealo dos veces para', ()=> {
+      this.setNewExercise(1, true);
+      this.magnifierIndex = 3;
+    },timer(4000))
   }
 
 
-  private setNewExercise() {
+  private setNewExercise(doubleQuantity:number, forceDoubleCorrect?:boolean) {
     this.birdsDownAnimation(() => {
-      this.exercise = this.tutorialService.generateTutorialExercise(3, 1);
+      this.exercise = this.tutorialService.generateTutorialExercise(3, doubleQuantity, forceDoubleCorrect);
       this.birdsUpAnimation(0, () => this.tutorialService.setClicksOn(true));
     });
   }

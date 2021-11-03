@@ -1,5 +1,5 @@
-<div  class="full-size" style="position: relative">
-  <div #box [ngStyle]="{'width': magnifierPosition.width,
+<div  class="full-size" style="position: relative" fxLayoutAlign="center start">
+  <div #box  fxLayout = "center center"  [ngStyle]="{'width': magnifierPosition.width,
   'height': magnifierPosition.height, 'transform': magnifierPosition.transform, 
   'border-radius':magnifierPosition.borderRadius}"
        [ngClass]="{'box-on': boxOn}"
