@@ -40,14 +40,15 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
   text: string = '';
   private steps: TutorialStep[] = [];
+  private clicksOn: boolean = false;
 
   constructor(private tutorialService: TutorialService) {
     super();
     this.addSubscription(this.tutorialService.birdsInstanciated, z => {
       console.log(this.tutorialService.birdComponents);
-      this.tutorialService.birdComponents.forEach( bird => {
+      this.tutorialService.birdComponents.forEach(bird => {
         bird.realClick = () => this.tutorialBirdClick(bird);
-      })
+      });
     });
     this.tutorialService.usingTutorial = true;
     this.setSteps();
@@ -57,15 +58,15 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   }
 
   ngOnInit(): void {
-    // this.bird.realClick = () => this.tutorialBirdClick(this.bird);
   }
 
   tutorialBirdClick(bird: BirdComponent) {
-    if (!bird.isOption) return;
+    if (!bird.isOption || this.clicksOn) return;
     if (bird.bird.isDouble && bird.isDoubleCounter < 1) {
       bird.isDoubleCounter++;
     } else {
       console.log('I have been clicked', bird);
+      this.setNewExercise();
       // TRY CLICK
       // bird.answerService.setBirdAsAnswer(bird.bird, bird.svgBirdGenerator(bird.bird.type, []));
       // bird.gameActions.actionToAnswer.emit();
@@ -127,5 +128,14 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     this.addStep('3333333 222222222', () => {
       console.log('this is an action method');
     }, timer(4000));
+  }
+
+  private setNewExercise() {
+    this.birdsDownAnimation(() => {
+      const exercise = this.tutorialService.generateTutorialExercise(3, 1);
+      this.targetBird = exercise.targetBird;
+      this.optionsBirds = exercise.optionsBirds;
+      this.birdsUpAnimation(0, () => this.clicksOn = true);
+    });
   }
 }

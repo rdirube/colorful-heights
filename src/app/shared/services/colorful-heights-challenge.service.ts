@@ -58,7 +58,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     return equalArrays(exerciseData.optionsBirds, exerciseDoneData.optionsBirds);
   }
 
-  getAnswerBird(): BirdInfo {
+  getRandomBird(): BirdInfo {
     return { color: anyElement(this.exerciseConfig.colorsToUse), type: anyElement(this.exerciseConfig.birdsToUse) };
   }
 
@@ -82,7 +82,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   }
 
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
-    const answerBird: BirdInfo = this.getAnswerBird();
+    const answerBird: BirdInfo = this.getRandomBird();
     const answerBirdOptions: BirdInfo[] = [answerBird];
     this.exerciseConfig.forcesTraps.forEach(forceTrap => {
       for (let i = 0; i < forceTrap.quantity; i++) {
