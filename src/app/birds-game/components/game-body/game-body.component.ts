@@ -71,6 +71,8 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
         this.setNests(this.exercise.optionsBirds);
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
+          this.correctAnswerCounter = 0;
+          this.challengeService.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach( z => z.isAble = true);
           if (this.birdToSelectComponent)
             this.birdToSelectComponent.birdToSelectOut();
           this.animeHeaderButtons(false);
