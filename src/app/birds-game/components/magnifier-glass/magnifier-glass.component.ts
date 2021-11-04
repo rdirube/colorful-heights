@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ButtonPosition, MagnifierPosition} from '../../../shared/models/types';
-import {generateOKButtonPosition} from '../../../shared/models/functions';
+import {okButtonPosition} from '../../../shared/models/functions'
 
 @Component({
   selector: 'app-magnifier-glass',
@@ -15,13 +15,14 @@ export class MagnifierGlassComponent implements OnInit {
   set setMagnifierPosition(mPos: MagnifierPosition) {
     this.currentMagnifierPosition = mPos;
     this.currentButtonPosition = this.currentMagnifierPosition.buttonInfo ?
-      generateOKButtonPosition(this.currentMagnifierPosition.buttonInfo, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height)
+    okButtonPosition(this.currentMagnifierPosition.buttonInfo, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height)
       : undefined;
   }
 
   @Output() okButtonClicked = new EventEmitter();
   @Input() boxOn!: boolean;
-
+  
+  
   constructor(private element: ElementRef) {
     this.element.nativeElement.className = 'myAbsolute full-size';
     this.element.nativeElement.style.zIndex = '2';

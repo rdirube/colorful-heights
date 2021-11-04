@@ -1,4 +1,4 @@
-import {BirdInfo, ButtonInfo} from "./types";
+import { BirdInfo, ButtonInfo } from "./types";
 import { PositionXAxis } from "./types";
 import { PositionYAxis } from "./types";
 import { ButtonPosition } from "./types";
@@ -14,11 +14,14 @@ export function getPositionMultipler(position: PositionXAxis | PositionYAxis): 0
 }
 
 
-export function generateOKButtonPosition(buttonInfo: ButtonInfo, width: string, height: string): ButtonPosition {
+export function okButtonPosition(axis: ButtonInfo, width: string, height: string): ButtonPosition {
     const parseWidth = parseInt(width, 10);
     const parseHeight = parseInt(height, 10);
     return {
-        xAxis: (parseWidth / 2) * getPositionMultipler(buttonInfo.horizontal),
-        yAxis: (parseHeight / 2) * getPositionMultipler(buttonInfo.vertical)
+        xAxis: (parseWidth / 2) * getPositionMultipler(axis.horizontal),
+        yAxis: (parseHeight / 2) * getPositionMultipler(axis.vertical)
     };
+
+
+
 }

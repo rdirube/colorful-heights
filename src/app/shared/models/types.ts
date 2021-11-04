@@ -122,12 +122,13 @@ export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
     reference: 'bird-2'
   },
   {
-    width: '145vh',
+    width: '131vh',
     height: '33vh',
     transform: 'translate(0vh, 9vh)',
     borderRadius: '10px',
     flexPosition: 'center center',
-    reference: 'all-birds'
+    reference: 'all-birds',
+    buttonInfo: {horizontal: 'center', vertical: 'center'},
   },
   {
     width: '27vh',
