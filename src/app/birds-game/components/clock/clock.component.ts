@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {timer} from 'rxjs';
 import anime from 'animejs';
 import {SubscriberOxDirective} from 'micro-lesson-components';
@@ -24,6 +24,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
   public pieAnimation!: any;
   public borderAnimation!: any;
   bonusText!: string;
+  @Input() sendFinishEvent: boolean = true;
 
   constructor(private challengeService: ColorfulHeightsChallengeService,
               private gameActions: GameActionsService<any>,
@@ -71,13 +72,15 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
         easing: 'linear'
       }],
     });
-    animationPieTimeLine.finished.then(z => {
-      timer(1000).subscribe(aa => {
-        this.gameActions.microLessonCompleted.emit();
-        timer(500).subscribe(zzz =>
-          this.microLessonCommunication.sendMessageMLToManager(GameAskForScreenChangeBridge, ScreenTypeOx.GameComplete));
+    if (this.sendFinishEvent) {
+      animationPieTimeLine.finished.then(z => {
+        timer(1000).subscribe(aa => {
+          this.gameActions.microLessonCompleted.emit();
+          timer(500).subscribe(zzz =>
+            this.microLessonCommunication.sendMessageMLToManager(GameAskForScreenChangeBridge, ScreenTypeOx.GameComplete));
+        });
       });
-    });
+    }
   }
 
   textAnimation(secondsAdded: number) {

@@ -17,7 +17,7 @@
 
             <div insideRatio style="width: 100%; height: 100%; z-index: 1;" fxLayoutAlign="center center"
                  fxLayout="column" fxLayoutGap="7vh">
-              <app-clock></app-clock>
+              <app-clock [sendFinishEvent]="false"></app-clock>
               <app-nest-group class="full-width" [nestGroupInfo]="exercise.optionsBirds"></app-nest-group>
             </div>
           </mlc-ratio-container>
@@ -31,6 +31,7 @@
   </div>
   <div class="text-tutorial-container" style="position: absolute" fxLayoutAlign="center center" >
     <ox-text #tutorialText
+             [ignoreLowerCase]="true"
              [originalText]="text"
              font="dinnMedium"
              color="white"
@@ -39,4 +40,7 @@
     </ox-text>
   </div>
 </div>
-<app-magnifier-glass [magnifierPosition]="magnifierPositions[magnifierIndex]" [buttonOkOn]="buttonOkOn" [boxOn]="boxOn"></app-magnifier-glass>
+<app-magnifier-glass
+  *ngIf="magnifier"
+  (okButtonClicked)="onOkButtonClicked()"
+  [magnifierPosition]="magnifier"  [boxOn]="boxOn"></app-magnifier-glass>

@@ -9,14 +9,14 @@ export interface ColorfullHeightsExercise {
 export type BirdColor = 'amarillo' | 'azul' | 'rojo' | 'violeta' | 'verde';
 export type BirdType = 'cóndor' | 'cotorra' | 'lechuza' | 'gordo' | 'pelado';
 export type TrapType = 'Equal shape' | 'Equal color' | 'different color and shape';
-export type BirdState = "" | "happy" | "sad"; 
+export type BirdState = "" | "happy" | "sad";
 export type PositionXAxis = "right" | "left" | "center";
-export type PositionYAxis = "top" | "bottom"| "center";
+export type PositionYAxis = "top" | "bottom" | "center";
 
 export interface BirdInfo {
   color: BirdColor;
   type: BirdType;
-  isDouble?:boolean
+  isDouble?: boolean
 }
 
 export interface ButtonInfo {
@@ -25,8 +25,8 @@ export interface ButtonInfo {
 }
 
 export interface ButtonPosition {
-  xAxis:number;
-  yAxis:number;
+  xAxis: number;
+  yAxis: number;
 }
 
 
@@ -82,5 +82,60 @@ export interface MagnifierPosition {
   transform: string,
   borderRadius: string,
   flexPosition: string,
-  buttonInfo?: ButtonPosition
+  buttonInfo?: ButtonInfo,
+  reference: string,
+
 }
+
+export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
+  {
+    width: '32vh',
+    height: '29vh',
+    transform: 'translate(-2vh, 9vh)',
+    borderRadius: '20%',
+    flexPosition: 'end start',
+    buttonInfo: {horizontal: 'left', vertical: 'bottom'},
+    reference: 'bird-to-select'
+  },
+  {
+    width: '32vh',
+    height: '29vh',
+    transform: 'translate(-41.5vh, 8.7vh)',
+    borderRadius: '20%',
+    flexPosition: 'center center',
+    reference: 'bird-0'
+  },
+  {
+    width: '32vh',
+    height: '29vh',
+    transform: 'translate(0vh, 12vh)',
+    borderRadius: '20%',
+    flexPosition: 'center center',
+    reference: 'bird-1'
+  },
+  {
+    width: '32vh',
+    height: '29vh',
+    transform: 'translate(41.5vh, 8.7vh)',
+    borderRadius: '20%',
+    flexPosition: 'center center',
+    reference: 'bird-2'
+  },
+  {
+    width: '145vh',
+    height: '33vh',
+    transform: 'translate(0vh, 9vh)',
+    borderRadius: '10px',
+    flexPosition: 'center center',
+    reference: 'all-birds'
+  },
+  {
+    width: '27vh',
+    height: '25vh',
+    transform: 'translate(0vh, -14vh)',
+    borderRadius: '20%',
+    flexPosition: 'center center',
+    buttonInfo: {horizontal: 'right', vertical: 'bottom'},
+    reference: 'clock'
+  }];
+

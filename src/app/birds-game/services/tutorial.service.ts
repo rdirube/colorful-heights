@@ -14,6 +14,9 @@ export class TutorialService {
   usingTutorial = false;
   birdsInstanciated = new EventEmitter();
   birdStepCorrect = new EventEmitter<number>();
+
+
+
   constructor(private challengeService: ColorfulHeightsChallengeService) {
   }
 

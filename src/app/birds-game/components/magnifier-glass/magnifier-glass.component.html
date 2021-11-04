@@ -1,10 +1,12 @@
-<div class="full-size" style="position: relative" fxLayoutAlign = {{magnifierPosition.flexPosition}}>
-  <div #box fxLayoutAlign="center center" [ngStyle]="{'width': magnifierPosition.width,
-  'height': magnifierPosition.height, 'transform': magnifierPosition.transform, 
-  'border-radius':magnifierPosition.borderRadius}"
-       [ngClass]="{'box-on': boxOn}"
+<div class="full-size" style="position: relative" [fxLayoutAlign]="currentMagnifierPosition.flexPosition">
+  <div #box fxLayoutAlign="center center" [ngStyle]="{'width': currentMagnifierPosition.width,
+  'height': currentMagnifierPosition.height, 'transform': currentMagnifierPosition.transform,
+  'border-radius':currentMagnifierPosition.borderRadius}"
+        class="box-on"
        style="transition: 1s">
-       <div *ngIf="buttonOkOn" class="ok-btn" [ngStyle]="{'transform':'translate('+magnifierPosition.buttonInfo?.xAxis + 'vh,'+magnifierPosition.buttonInfo?.yAxis+'vh)'}" 
-       fxLayoutAlign="center center"><span>OK!</span></div>
-      </div>
+    <div *ngIf="currentButtonPosition" class="ok-btn" [ngStyle]="{'transform': 'translate(' + currentButtonPosition.xAxis + 'vh,'
+       + currentButtonPosition.yAxis + 'vh)'}"
+          mlcClickeableOx [realClick]="onClickOk.bind(this)"
+         fxLayoutAlign="center center"><span>OK!</span></div>
+  </div>
 </div>
