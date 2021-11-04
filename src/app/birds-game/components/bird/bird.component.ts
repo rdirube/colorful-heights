@@ -47,7 +47,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   public bodyPathWithReplaces!: Replaces;
   public wings1PathWithReplaces!: Replaces;
   public wings2PathWithReplaces!: Replaces;
-
+  public trapBirdOn:boolean = false;
   private wingAnimationSub: Subscription | undefined;
 
   constructor(private elementRef: ElementRef,

@@ -1,4 +1,4 @@
-<div
+<div [ngClass] = "{'trap-bird': trapBirdOn}"
   fxFlex="grow" fxFlexFill
   style="position: relative;" >
   <mlc-loaded-svg [ngClass]="isOption && !bird.isDouble ? 'bird birdImage': 'bird-to-select birdImage'"
