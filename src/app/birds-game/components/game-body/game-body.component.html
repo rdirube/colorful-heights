@@ -1,6 +1,8 @@
 <div fxFlex="grow" fxLayoutAlign="center center" style="position: relative; background: red">
   <div class="myAbsolute full-width" style="height: 13vh; z-index: 10" fxLayoutAlign="space-between">
-    <mlc-to-in-game-menu-button class='button-menu'style="width: 13vh; transform: translateX(-100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Home.svg">
+    <mlc-to-in-game-menu-button
+      [forceNoAnimations]="true"
+      class='button-menu'style="width: 13vh; transform: translateX(-100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Home.svg">
     </mlc-to-in-game-menu-button>
     <mlc-hint-button class='button-hint' style="width: 13vh; transform: translateX(100%);" svgPath="mini-lessons/executive-functions/svg/buttons/Hint.svg">
     </mlc-hint-button>

@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import anime from 'animejs';
 import {
   FeedbackOxService,
@@ -7,7 +7,7 @@ import {
   MicroLessonMetricsService,
   SoundOxService
 } from 'micro-lesson-core';
-import { ColorfullHeightsExercise} from 'src/app/shared/models/types';
+import {ColorfullHeightsExercise} from 'src/app/shared/models/types';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
 import {ExerciseOx,} from 'ox-core';
 import {timer} from 'rxjs';
@@ -37,6 +37,14 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
               private feedbackService: FeedbackOxService) {
     super();
     this.feedbackService.playFeedBackSounds = false;
+    this.addSubscription(this.gameActions.microLessonCompleted, x => {
+      this.treeClass = 'tree-hide no-transition';
+      this.baseClass = 'base-show no-transition';
+    });
+    this.addSubscription(this.gameActions.restartGame, x => {
+      this.treeClass = 'tree-hide no-transition';
+      this.baseClass = 'base-show no-transition';
+    });
     this.addSubscription(this.feedbackService.endFeedback, z => {
       this.birdsDown();
       if (this.itWasCorrect) {
@@ -63,6 +71,10 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
         this.setNests(this.exercise.optionsBirds);
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
+          if (this.birdToSelectComponent)
+            this.birdToSelectComponent.birdToSelectOut();
+          this.animeHeaderButtons(false);
+          this.birdsDownAnimation();
         }
       });
   }
@@ -132,27 +144,30 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
   }
 
   private gameHasStarted() {
-    this.birdToSelectComponent.birdToSelectAnimationAppearence();
     this.clockComponent.startTime(this.challengeService.exerciseConfig.totalGameTime);
     this.startAnimations();
   }
 
   private startAnimations(): void {
+    this.birdToSelectComponent.birdToSelectAnimationAppearence();
     this.birdsUpAnimation(1300);
+    this.animeHeaderButtons();
+  }
+
+  private animeHeaderButtons(goIn: boolean = true): void {
     anime({
       targets: '.button-hint',
-      translateX: ['100%', '0%'],
-      duration: 700,
+      translateX: goIn ? ['100%', '0%'] : '100%',
+      duration: goIn ? 700 : 0,
       easing: 'easeInOutExpo',
-      delay: 1200
+      delay: goIn ? 1200 : 0
     });
     anime({
       targets: '.button-menu',
-      translateX: ['-100%', '0%'],
-      duration: 700,
+      translateX: goIn ? ['-100%', '0%'] : '-100%',
+      duration: goIn ? 700 : 0,
       easing: 'easeInOutExpo',
-      delay: 1200
-
+      delay: goIn ? 1200 : 0
     });
   }
 

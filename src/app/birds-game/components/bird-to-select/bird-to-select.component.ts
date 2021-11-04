@@ -27,9 +27,18 @@ export class BirdToSelectComponent extends SubscriberOxDirective implements OnIn
     anime({
       targets: '.container-bird-to-select',
       duration: 1000,
-      top: '5vh',
+      top: ['-40vh', '5vh'],
       easing: 'easeOutElastic(1, .8)',
       delay: 1300
+    });
+  }
+  birdToSelectOut(): void {
+    anime({
+      targets: '.container-bird-to-select',
+      duration: 0,
+      top: '-40vh',
+      easing: 'easeOutElastic(1, .8)',
+      delay: 0
     });
   }
 
