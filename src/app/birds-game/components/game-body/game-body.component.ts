@@ -7,13 +7,14 @@ import {
   MicroLessonMetricsService,
   SoundOxService
 } from 'micro-lesson-core';
-import {ColorfullHeightsExercise} from 'src/app/shared/models/types';
+import {BirdInfo, ColorfullHeightsExercise} from 'src/app/shared/models/types';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
 import {ExerciseOx,} from 'ox-core';
 import {timer} from 'rxjs';
-import {ExerciseData, ScreenTypeOx} from 'ox-types';
+import {ExerciseData, MultipleChoiceSchemaData, OptionShowable, ScreenTypeOx, Showable} from 'ox-types';
 import {filter, take} from 'rxjs/operators';
 import {BaseBodyDirective} from '../../directives/base-body.directive';
+import {sameBird} from '../../../shared/models/functions';
 
 @Component({
   selector: 'app-game-body',
@@ -72,7 +73,7 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
           this.correctAnswerCounter = 0;
-          this.challengeService.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach( z => z.isAble = true);
+          this.challengeService.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach(z => z.isAble = true);
           if (this.birdToSelectComponent)
             this.birdToSelectComponent.birdToSelectOut();
           this.animeHeaderButtons(false);
@@ -81,20 +82,38 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
       });
   }
 
+  private birdToOption(bird: BirdInfo): OptionShowable {
+    return {
+      isCorrect: sameBird(this.challengeService.currentExercise.value.exerciseData.targetBird, bird),
+      showable: {
+      },
+      customProperties: [
+        {
+          name: 'color',
+          value: bird.color,
+        },
+        {
+          name: 'type',
+          value: bird.type,
+        },
+        {
+          name: 'double',
+          value: bird.isDouble !== undefined,
+        }
+      ]
+    };
+  }
+
   private addMetric(): void {
     const myMetric: ExerciseData = {
       schemaType: 'multiple-choice',
-      schemaData: undefined,
-      // schemaData: {
-      //   statement: {parts: []},``
-      //   additionalInfo: [],
-      //   presentationOrder: 'ordered',
-      //   processingCriteria: {
-      //     type: this.challengeService.exerciseConfig.invertedGnomes
-      //       ? 'inverse-presentation-order' : 'presentation-order'
-      //   },
-      //   stimulus: this.challengeService.exercise.sequenceGnomeIds.map(this.gnomeIdToStimulus.bind(this))
-      // } as WorkingMemorySchemaData,
+      schemaData: {
+        statement: {parts: []},
+        additionalInfo: [],
+        options: this.challengeService.currentExercise.value.exerciseData.optionsBirds.map(this.birdToOption.bind(this)),
+        optionMode: 'independent',
+        requiredOptions: 1
+      } as MultipleChoiceSchemaData,
       userInput: {
         answers: [],
         requestedHints: 0,

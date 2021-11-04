@@ -137,7 +137,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
       },
       globalStatement: [],
       timeSettings: {
-        timeMode: 'between-interactions',
+        timeMode: 'total',
       },
     };
   }
