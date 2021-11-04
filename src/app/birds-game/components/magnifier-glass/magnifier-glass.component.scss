@@ -1,3 +1,19 @@
 .box-on {
   box-shadow: 0 0 0 100vw rgba(0, 0, 0, 0.74);
 }
+
+.ok-btn {
+
+    background: rgb(119, 198, 110);
+    border-radius: 0.7em;
+    box-shadow: 2px 4px 0 #0A7237;
+    color: #fff;
+    font-size: 2em;
+    font-weight: 00;
+    text-shadow:1px 2px 0 #0a7237;
+    font-weight: 800;
+    // top: 33vh;
+    // left: 96vh;
+    width: 11vh;
+    height: 8vh;
+}

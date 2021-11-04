@@ -10,12 +10,23 @@ export type BirdColor = 'amarillo' | 'azul' | 'rojo' | 'violeta' | 'verde';
 export type BirdType = 'cóndor' | 'cotorra' | 'lechuza' | 'gordo' | 'pelado';
 export type TrapType = 'Equal shape' | 'Equal color' | 'different color and shape';
 export type BirdState = "" | "happy" | "sad"; 
-
+export type PositionXAxis = "right" | "left" | "center";
+export type PositionYAxis = "top" | "bottom"| "center";
 
 export interface BirdInfo {
   color: BirdColor;
   type: BirdType;
   isDouble?:boolean
+}
+
+export interface ButtonInfo {
+  horizontal: PositionXAxis;
+  vertical: PositionYAxis;
+}
+
+export interface ButtonPosition {
+  xAxis:number;
+  yAxis:number;
 }
 
 
@@ -70,5 +81,6 @@ export interface MagnifierPosition {
   height: string,
   transform: string,
   borderRadius: string,
-  flexPosition: string
+  flexPosition: string,
+  buttonInfo?: ButtonPosition
 }

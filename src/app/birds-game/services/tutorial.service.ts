@@ -13,7 +13,7 @@ export class TutorialService {
   birdComponents: BirdComponent[] = [];
   usingTutorial = false;
   birdsInstanciated = new EventEmitter();
-  birdStepCorrect = new EventEmitter();
+  birdStepCorrect = new EventEmitter<number>();
   constructor(private challengeService: ColorfulHeightsChallengeService) {
   }
 
@@ -36,26 +36,25 @@ export class TutorialService {
     } while (birds.length < birdQuantity);
     birds.forEach((bird, index) => bird.isDouble = index < doubleQuantity);
     return {
-      optionsBirds:this.optionBirdCondition(birds, forceCorrectDouble),
+      optionsBirds:shuffle(birds),
       targetBird: forceCorrectDouble ?  birds.find( z => z.isDouble) as BirdInfo : anyElement(birds),
       hintBird: undefined as any
     };
   }
 
-  private optionBirdCondition(birds:BirdInfo[], forceCorrectDouble:boolean):BirdInfo[] {
-    birds = shuffle(birds);
-    if(forceCorrectDouble) {
-      birds.forEach(z =>{ if (z.isDouble) {
-        const indexOfDouble = birds.indexOf(z);
-        birds.splice(indexOfDouble,1);
-        birds.push(z);
-      }})
-     return birds
-    } else {
-      return birds
-    }
-    
-  }
+  // private optionBirdCondition(birds:BirdInfo[], forceCorrectDouble:boolean):BirdInfo[] {
+  //   birds = shuffle(birds);
+  //   if(forceCorrectDouble) {
+  //     birds.forEach(z =>{ if (z.isDouble) {
+  //       const indexOfDouble = birds.indexOf(z);
+  //       birds.splice(indexOfDouble,1);
+  //       birds.push(z);
+  //     }})
+  //    return birds
+  //   } else {
+  //     return birds
+  //   }   
+  // }
 
   private checkValidation(check: number): void {
     if (check > 999) {

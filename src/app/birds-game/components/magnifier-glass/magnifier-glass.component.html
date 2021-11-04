@@ -1,7 +1,10 @@
-<div  class="full-size" style="position: relative" fxLayoutAlign="center start">
-  <div #box  fxLayout = "center center"  [ngStyle]="{'width': magnifierPosition.width,
+<div class="full-size" style="position: relative" fxLayoutAlign = {{magnifierPosition.flexPosition}}>
+  <div #box fxLayoutAlign="center center" [ngStyle]="{'width': magnifierPosition.width,
   'height': magnifierPosition.height, 'transform': magnifierPosition.transform, 
   'border-radius':magnifierPosition.borderRadius}"
        [ngClass]="{'box-on': boxOn}"
-       style="transition: 1s"></div>
+       style="transition: 1s">
+       <div *ngIf="buttonOkOn" class="ok-btn" [ngStyle]="{'transform':'translate('+magnifierPosition.buttonInfo?.xAxis + 'vh,'+magnifierPosition.buttonInfo?.yAxis+'vh)'}" 
+       fxLayoutAlign="center center"><span>OK!</span></div>
+      </div>
 </div>
