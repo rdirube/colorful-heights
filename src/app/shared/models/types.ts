@@ -91,6 +91,14 @@ export interface MagnifierPosition {
 
 export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
   {
+    width: '150vh',
+    height: '100vh',
+    transform: 'translate(0vh, 0vh)',
+    borderRadius: '0%',
+    flexPosition: 'center center',
+    reference: 'initial-state'
+  },
+  {
     width: '32vh',
     height: '29vh',
     transform: 'translate(-2vh, 9vh)',

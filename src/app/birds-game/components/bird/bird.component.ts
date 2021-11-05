@@ -103,6 +103,8 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.wingsUpActivate = !this.wingsUpActivate;
   }
 
+  
+
   birdSelectMethod() {
     if (!this.isOption) return;
     if (this.bird.isDouble && this.isDoubleCounter < 1) {
@@ -173,8 +175,9 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     }
     if(isCorrect) {
       this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
-      this.wingsUpActivate = !this.wingsUpActivate;
-        if (w === 3 && !this.isOption) {
+      this.wingsUpActivate = !this.wingsUpActivate; 
+        if (w === 3 && this.isOption) {
+          console.log("hola2");
           endFeedbackEmitter();
         }
       });

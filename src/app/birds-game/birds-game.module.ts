@@ -12,7 +12,7 @@ import { BaseBodyDirective } from './directives/base-body.directive';
 import { NestGroupComponent } from './components/nest-group/nest-group.component';
 import { NestDirective } from './directives/nest.directive';
 import { MagnifierGlassComponent } from './components/magnifier-glass/magnifier-glass.component';
-
+import { TutorialButtonComponent } from './components/tutorial/tutorial-button/tutorial-button.component';
 
 
 @NgModule({
@@ -28,6 +28,7 @@ import { MagnifierGlassComponent } from './components/magnifier-glass/magnifier-
     NestGroupComponent,
     NestDirective,
     MagnifierGlassComponent,
+    TutorialButtonComponent
   ],
   exports: [
     GameBodyComponent,

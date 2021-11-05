@@ -20,7 +20,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
 
   public duration!: number;
   public isPaused: boolean = false;
-
+  public tutorialInterval!: any;
   public pieAnimation!: any;
   public borderAnimation!: any;
   bonusText!: string;
@@ -145,7 +145,10 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
     this.goBackMethod(this.pieAnimation, moveFowardPercentage);
     this.goBackMethod(this.borderAnimation, moveFowardPercentage);
     this.playTime();
-    setInterval(
+    timer(500).subscribe(z=> {
+      this.addTimeMethod(secondsToAdd)
+    })
+    this.tutorialInterval = setInterval(
      ()=> this.addTimeMethod(secondsToAdd)
     ,intervalTime) 
   }

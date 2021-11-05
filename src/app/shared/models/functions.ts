@@ -21,8 +21,7 @@ export function okButtonPosition(buttonInfo: ButtonInfo, width: string, height: 
     return {
         xAxis: (parseWidth / 2) * getPositionMultipler(buttonInfo.horizontal) + (buttonInfo.offsetX || 0),
         yAxis: (parseHeight / 2) * getPositionMultipler(buttonInfo.vertical) + (buttonInfo.offsetY || 0)
+    
     };
-
-
 
 }

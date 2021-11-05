@@ -1,10 +1,19 @@
 <div fxFlex="grow" fxLayoutAlign="center center" style="position: relative; background: red">
   <div fxFlex="grow" fxFlexFill class="myAbsolute">
     <div fxFlex="grow" fxFlexFill style="position: relative">
-
+      <div class="tutorial-complete-container" fxLayoutAlign="center center " fxLayout="column" *ngIf="isTutorialComplete"
+      style="position: absolute">
+    <ox-text [oxTextInfo]="tutorialComplete" class="tutorial-comṕlete-text"></ox-text>
+    <app-tutorial-button  fxLayoutAlign="center center" [tutorialText]="playNowButtomText" 
+    mlcClickeableOx 
+    class="complete-buttom"></app-tutorial-button>
+    <app-tutorial-button  fxLayoutAlign="center center" class="complete-buttom"
+    mlcClickeableOx 
+    [tutorialText]="repeatTutorialButtomText"></app-tutorial-button>
+    </div>
       <div style="width:100%; height:25vh;padding-top: 2vh; padding-right: 2vh;top:10vh;;"
            class="myAbsolute" fxLayoutAlign="end center">
-        <app-bird-to-select [birdToSelect]="exercise.targetBird"  [counterOriginalText]="correctAnswerCounter"
+        <app-bird-to-select [birdToSelect]="exercise.targetBird || undefined"  [counterOriginalText]="correctAnswerCounter"
                             class="bird-select-container"></app-bird-to-select>
       </div>
       <div class="myAbsolute tree-show" fxFlex="grow" fxFlexFill style="z-index: 1;">
@@ -46,4 +55,4 @@
   (okButtonClicked)="onOkButtonClicked()"
   [magnifierPosition]="magnifier" [buttonOkActivate]="buttonOkActivate" [boxOn]="boxOn"></app-magnifier-glass>
 
-    <div class="skip-tutorial-btn" fxLayoutAlign="center center"><span>Saltar tutorial</span></div>
+    <div class="skip-tutorial-btn" style="right: 3vh; top:90vh;position: fixed;" fxLayoutAlign="center center"><span>Saltar tutorial</span></div>

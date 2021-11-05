@@ -9,6 +9,10 @@ import { BirdComponent } from '../bird/bird.component';
 import { TutorialService } from '../../services/tutorial.service';
 import { take } from 'rxjs/operators';
 import { sameBird } from 'src/app/shared/models/functions';
+import { OxTextInfo, ScreenTypeOx} from 'ox-types';
+import { BirdToSelectComponent } from '../bird-to-select/bird-to-select.component';
+import { SoundOxService } from 'micro-lesson-core';
+
 
 @Component({
   selector: 'app-tutorial',
@@ -20,6 +24,7 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
   @ViewChild('tutorialText') tutorialText!: TextComponent;
   @ViewChild(NestGroupComponent) nestGroup!: NestGroupComponent;
+  @ViewChild(BirdToSelectComponent) birdToSelect!: BirdToSelectComponent;
 
   exercise = this.tutorialService.generateTutorialExercise(3, 0);
 
@@ -35,8 +40,12 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   readonly magnifierPositions = MAGNIFIER_POSITIONS;
   private okButtonHasBeenClick = new EventEmitter();
   private correctBirdSelect = new EventEmitter();
-
-  constructor(private tutorialService: TutorialService) {
+  public isTutorialComplete:boolean = false;
+  public tutorialComplete = new OxTextInfo();
+  public saltarTutorialText = 'Saltar Tutorial';
+  public playNowButtomText = 'Jugar Ahora';
+  public repeatTutorialButtomText = 'Repetir Tutorial';
+  constructor(private tutorialService: TutorialService, private soundService:SoundOxService) {
     super();
     this.addSubscription(this.tutorialService.birdsInstanciated, z => {
       console.log(this.tutorialService.birdComponents);
@@ -49,6 +58,10 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     // this.replaceBirds3and4(this.optionsBirds AS ANY);
     this.treeClass = 'tree-show no-transition';
     this.baseClass = 'base-hide no-transition';
+    this.tutorialComplete.color = 'white';
+    this.tutorialComplete.originalText = 'Tutorial completado ¡A jugar!';
+    this.tutorialComplete.font = 'dinnRegular';
+    this.tutorialComplete.fontSize = '6vh';
   }
 
   ngOnInit(): void {
@@ -56,27 +69,20 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
 
   tutorialBirdClick(bird: BirdComponent) {
-    console.log("hola");
     if (!bird.isOption || !this.clicksOn) return;
     if (bird.bird.isDouble && bird.isDoubleCounter < 1 && sameBird(bird.bird, this.exercise.targetBird)) {
       bird.isDoubleCounter++;
     } else if (sameBird(bird.bird, this.exercise.targetBird)) {
-      this.correctBirdSelect.emit();
+      bird.birdOptionCorrectCheck(bird.bird, this.exercise.targetBird, true, () => this.correctBirdSelect.emit());
     }
   }
-
-  // TRY CLICK
-  // bird.answerService.setBirdAsAnswer(bird.bird, bird.svgBirdGenerator(bird.bird.type, []));
-  // bird.gameActions.actionToAnswer.emit();
-  // bird.answerService.onTryAnswer();
-
 
 
   ngAfterViewInit(): void {
     this.birdsUpAnimation(400);
-    this.birdToSelectComponent.birdToSelectAnimationAppearence();
+    this.birdToSelectComponent?.birdToSelectAnimationAppearence();
     this.executeCurrentStep();
-  }
+    this.setMagnifierReference('initial-state');  }
 
   private addStep(text: string, actions: () => void, completedSub: Observable<any>) {
     this.steps.push({ text, actions, completedSub });
@@ -96,6 +102,8 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     else
       console.log('tutorialComplete');
   }
+
+
 
   textChangeAnimation(text: string): void {
     const duration = 500;
@@ -120,17 +128,22 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
 
 
-  private setSteps() {
+  public setSteps() {
     this.addStep('Bienvenidos', () => {
     }, timer(4000));
     this.addStep('El objetivo del juego consiste en alimentar al pajaro que nos indique la ventana ubicada arriba a la derecha',
       () => {
         this.buttonBirdsClickActivation(false)
         console.log(this.exercise.optionsBirds);
-        timer(4000).subscribe(z => this.setMagnifierReference('bird-to-select'));
+        timer(4000).subscribe(z =>
+           {
+             this.setMagnifierReference('bird-to-select');
+             this.magnifierSoundMethod();
+      });
       }, this.okButtonHasBeenClick);
     this.addStep('Haz click en el pajaro de las opciones señaladas que coincida en forma y color con el indicado en el paso anterior', () => {
       this.setMagnifierReference('all-birds');
+      this.magnifierSoundMethod();
     }, this.okButtonHasBeenClick);
     this.addStep('Atento a los pajaros trampa', () => {
       const trapBirds = this.tutorialService.birdComponents.filter(z => !sameBird(z.bird, this.exercise.targetBird));
@@ -145,21 +158,35 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     this.addStep('Los pájaros pueden ser dobles, en caso de coincidir con el , clickealo dos veces para alimentar a ambos', () => {
       this.setNewExercise(1, true,
         () => this.setMagnifierReference('bird-' + this.exercise.optionsBirds.findIndex(z => z.isDouble)));
-        this.buttonBirdsClickActivation(false)
+        this.magnifierSoundMethod();
+      this.buttonBirdsClickActivation(false)
     }, this.okButtonHasBeenClick);
-    this.addStep('Clickea dos veces en los pájaros dobles correctos', ()=> {
+    this.addStep('Clickea dos veces en los pájaros dobles correctos', () => {
       this.buttonBirdsClickActivation(true);
+      this.magnifierSoundMethod();
       this.setMagnifierReference('all-birds');
     }, this.correctBirdSelect)
     this.addStep('Alimentar la mayor cantidad de pajaros antes de que se acabe el tiempo', () => {
       this.buttonBirdsClickActivation(false)
-      this.clockComponent.startTime(25000);
-      this.setMagnifierReference('clock');     
+      this.clockComponent.startTime(10000);
+      this.magnifierSoundMethod();
+      this.setMagnifierReference('clock');
     }, this.okButtonHasBeenClick);
-    this.addStep('Ante una racha de aciertos consecutivos, se activara un bonus de segundos extra', ()=> {
-     this.clockComponent.tutorialClockMethod(-10,2,2500);
-    },this.okButtonHasBeenClick);
+    this.addStep('Ante una racha de aciertos consecutivos, se activara un bonus de segundos extra', () => {
+      this.clockComponent.tutorialClockMethod(-30, 2, 2000);
+    }, this.okButtonHasBeenClick);
+    this.addStep('',()=> {
+      clearInterval(this.clockComponent.tutorialInterval);
+      this.clockComponent.pauseTime();
+      this.isTutorialComplete = true;
+    }, this.okButtonHasBeenClick)
   }
+
+
+ public repeatTutorialMethod():void {
+    this.isTutorialComplete = false;
+    this.setSteps();
+ }
 
 
 
@@ -176,16 +203,16 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     });
   }
 
-  buttonBirdsClickActivation(birdsActive:boolean):void {
+  buttonBirdsClickActivation(birdsActive: boolean): void {
     this.clicksOn = birdsActive ? true : false;
-    this.buttonOkActivate =! this.clicksOn;  
+    this.buttonOkActivate = !this.clicksOn;
   }
 
-  onOkButtonClicked() {
+  onOkButtonClicked():void {
     this.okButtonHasBeenClick.emit();
   }
 
-  private destroyEndStepSubscription() {
+  private destroyEndStepSubscription():void {
     if (this.currentEndStepSubscription) {
       this.currentEndStepSubscription.unsubscribe();
     }
@@ -196,4 +223,9 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     super.ngOnDestroy();
     this.destroyEndStepSubscription();
   }
+
+  private magnifierSoundMethod():void {
+    this.soundService.playSoundEffect('colorful-heights/sounds/magnifier_sound.mp3', ScreenTypeOx.Game);
+  }
+
 }
