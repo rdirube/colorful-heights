@@ -12,6 +12,7 @@ import { sameBird } from 'src/app/shared/models/functions';
 import { OxTextInfo, ScreenTypeOx} from 'ox-types';
 import { BirdToSelectComponent } from '../bird-to-select/bird-to-select.component';
 import { SoundOxService } from 'micro-lesson-core';
+import { PreloaderOxService } from 'ox-core';
 
 
 @Component({
@@ -45,7 +46,7 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   public saltarTutorialText = 'Saltar Tutorial';
   public playNowButtomText = 'Jugar Ahora';
   public repeatTutorialButtomText = 'Repetir Tutorial';
-  constructor(private tutorialService: TutorialService, private soundService:SoundOxService) {
+  constructor(private tutorialService: TutorialService, private soundService:SoundOxService, private preLoaderServide: PreloaderOxService) {
     super();
     this.addSubscription(this.tutorialService.birdsInstanciated, z => {
       console.log(this.tutorialService.birdComponents);
