@@ -1,7 +1,6 @@
-import {Component, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnInit, ViewChildren} from '@angular/core';
 import {BirdInfo} from '../../../shared/models/types';
 import {NestDirective} from '../../directives/nest.directive';
-import {timer} from 'rxjs';
 
 @Component({
   selector: 'app-nest-group',
@@ -17,7 +16,6 @@ export class NestGroupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    timer(5000).subscribe(z => console.log(this.nests));
   }
 
 }

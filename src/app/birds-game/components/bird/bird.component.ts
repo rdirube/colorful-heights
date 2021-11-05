@@ -7,14 +7,14 @@ import {
   ViewChild
 } from '@angular/core';
 import { ClickableOxDirective } from 'micro-lesson-components';
-import { BirdType, Replaces, BirdState, BirdInfo, BirdColor } from 'src/app/shared/models/types';
+import {BirdType, Replaces, BirdState, BirdInfo, BirdColor, BASE_BIRD_COLOR} from 'src/app/shared/models/types';
 import { PreloaderOxService } from 'ox-core';
 import { ColorfulHeightsChallengeService } from 'src/app/shared/services/colorful-heights-challenge.service';
 import { interval, Subscription, timer } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ColorfulHeightsAnswerService } from '../../../shared/services/colorful-heights-answer.service';
 import { FeedbackOxService, GameActionsService, SoundOxService } from 'micro-lesson-core';
-import { sameBird } from '../../../shared/models/functions';
+import {colorsParseFunction, sameBird, svgBirdGenerator} from '../../../shared/models/functions';
 
 
 @Component({
@@ -110,37 +110,18 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     if (this.bird.isDouble && this.isDoubleCounter < 1) {
       this.isDoubleCounter++;
     } else {
-      this.answerService.setBirdAsAnswer(this.bird, this.svgBirdGenerator(this.bird.type, []));
+      this.answerService.setBirdAsAnswer(this.bird, svgBirdGenerator(this.bird.type, []));
       this.gameActions.actionToAnswer.emit();
       this.answerService.onTryAnswer();
     }
   }
 
 
-  svgBirdGenerator(bird: BirdType, extraWords: string[] = []): string {
-    return "colorful-heights/svg/Pajaritos/" + [bird as string].concat(extraWords.filter(z => z.length > 0)).join('_') + ".svg";
-  }
 
-  colorsParseMethod(color: BirdColor): string {
-    switch (color) {
-      case 'azul':
-        return "#406faf";
-      case 'rojo':
-        return "#e81e25";
-      case 'amarillo':
-        return "#ffc807";
-      case 'violeta':
-        return "#8b2c90";
-      case 'verde':
-        return "#73be44";
-      default:
-        throw new Error('A color not listed came in ' + color);
-    }
-  }
 
   private assignPathAndReplaceTo(state: string[], replaces: Map<string, string>): Replaces {
     return {
-      path: this.svgBirdGenerator(this.bird.type, state),
+      path: svgBirdGenerator(this.bird.type, state),
       replaces
     };
   }
@@ -159,7 +140,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
 
   getReplaces(): Map<string, string> {
     const replaces = new Map<string, string>();
-    replaces.set("#406faf", this.colorsParseMethod(this.bird.color));
+    replaces.set(BASE_BIRD_COLOR, colorsParseFunction(this.bird.color));
     return replaces;
   }
 
@@ -176,7 +157,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     if(isCorrect) {
       this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
       this.wingsUpActivate = !this.wingsUpActivate; 
-        if (w === 3 && this.isOption) {
+        if (w === 3 && !this.isOption) {
           console.log("hola2");
           endFeedbackEmitter();
         }

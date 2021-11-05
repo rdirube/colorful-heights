@@ -62,16 +62,17 @@ export class AppComponent extends BaseMicroLessonApp {
   protected getGameResourcesToLoad(): ResourceOx[] {
     const svgFondo: string[] = ['arbol.svg', 'Base.svg',
       'hueco.svg', 'hueco-over.svg', 'rama_derecha.svg', 'rama_izquierda.svg', 'reloj/Reloj1.svg', 'reloj/reloj4.svg', 'Muestra pajaritos.svg','tutorial/tutorial_botón.svg'];
-    const svgBirds: string[] = ['cotorra_amarillo.svg', 'gordo_azul.svg', 'cóndor_amarillo.svg', 'cóndor_azul.svg', 'cotorra_roja.svg', 'cotorra_violeta.svg', 'lechuza_azul.svg', 'pelado_verde.svg',
-      'pelado_rojo.svg', 'cóndor.svg', 'cóndor_alas_1.svg', 'cóndor_alas_2.svg', 'cóndor_happy.svg', 'cóndor_sad.svg', 'cotorra.svg', 'cotorra_alas_1.svg', 'cotorra_alas_2.svg', 'cotorra_happy.svg', 'cotorra_sad.svg', 'gordo.svg', 'gordo_alas_1.svg', 'gordo_alas_2.svg', 'gordo_happy.svg', 'gordo_sad.svg',
-      'lechuza.svg', 'lechuza_alas_1.svg', 'lechuza_alas_2.svg', 'lechuza_happy.svg', 'lechuza_sad.svg', 'pelado.svg', 'pelado_alas_1.svg', 'pelado_alas_2.svg', 'pelado_happy.svg', 'pelado_sad.svg'];
+    const svgBirds: string[] = ['cóndor.svg', 'cóndor_alas_1.svg', 'cóndor_alas_2.svg', 'cóndor_happy.svg', 'cóndor_sad.svg', 'cotorra.svg',
+      'cotorra_alas_1.svg', 'cotorra_alas_2.svg', 'cotorra_happy.svg', 'cotorra_sad.svg', 'gordo.svg', 'gordo_alas_1.svg', 'gordo_alas_2.svg', 'gordo_happy.svg',
+      'gordo_sad.svg', 'lechuza.svg', 'lechuza_alas_1.svg', 'lechuza_alas_2.svg', 'lechuza_happy.svg', 'lechuza_sad.svg', 'pelado.svg', 'pelado_alas_1.svg',
+      'pelado_alas_2.svg', 'pelado_happy.svg', 'pelado_sad.svg'];
     // const animationSvgs = [];
     // animationSvgs.forEach(z => svg.push('gnome-game/svg/Fondos/sorpresas/' + z));
     const sounds = ['bonus.mp3', 'bird_sound_colorful_heights.mp3', 'magnifier_sound.mp3'].map( z => 'colorful-heights/sounds/' + z);
     return svgFondo.map(x => new ResourceOx('colorful-heights/svg/Elementos fondo/' + x, ResourceType.Svg,
       [ScreenTypeOx.Game], true))
-      .concat(svgBirds.map(x => new ResourceOx('colorful-heights/svg/Pajaritos/' + x, ResourceType.Svg,
-        [ScreenTypeOx.Game], true)))
+      .concat(svgBirds.map(x => new ResourceOx('mini-lessons/executive-functions/colorful-heights/svg/Pajaritos/' + x, ResourceType.Svg,
+        [ScreenTypeOx.Game], false)))
       .concat(getResourceArrayFromUrlList(sounds, ResourceType.Audio, true))
       .concat(getResourceArrayFromUrlList(['mini-lessons/executive-functions/svg/buttons/Home.svg',
         'mini-lessons/executive-functions/svg/buttons/Hint.svg',

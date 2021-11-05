@@ -7,14 +7,14 @@ import {
   MicroLessonMetricsService,
   SoundOxService
 } from 'micro-lesson-core';
-import {BirdInfo, ColorfullHeightsExercise} from 'src/app/shared/models/types';
+import {BASE_BIRD_COLOR, BirdInfo, ColorfullHeightsExercise} from 'src/app/shared/models/types';
 import {ColorfulHeightsChallengeService} from 'src/app/shared/services/colorful-heights-challenge.service';
 import {ExerciseOx,} from 'ox-core';
 import {timer} from 'rxjs';
 import {ExerciseData, MultipleChoiceSchemaData, OptionShowable, ScreenTypeOx, Showable} from 'ox-types';
 import {filter, take} from 'rxjs/operators';
 import {BaseBodyDirective} from '../../directives/base-body.directive';
-import {sameBird} from '../../../shared/models/functions';
+import {colorsParseFunction, sameBird, svgBirdGenerator} from '../../../shared/models/functions';
 
 @Component({
   selector: 'app-game-body',
@@ -86,6 +86,18 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
     return {
       isCorrect: sameBird(this.challengeService.currentExercise.value.exerciseData.targetBird, bird),
       showable: {
+        image: [
+          {
+            path: svgBirdGenerator(bird.type, []),
+            keys: [BASE_BIRD_COLOR],
+            values: [colorsParseFunction(bird.color)]
+          },
+          {
+            path: svgBirdGenerator(bird.type, ['alas', '1']),
+            keys: [BASE_BIRD_COLOR],
+            values: [colorsParseFunction(bird.color)]
+          },
+        ]
       },
       customProperties: [
         {

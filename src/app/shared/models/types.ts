@@ -1,5 +1,7 @@
 import {Observable, Subscription} from 'rxjs';
 
+export const BASE_BIRD_COLOR = "#406faf";
+
 export interface ColorfullHeightsExercise {
   hintBird: BirdInfo;
   targetBird: BirdInfo;

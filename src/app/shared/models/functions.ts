@@ -1,4 +1,4 @@
-import { BirdInfo, ButtonInfo } from "./types";
+import {BirdColor, BirdInfo, BirdType, ButtonInfo} from "./types";
 import { PositionXAxis } from "./types";
 import { PositionYAxis } from "./types";
 import { ButtonPosition } from "./types";
@@ -24,4 +24,26 @@ export function okButtonPosition(buttonInfo: ButtonInfo, width: string, height: 
     
     };
 
+}
+
+export function colorsParseFunction(color: BirdColor): string {
+  switch (color) {
+    case 'azul':
+      return "#406faf";
+    case 'rojo':
+      return "#e81e25";
+    case 'amarillo':
+      return "#ffc807";
+    case 'violeta':
+      return "#8b2c90";
+    case 'verde':
+      return "#73be44";
+    default:
+      throw new Error('A color not listed came in ' + color);
+  }
+}
+
+export function svgBirdGenerator(bird: BirdType, extraWords: string[] = []): string {
+  return "mini-lessons/executive-functions/colorful-heights/svg/Pajaritos/" + [bird as string]
+    .concat(extraWords.filter(z => z.length > 0)).join('_') + ".svg";
 }
