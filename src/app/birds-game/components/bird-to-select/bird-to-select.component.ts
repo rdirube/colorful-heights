@@ -3,6 +3,7 @@ import { TextComponent} from 'typography-ox';
 import {SubscriberOxDirective} from 'micro-lesson-components';
 import anime from 'animejs';
 import {BirdInfo} from 'src/app/shared/models/types';
+import {BirdComponent} from '../bird/bird.component';
 
 @Component({
   selector: 'app-bird-to-select',
@@ -15,6 +16,7 @@ export class BirdToSelectComponent extends SubscriberOxDirective implements OnIn
   @Input() counterOriginalText!: number;
   @Input('birdToSelect') birdToSelect!: BirdInfo | undefined;
   @ViewChild('counterText') counterText!: TextComponent;
+  @ViewChild(BirdComponent) birdComponent!: BirdComponent;
 
   constructor() {
     super();

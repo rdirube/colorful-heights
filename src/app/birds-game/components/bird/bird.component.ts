@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -31,10 +32,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   @Input('birdInfo')
   set setBirdInfo(b: BirdInfo) {
     this.bird = b;
-    this.birdState = '';
-    this.isDoubleCounter = 0;
-    this.updatePathAndReplaces();
-    this.elementRef.nativeElement.style.transform = '';
+    this.birdToNormalState();
   }
 
   bird!: BirdInfo;
@@ -51,6 +49,7 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
   private wingAnimationSub: Subscription | undefined;
 
   constructor(private elementRef: ElementRef,
+    private cdr: ChangeDetectorRef,
     private gameActions: GameActionsService<any>,
     private feedbackService: FeedbackOxService,
     private soundOxService: SoundOxService,
@@ -69,21 +68,6 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
       const isCorrect = z.correctness === 'correct';
       this.birdOptionCorrectCheck(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird, isCorrect,
         this.endFedbackEmitter.bind(this))
-      // const isAnswerBird = sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.targetBird);
-      // if (isAnswerBird) {
-      //   this.birdState = isCorrect ? "happy" : 'sad';
-      //   this.setBodyByState(this.getReplaces())
-      // }
-      // if (isCorrect) {
-      //   this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
-      //     this.wingAnimationMethod();
-      //     if (w === 3 && !this.isOption) {
-      //       this.feedbackService.endFeedback.emit();
-      //     }
-      //   });
-      // } else if (!this.isOption) {
-      //   timer(600).subscribe(t => this.feedbackService.endFeedback.emit());
-      // }
     });
     this.addSubscription(this.gameActions.showHint, z => {
       if (sameBird(this.bird, this.challengeService.currentExercise.value.exerciseData.hintBird)) {
@@ -158,7 +142,6 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
       this.wingAnimationSub = interval(200).pipe(take(4)).subscribe(w => {
       this.wingsUpActivate = !this.wingsUpActivate; 
         if (w === 3 && !this.isOption) {
-          console.log("hola2");
           endFeedbackEmitter();
         }
       });
@@ -193,6 +176,13 @@ export class BirdComponent extends ClickableOxDirective implements OnInit, OnDes
     this.elementRef.nativeElement.style.transform = 'scale(0)';
   }
 
+  public birdToNormalState() {
+    this.birdState = '';
+    this.isDoubleCounter = 0;
+    this.updatePathAndReplaces();
+    this.elementRef.nativeElement.style.transform = '';
+    this.cdr.detectChanges();
+  }
 }
 
 

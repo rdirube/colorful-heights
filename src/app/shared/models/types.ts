@@ -93,7 +93,7 @@ export interface MagnifierPosition {
 
 export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
   {
-    width: '150vh',
+    width: '100vw',
     height: '100vh',
     transform: 'translate(0vh, 0vh)',
     borderRadius: '0%',

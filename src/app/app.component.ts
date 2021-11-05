@@ -1,6 +1,6 @@
 import {Component, ElementRef} from '@angular/core';
 import {CommunicationOxService, I18nService, PreloaderOxService, ResourceOx, ResourceType} from 'ox-core';
-import {ResourceFinalStateOxBridge, ScreenTypeOx} from 'ox-types';
+import {HasTutorialOxBridge, ResourceFinalStateOxBridge, ScreenTypeOx} from 'ox-types';
 import {
   AppInfoOxService,
   BaseMicroLessonApp,
@@ -29,6 +29,8 @@ import {BirdType} from './shared/models/types';
 export class AppComponent extends BaseMicroLessonApp {
   title = 'colorful-heights';
 
+  public showingTutorial = false;
+
   constructor(preloader: PreloaderOxService, translocoService: TranslocoService, wumboxService: InWumboxService,
               communicationOxService: CommunicationOxService, microLessonCommunicationService: MicroLessonCommunicationService<any>,
               progressService: ProgressService, elementRef: ElementRef, gameActions: GameActionsService<any>,
@@ -41,11 +43,11 @@ export class AppComponent extends BaseMicroLessonApp {
     super(preloader, translocoService, wumboxService, communicationOxService, microLessonCommunicationService,
       progressService, elementRef, gameActions, endGame,
       i18nService, levelService, http, challenge, appInfo, microLessonMetrics, sound, bridgeFactory);
-    console.log(svgBirdGenerator("lechuza", ["alas", "1"]));
-    console.log(svgBirdGenerator("lechuza", ["alas", "2"]));
-    console.log(svgBirdGenerator("lechuza", ["happy"]));
-    console.log(svgBirdGenerator("lechuza", ["sad"]));
-    console.log(svgBirdGenerator("lechuza", []));
+    microLessonCommunicationService.sendMessageMLToManager(HasTutorialOxBridge, true);
+    gameActions.showTutorial.subscribe(z => {
+      console.log('showing tutorial');
+      this.showingTutorial = true;
+    });
     communicationOxService.receiveI18NInfo.subscribe(z => {
       console.log('i18n', z);
     });

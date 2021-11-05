@@ -17,7 +17,7 @@ export class MagnifierGlassComponent implements OnInit {
     this.currentButtonPosition = this.currentMagnifierPosition.buttonInfo ?
     okButtonPosition(this.currentMagnifierPosition.buttonInfo, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height)
       : undefined;
-      console.log(okButtonPosition(this.currentMagnifierPosition.buttonInfo as any, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height));
+      // console.log(okButtonPosition(this.currentMagnifierPosition.buttonInfo as any, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height));
   }
 
   @Output() okButtonClicked = new EventEmitter();

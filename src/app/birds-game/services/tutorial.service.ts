@@ -10,7 +10,7 @@ import {anyElement, shuffle} from 'ox-core';
 })
 export class TutorialService {
 
-  birdComponents: BirdComponent[] = [];
+  birdInNestComponents: BirdComponent[] = [];
   usingTutorial = false;
   birdsInstanciated = new EventEmitter();
   birdStepCorrect = new EventEmitter<number>();
@@ -21,8 +21,8 @@ export class TutorialService {
   }
 
   addBird(z: BirdComponent) {
-    this.birdComponents.push(z);
-    if (this.birdComponents.length === 6) {
+    this.birdInNestComponents.push(z);
+    if (this.birdInNestComponents.length === 6) {
       this.birdsInstanciated.emit();
     }
   }
@@ -66,6 +66,6 @@ export class TutorialService {
   }
 
   setClicksOn(b: boolean) {
-    this.birdComponents.forEach( z => z.interactable = b);
+    this.birdInNestComponents.forEach(z => z.interactable = b);
   }
 }

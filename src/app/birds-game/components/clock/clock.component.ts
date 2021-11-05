@@ -37,7 +37,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
   ngOnInit(): void {
   }
 
-  
+
   startTime(time: number) {
     this.duration = time;
     if (this.pieAnimation) {
@@ -86,7 +86,6 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
   }
 
 
-
   textAnimation(secondsAdded: number) {
     this.bonusText = '+' + secondsAdded;
     anime.remove(this.bonusTextComponent.textElement.nativeElement);
@@ -128,7 +127,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
     const timeToAdd = secondsToAdd * 1000;
     const percentageToAdd = (timeToAdd * 100) / this.duration;
     this.textAnimation(secondsToAdd);
-    this.pauseTime();  
+    this.pauseTime();
     this.goBackMethod(this.pieAnimation, percentageToAdd);
     this.goBackMethod(this.borderAnimation, percentageToAdd);
     this.playTime();
@@ -138,22 +137,32 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
   public goBackMethod(animation: any, bonus: number) {
     animation.seek(((Math.round(this.borderAnimation.progress) - bonus) * this.duration) / 100);
   }
-  
 
-  public tutorialClockMethod(moveFowardPercentage:number, secondsToAdd:number, intervalTime:number) {
-    this.pauseTime();  
+
+  public tutorialClockMethod(moveFowardPercentage: number, secondsToAdd: number, intervalTime: number) {
+    this.pauseTime();
     this.goBackMethod(this.pieAnimation, moveFowardPercentage);
     this.goBackMethod(this.borderAnimation, moveFowardPercentage);
     this.playTime();
-    timer(500).subscribe(z=> {
-      this.addTimeMethod(secondsToAdd)
-    })
+    timer(500).subscribe(z => {
+      this.addTimeMethod(secondsToAdd);
+    });
     this.tutorialInterval = setInterval(
-     ()=> this.addTimeMethod(secondsToAdd)
-    ,intervalTime) 
+      () => this.addTimeMethod(secondsToAdd)
+      , intervalTime);
   }
-  
 
+
+  seekAnimation(number: number) {
+    if (this.animationsInstanciated()) {
+      this.pieAnimation.seek(number);
+      this.borderAnimation.seek(number);
+    }
+  }
+
+  public animationsInstanciated(): boolean {
+    return this.pieAnimation && this.borderAnimation;
+  }
 }
 
 
