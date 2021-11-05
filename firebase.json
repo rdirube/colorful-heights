@@ -1,0 +1,13 @@
+{
+  "hosting": [
+    {
+      "target": "colorful-heights",
+      "public": "dist/colorful-heights",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    }
+  ]
+}
