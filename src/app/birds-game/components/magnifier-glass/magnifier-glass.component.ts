@@ -17,12 +17,13 @@ export class MagnifierGlassComponent implements OnInit {
     this.currentButtonPosition = this.currentMagnifierPosition.buttonInfo ?
     okButtonPosition(this.currentMagnifierPosition.buttonInfo, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height)
       : undefined;
+      console.log(okButtonPosition(this.currentMagnifierPosition.buttonInfo as any, this.currentMagnifierPosition.width, this.currentMagnifierPosition.height));
   }
 
   @Output() okButtonClicked = new EventEmitter();
   @Input() boxOn!: boolean;
-  
-  
+  @Input() buttonOkActivate!:boolean;
+
   constructor(private element: ElementRef) {
     this.element.nativeElement.className = 'myAbsolute full-size';
     this.element.nativeElement.style.zIndex = '2';

@@ -4,9 +4,9 @@
   'border-radius':currentMagnifierPosition.borderRadius}"
         class="box-on"
        style="transition: 1s">
-    <div *ngIf="currentButtonPosition" class="ok-btn" [ngStyle]="{'transform': 'translate(' + currentButtonPosition.xAxis + 'vh,'
+  <div *ngIf="currentButtonPosition && buttonOkActivate" class="ok-btn" [ngStyle]="{'transform': 'translate(' + currentButtonPosition.xAxis + 'vh,'
        + currentButtonPosition.yAxis + 'vh)'}"
-          mlcClickeableOx [realClick]="onClickOk.bind(this)"
+         (click)="onClickOk()"
          fxLayoutAlign="center center"><span style="font-size: 3.7vh;">OK!</span></div>
   </div>
 </div>

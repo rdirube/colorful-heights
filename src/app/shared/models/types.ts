@@ -22,6 +22,8 @@ export interface BirdInfo {
 export interface ButtonInfo {
   horizontal: PositionXAxis;
   vertical: PositionYAxis;
+  offsetX?: number,
+  offsetY?: number,
 }
 
 export interface ButtonPosition {
@@ -103,7 +105,8 @@ export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
     transform: 'translate(-41.5vh, 8.7vh)',
     borderRadius: '20%',
     flexPosition: 'center center',
-    reference: 'bird-0'
+    reference: 'bird-0',
+    buttonInfo: {horizontal: 'center', vertical: 'top'},
   },
   {
     width: '32vh',
@@ -111,7 +114,8 @@ export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
     transform: 'translate(0vh, 12vh)',
     borderRadius: '20%',
     flexPosition: 'center center',
-    reference: 'bird-1'
+    reference: 'bird-1',
+    buttonInfo: {horizontal: 'center', vertical: 'top'},
   },
   {
     width: '32vh',
@@ -119,7 +123,8 @@ export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
     transform: 'translate(41.5vh, 8.7vh)',
     borderRadius: '20%',
     flexPosition: 'center center',
-    reference: 'bird-2'
+    reference: 'bird-2',
+    buttonInfo: {horizontal: 'center', vertical: 'top'},
   },
   {
     width: '131vh',
@@ -128,7 +133,7 @@ export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
     borderRadius: '10px',
     flexPosition: 'center center',
     reference: 'all-birds',
-    buttonInfo: {horizontal: 'center', vertical: 'center'},
+    buttonInfo: {horizontal: 'center', vertical: 'top'},
   },
   {
     width: '27vh',
@@ -136,7 +141,7 @@ export const MAGNIFIER_POSITIONS: MagnifierPosition[] = [
     transform: 'translate(0vh, -14vh)',
     borderRadius: '20%',
     flexPosition: 'center center',
-    buttonInfo: {horizontal: 'right', vertical: 'bottom'},
+    buttonInfo: {horizontal: 'right', vertical: 'bottom', offsetX: 2, offsetY: 2},
     reference: 'clock'
   }];
 

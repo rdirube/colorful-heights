@@ -33,9 +33,11 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
     super();
   }
 
+
   ngOnInit(): void {
   }
 
+  
   startTime(time: number) {
     this.duration = time;
     if (this.pieAnimation) {
@@ -83,6 +85,8 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
     }
   }
 
+
+
   textAnimation(secondsAdded: number) {
     this.bonusText = '+' + secondsAdded;
     anime.remove(this.bonusTextComponent.textElement.nativeElement);
@@ -104,11 +108,13 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
     });
   }
 
+
   public pauseTime() {
     this.isPaused = true;
     this.pieAnimation.pause();
     this.borderAnimation.pause();
   }
+
 
   public playTime() {
     this.isPaused = false;
@@ -116,20 +122,34 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
     this.borderAnimation.play();
   }
 
+
   // Bonus is in seconds
   public addTimeMethod(secondsToAdd: number) {
     const timeToAdd = secondsToAdd * 1000;
     const percentageToAdd = (timeToAdd * 100) / this.duration;
-    this.pauseTime();
     this.textAnimation(secondsToAdd);
+    this.pauseTime();  
     this.goBackMethod(this.pieAnimation, percentageToAdd);
     this.goBackMethod(this.borderAnimation, percentageToAdd);
     this.playTime();
   }
 
+
   public goBackMethod(animation: any, bonus: number) {
     animation.seek(((Math.round(this.borderAnimation.progress) - bonus) * this.duration) / 100);
   }
+  
+
+  public tutorialClockMethod(moveFowardPercentage:number, secondsToAdd:number, intervalTime:number) {
+    this.pauseTime();  
+    this.goBackMethod(this.pieAnimation, moveFowardPercentage);
+    this.goBackMethod(this.borderAnimation, moveFowardPercentage);
+    this.playTime();
+    setInterval(
+     ()=> this.addTimeMethod(secondsToAdd)
+    ,intervalTime) 
+  }
+  
 
 }
 

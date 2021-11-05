@@ -31,6 +31,7 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
   private steps: TutorialStep[] = [];
   public clicksOn: boolean = false;
   public boxOn: boolean = false;
+  public buttonOkActivate: boolean = false;
   readonly magnifierPositions = MAGNIFIER_POSITIONS;
   private okButtonHasBeenClick = new EventEmitter();
   private correctBirdSelect = new EventEmitter();
@@ -124,18 +125,19 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     }, timer(4000));
     this.addStep('El objetivo del juego consiste en alimentar al pajaro que nos indique la ventana ubicada arriba a la derecha',
       () => {
+        this.buttonBirdsClickActivation(false)
         console.log(this.exercise.optionsBirds);
         timer(4000).subscribe(z => this.setMagnifierReference('bird-to-select'));
       }, this.okButtonHasBeenClick);
     this.addStep('Haz click en el pajaro de las opciones señaladas que coincida en forma y color con el indicado en el paso anterior', () => {
       this.setMagnifierReference('all-birds');
-    }, timer(5000));
+    }, this.okButtonHasBeenClick);
     this.addStep('Atento a los pajaros trampa', () => {
       const trapBirds = this.tutorialService.birdComponents.filter(z => !sameBird(z.bird, this.exercise.targetBird));
       trapBirds.forEach(w => w.trapBirdOn = true);
     }, this.okButtonHasBeenClick);
     this.addStep('Haz click en el pajaro correcto', () => {
-      this.clicksOn = true;
+      this.buttonBirdsClickActivation(true)
       this.tutorialService.birdComponents.forEach(d => {
         d.trapBirdOn = false;
       })
@@ -143,18 +145,20 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     this.addStep('Los pájaros pueden ser dobles, en caso de coincidir con el , clickealo dos veces para alimentar a ambos', () => {
       this.setNewExercise(1, true,
         () => this.setMagnifierReference('bird-' + this.exercise.optionsBirds.findIndex(z => z.isDouble)));
-    }, timer(3000));
+        this.buttonBirdsClickActivation(false)
+    }, this.okButtonHasBeenClick);
     this.addStep('Clickea dos veces en los pájaros dobles correctos', ()=> {
+      this.buttonBirdsClickActivation(true);
       this.setMagnifierReference('all-birds');
     }, this.correctBirdSelect)
     this.addStep('Alimentar la mayor cantidad de pajaros antes de que se acabe el tiempo', () => {
-      this.clockComponent.startTime(15000);
-      this.setMagnifierReference('clock');
+      this.buttonBirdsClickActivation(false)
+      this.clockComponent.startTime(25000);
+      this.setMagnifierReference('clock');     
     }, this.okButtonHasBeenClick);
     this.addStep('Ante una racha de aciertos consecutivos, se activara un bonus de segundos extra', ()=> {
-      this.clockComponent.goBackMethod(this.clockComponent.borderAnimation, -50);
+     this.clockComponent.tutorialClockMethod(-10,2,2500);
     },this.okButtonHasBeenClick);
-    // this.addStep('Cada ejercicio tiene un bonus')
   }
 
 
@@ -172,6 +176,10 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
     });
   }
 
+  buttonBirdsClickActivation(birdsActive:boolean):void {
+    this.clicksOn = birdsActive ? true : false;
+    this.buttonOkActivate =! this.clicksOn;  
+  }
 
   onOkButtonClicked() {
     this.okButtonHasBeenClick.emit();
