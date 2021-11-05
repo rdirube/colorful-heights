@@ -41,7 +41,7 @@ export class BaseBodyDirective extends SubscriberOxDirective {
   protected birdsUpAnimation(delay: number = 0, complete: () => void = () => {}): void {
     anime({
         targets: '.birdImage',
-        translateY: ['100%', '0%'],
+        translateY: ['110%', '0%'],
         duration: 1050,
         easing: 'easeInOutExpo',
         delay,
