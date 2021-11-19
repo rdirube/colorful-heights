@@ -39,6 +39,7 @@ export class ClockComponent extends SubscriberOxDirective implements OnInit {
 
 
   public destroyClockAnimations() {
+    this.bonusText = '';
     anime.remove('.svg-inner-pie');
     anime.remove('.timer');
     anime.remove(this.bonusTextComponent.textElement.nativeElement);

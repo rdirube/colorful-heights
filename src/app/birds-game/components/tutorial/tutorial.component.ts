@@ -150,49 +150,49 @@ export class TutorialComponent extends BaseBodyDirective implements OnInit, Afte
 
 
   public setSteps() {
-    this.addStep('¡Bienvenidos!” por “¡Te damos la bienvenida!', () => {
-    }, timer(4000 * this.generalSpeed));
-    this.addStep('El objetivo del juego consiste en alimentar al pájaro que nos indique la ventana ubicada arriba a la derecha.',
+    this.addStep('¡Te damos la bienvenida!', () => {
+    }, timer(3000 * this.generalSpeed));
+    this.addStep('Observa el pájaro del enunciado.',
       () => {
         this.buttonBirdsClickActivation(false);
         console.log(this.exercise.optionsBirds);
-        timer(4000 * this.generalSpeed).subscribe(z => {
+        timer(1000 * this.generalSpeed).subscribe(z => {
           this.setMagnifierReference('bird-to-select');
           this.magnifierSoundMethod();
         });
       }, this.okButtonHasBeenClick);
-    this.addStep('Haz CLICK en el pájaro de las opciones señaladas que coincida en forma y color con el indicado en el paso anterior.', () => {
+    this.addStep('Haz CLICK en el pájaro que coincida en forma y color.', () => {
       this.setMagnifierReference('all-birds');
       this.magnifierSoundMethod();
     }, this.okButtonHasBeenClick);
-    this.addStep('Atento a los pájaros con trampa.', () => {
+    this.addStep('Ten cuidado, hay pájaros con trampa.', () => {
       const trapBirds = this.tutorialService.birdInNestComponents.filter(z => !sameBird(z.bird, this.exercise.targetBird));
       trapBirds.forEach(w => w.trapBirdOn = true);
     }, this.okButtonHasBeenClick);
-    this.addStep('Haz CLICK en el pájaro correcto.', () => {
+    this.addStep('Haz CLICK en el pájaro correcto', () => {
       this.buttonBirdsClickActivation(true);
       this.tutorialService.birdInNestComponents.forEach(d => {
         d.trapBirdOn = false;
       });
     }, this.correctBirdSelect);
-    this.addStep('Los pájaros pueden ser dobles, en caso de coincidir con él, clickealo dos veces para alimentar a ambos.', () => {
+    this.addStep('Los pájaros pueden ser dobles, en ese caso, clickea dos veces para alimentar a ambos.', () => {
       this.setNewExercise(1, true,
         () => this.setMagnifierReference('bird-' + this.exercise.optionsBirds.findIndex(z => z.isDouble)));
       this.magnifierSoundMethod();
       this.buttonBirdsClickActivation(false);
     }, this.okButtonHasBeenClick);
-    this.addStep('Clickea dos veces en los pájaros dobles correctos', () => {
+    this.addStep('Clickea dos veces en los pájaros dobles', () => {
       this.buttonBirdsClickActivation(true);
       this.magnifierSoundMethod();
       this.setMagnifierReference('all-birds');
     }, this.correctBirdSelect);
-    this.addStep('Alimentar la mayor cantidad de pajaros antes de que se acabe el tiempo', () => {
+    this.addStep('Alimenta la mayor cantidad de pájaros antes de que se acabe el tiempo.', () => {
       this.buttonBirdsClickActivation(false);
       this.clockComponent.startTime(10);
       this.magnifierSoundMethod();
       this.setMagnifierReference('clock');
     }, this.okButtonHasBeenClick);
-    this.addStep('Ante una racha de aciertos consecutivos, se activara un bonus de segundos extra', () => {
+    this.addStep('Gana segundos extra al alcanzar rachas de aciertos consecutivos.', () => {
       this.clockComponent.tutorialClockMethod(-30, 2, 2);
     }, this.okButtonHasBeenClick);
     this.addStep('', () => {

@@ -70,7 +70,7 @@ export class AppComponent extends BaseMicroLessonApp {
       'pelado_alas_2.svg', 'pelado_happy.svg', 'pelado_sad.svg'];
     // const animationSvgs = [];
     // animationSvgs.forEach(z => svg.push('gnome-game/svg/Fondos/sorpresas/' + z));
-    const sounds = ['bonus.mp3', 'bird_sound_colorful_heights.mp3', 'magnifier_sound.mp3'].map( z => 'colorful-heights/sounds/' + z);
+    const sounds = ['bonus.mp3', 'wrongBird.mp3', 'bird_sound_colorful_heights.mp3', 'magnifier_sound.mp3'].map( z => 'colorful-heights/sounds/' + z);
     return svgFondo.map(x => new ResourceOx('colorful-heights/svg/Elementos fondo/' + x, ResourceType.Svg,
       [ScreenTypeOx.Game], true))
       .concat(svgBirds.map(x => new ResourceOx('mini-lessons/executive-functions/colorful-heights/svg/Pajaritos/' + x, ResourceType.Svg,

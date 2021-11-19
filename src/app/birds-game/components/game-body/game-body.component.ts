@@ -15,6 +15,7 @@ import {ExerciseData, MultipleChoiceSchemaData, OptionShowable, ScreenTypeOx, Sh
 import {filter, take} from 'rxjs/operators';
 import {BaseBodyDirective} from '../../directives/base-body.directive';
 import {colorsParseFunction, sameBird, svgBirdGenerator} from '../../../shared/models/functions';
+import {BirdsService} from '../../services/birds.service';
 
 @Component({
   selector: 'app-game-body',
@@ -35,6 +36,7 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
   constructor(private challengeService: ColorfulHeightsChallengeService,
               private metricsService: MicroLessonMetricsService<any>,
               private gameActions: GameActionsService<any>,
+              private birdsService: BirdsService,
               private hintService: HintService,
               private soundService: SoundOxService,
               private feedbackService: FeedbackOxService) {
@@ -220,6 +222,7 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
   }
 
   private birdsDown() {
+    this.birdsService.birdsInteractable.emit(false);
     this.birdsDownAnimation(() => {
         this.checkBonus();
         this.birdsUp();
@@ -229,7 +232,9 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
 
   private birdsUp() {
     this.gameActions.showNextChallenge.emit();
-    this.birdsUpAnimation();
+    this.birdsUpAnimation(0, () => {
+      this.birdsService.birdsInteractable.emit(true);
+    });
   }
 }
 

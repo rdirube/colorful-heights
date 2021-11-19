@@ -1,6 +1,7 @@
 import {Observable, Subscription} from 'rxjs';
 
 export const BASE_BIRD_COLOR = "#406faf";
+export type ColorfulHeightsScoreCriteria = 'fácil' | 'media' | 'difícil' | 'lengendario';
 
 export interface ColorfullHeightsExercise {
   hintBird: BirdInfo;
@@ -51,6 +52,7 @@ export interface NivelationColorfulHeightInfo {
   birdsQuantity: number,
   colorsToUse: BirdColor[],
   birdsToUse: BirdType[],
+  scoreCriteria: ColorfulHeightsScoreCriteria;
   // statementChangeFromExercise?: number;
   // probabilityOfStatementChange?: number;
   keepSameStatementAllGame: boolean;
