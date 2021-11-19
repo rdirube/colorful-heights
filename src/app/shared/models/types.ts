@@ -51,8 +51,9 @@ export interface NivelationColorfulHeightInfo {
   birdsQuantity: number,
   colorsToUse: BirdColor[],
   birdsToUse: BirdType[],
-  statementChangeFromExercise?: number,
-  probabilityOfStatementChange?: number,
+  // statementChangeFromExercise?: number;
+  // probabilityOfStatementChange?: number;
+  keepSameStatementAllGame: boolean;
   minMultipleBirds?: number,
   maxMultipleBirds?: number,
   totalGameTime: number,

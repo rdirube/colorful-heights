@@ -7,6 +7,9 @@
   <div *ngIf="currentButtonPosition && buttonOkActivate" class="ok-btn" [ngStyle]="{'transform': 'translate(' + currentButtonPosition.xAxis + 'vh,'
        + currentButtonPosition.yAxis + 'vh)'}"
          (click)="onClickOk()"
-         fxLayoutAlign="center center"><span style="font-size: 3.7vh;">OK!</span></div>
+         fxLayoutAlign="center center">
+    <ox-text fontSize="3.7vh" font="dinnMedium" originalText="OK!" color="white"
+    ></ox-text>
+<!--    <span style="font-size: 3.7vh;">OK!</span></div>-->
   </div>
 </div>

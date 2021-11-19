@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {
   AppInfoOxService,
   ChallengeService,
@@ -7,7 +7,7 @@ import {
   LevelService,
   SubLevelService
 } from 'micro-lesson-core';
-import { anyElement, equalArrays, ExerciseOx, PreloaderOxService, shuffle , randomBetween} from 'ox-core';
+import {anyElement, equalArrays, ExerciseOx, PreloaderOxService, shuffle, randomBetween} from 'ox-core';
 import {
   BirdColor,
   BirdInfo,
@@ -16,8 +16,8 @@ import {
   NivelationColorfulHeightInfo,
   TrapType,
 } from '../models/types';
-import { ExpandableInfo, Showable } from 'ox-types';
-import { sameBird } from '../models/functions';
+import {ExpandableInfo, Showable} from 'ox-types';
+import {sameBird} from '../models/functions';
 
 
 @Injectable({
@@ -32,12 +32,13 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
   private readonly allColors = ['amarillo', 'azul', 'rojo', 'violeta', 'verde'];
   private readonly allTypes = ['cóndor', 'cotorra', 'lechuza', 'gordo', 'pelado'];
+  private forcedBirdStatement: BirdInfo | undefined;
 
   constructor(gameActionsService: GameActionsService<any>, private levelService: LevelService,
-    subLevelService: SubLevelService,
-    private preloaderService: PreloaderOxService,
-    private feedback: FeedbackOxService,
-    private appInfo: AppInfoOxService,
+              subLevelService: SubLevelService,
+              private preloaderService: PreloaderOxService,
+              private feedback: FeedbackOxService,
+              private appInfo: AppInfoOxService,
   ) {
     super(gameActionsService, subLevelService, preloaderService);
     gameActionsService.restartGame.subscribe(z => {
@@ -62,7 +63,10 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   }
 
   getRandomBird(): BirdInfo {
-    return { color: anyElement(this.exerciseConfig?.colorsToUse || this.allColors), type: anyElement(this.exerciseConfig?.birdsToUse || this.allTypes) };
+    return {
+      color: anyElement(this.exerciseConfig?.colorsToUse || this.allColors),
+      type: anyElement(this.exerciseConfig?.birdsToUse || this.allTypes)
+    };
   }
 
   private generateTrap(t: TrapType, currentOptions: BirdInfo[], answer: BirdInfo): BirdInfo {
@@ -76,34 +80,39 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     }
   }
 
-  private addTrap(currentOptions: BirdInfo[], validTrapsToAdd: TrapType[], answer: BirdInfo): void {
+  private addTrap(currentOptions: BirdInfo[], validTrapsToAdd: TrapType[], answer: BirdInfo, triesCarry: number = 0): void {
     const trapToAdd = anyElement(validTrapsToAdd.map(trapType => this.generateTrap(trapType, currentOptions, answer)).filter(trap => trap !== undefined));
     if (!trapToAdd) {
-      throw new Error('There is a problem generating the traps.');
+      if (triesCarry < 100) {
+        this.addTrap(currentOptions, validTrapsToAdd, answer, triesCarry + 1);
+        return;
+      } else
+        throw new Error('There is a problem generating the traps.');
     }
     currentOptions.push(trapToAdd);
   }
 
   protected generateNextChallenge(subLevel: number): ExerciseOx<ColorfullHeightsExercise> {
-    const answerBird: BirdInfo = this.getRandomBird();
+    const answerBird: BirdInfo = this.forcedBirdStatement || this.getRandomBird();
     const answerBirdOptions: BirdInfo[] = [answerBird];
     this.exerciseConfig.forcesTraps.forEach(forceTrap => {
       for (let i = 0; i < forceTrap.quantity; i++) {
         this.addTrap(answerBirdOptions, forceTrap.forcedTrapsType, answerBird);
       }
     });
-    for (let i = 0; this.exerciseConfig.birdsQuantity > answerBirdOptions.length + i; i++) {
+    const toAdd = this.exerciseConfig.birdsQuantity - answerBirdOptions.length;
+    for (let i = 0; i < toAdd; i++) {
       this.addTrap(answerBirdOptions, ['different color and shape', 'Equal color', 'Equal shape'], answerBird);
     }
     return new ExerciseOx(
       {
-        optionsBirds: this.doubleBirdFilterMethod(shuffle(answerBirdOptions)),
-        targetBird: answerBird,
+        optionsBirds: this.doubleBirdFilterMethod(shuffle(answerBirdOptions.map(jsonBird))),
+        targetBird: jsonBird(answerBird),
         hintBird: anyElement(answerBirdOptions.filter(z => z !== answerBird))
       } as ColorfullHeightsExercise, 1, {
-      maxTimeToBonus: 0,
-      freeTime: 0
-    }, []);
+        maxTimeToBonus: 0,
+        freeTime: 0
+      }, []);
   }
 
   beforeStartGame(): void {
@@ -145,7 +154,9 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
   private setInitialExercise(): void {
     this.validColors = this.exerciseConfig.colorsToUse;
     this.validShapes = this.exerciseConfig.birdsToUse;
-    this.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach( z => z.isAble = true);
+    this.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach(z => z.isAble = true);
+    if (this.exerciseConfig.keepSameStatementAllGame)
+      this.forcedBirdStatement = this.getRandomBird();
   }
 
   //////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +166,7 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
     const auxValidColors = this.validColors.filter(z => z !== answer.color);
     const auxValidShapes = this.validShapes.filter(z => z !== answer.type);
     const differentFromAnswer = auxValidColors.map(color => auxValidShapes.map(type => {
-      return { type, color } as BirdInfo;
+      return {type, color} as BirdInfo;
     })).reduce((a, b) => a.concat(b));
     return anyElement(differentFromAnswer.filter(z => !currentOptions.some(optionBird => sameBird(z, optionBird))));
   }
@@ -167,26 +178,29 @@ export class ColorfulHeightsChallengeService extends ChallengeService<ColorfullH
 
   private generateSameColor(currentOptions: BirdInfo[], answer: BirdInfo): BirdInfo {
     return this.generateSameProperty(this.validShapes, (type) => {
-      return { type, color: answer.color } as BirdInfo;
+      return {type, color: answer.color} as BirdInfo;
     }, currentOptions);
   }
 
   private generateSameShape(currentOptions: BirdInfo[], answer: BirdInfo): BirdInfo {
     return this.generateSameProperty(this.validColors, (color) => {
-      return { type: answer.type, color } as BirdInfo;
+      return {type: answer.type, color} as BirdInfo;
     }, currentOptions);
   }
 
 
-  private doubleBirdFilterMethod(answerOptions: BirdInfo[]):BirdInfo[] {
-    const randomDoubleQuantityNumber = randomBetween(this.exerciseConfig.minMultipleBirds!,this.exerciseConfig.maxMultipleBirds!)
+  private doubleBirdFilterMethod(answerOptions: BirdInfo[]): BirdInfo[] {
+    const randomDoubleQuantityNumber = randomBetween(this.exerciseConfig.minMultipleBirds!, this.exerciseConfig.maxMultipleBirds!);
     console.log(randomDoubleQuantityNumber);
-    for(let i = 0; i < randomDoubleQuantityNumber; i++) {
+    for (let i = 0; i < randomDoubleQuantityNumber; i++) {
       answerOptions[i].isDouble = true;
     }
     return shuffle(answerOptions);
   }
 
 
+}
 
+function jsonBird(b: BirdInfo): BirdInfo {
+  return JSON.parse(JSON.stringify(b));
 }

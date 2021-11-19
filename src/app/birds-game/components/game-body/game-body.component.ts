@@ -28,6 +28,8 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
   showCountDown: boolean | undefined;
   public exercise: ColorfullHeightsExercise | undefined;
   private itWasCorrect!: boolean;
+  private readonly bonusTime: number = 5;
+  private readonly bonusPer: number = 10;
 
 
   constructor(private challengeService: ColorfulHeightsChallengeService,
@@ -39,8 +41,10 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
     super();
     this.feedbackService.playFeedBackSounds = false;
     this.addSubscription(this.gameActions.microLessonCompleted, x => {
-      this.treeClass = 'tree-hide no-transition';
-      this.baseClass = 'base-show no-transition';
+      timer(300).subscribe(z => {
+        this.treeClass = 'tree-hide no-transition';
+        this.baseClass = 'base-show no-transition';
+      });
     });
     this.addSubscription(this.gameActions.restartGame, x => {
       this.treeClass = 'tree-hide no-transition';
@@ -57,8 +61,10 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
     this.addSubscription(this.gameActions.checkedAnswer, z => {
       this.itWasCorrect = z.correctness === 'correct';
       if (this.itWasCorrect) {
+        this.absoluteAnswerCounter++;
         this.correctAnswerCounter++;
-      }
+      } else
+        this.correctAnswerCounter = 0;
     });
 
     this.addSubscription(this.challengeService.currentExercise.pipe(filter(x => x !== undefined)),
@@ -73,6 +79,7 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
         if (this.metricsService.currentMetrics.expandableInfo?.exercisesData.length === 1) {
           this.showCountDown = true;
           this.correctAnswerCounter = 0;
+          this.absoluteAnswerCounter = 0;
           this.challengeService.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach(z => z.isAble = true);
           if (this.birdToSelectComponent)
             this.birdToSelectComponent.birdToSelectOut();
@@ -154,13 +161,16 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
   }
 
   checkBonus(): void {
-    this.challengeService.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach(z => {
-      if (z.numberOfCorrectAnswersForBonus === this.correctAnswerCounter && z.isAble) {
-        this.clockComponent.addTimeMethod(z.timeEarnPerBonus);
-        z.isAble = false;
-        return;
-      }
-    });
+    if (this.correctAnswerCounter > 0 && this.correctAnswerCounter % this.bonusPer === 0) {
+      this.clockComponent.addTimeMethod(this.bonusTime);
+    }
+    // this.challengeService.exerciseConfig.bonusRequirmentsAndTimeEarn.forEach(z => {
+    //   if (z.numberOfCorrectAnswersForBonus === this.correctAnswerCounter && z.isAble) {
+    //     this.clockComponent.addTimeMethod(z.timeEarnPerBonus);
+    //     z.isAble = false;
+    //     return;
+    //   }
+    // });
   }
 
   startGame(): void {
@@ -177,13 +187,18 @@ export class GameBodyComponent extends BaseBodyDirective implements OnInit {
   }
 
   private gameHasStarted() {
+    // this.challengeService.exerciseConfig.totalGameTime = 15;
+    // this.clockComponent.startTime();
     this.clockComponent.startTime(this.challengeService.exerciseConfig.totalGameTime);
     this.startAnimations();
   }
 
   private startAnimations(): void {
     this.birdToSelectComponent.birdToSelectAnimationAppearence();
-    this.birdsUpAnimation(1300);
+    this.birdsUpAnimation(1300, () => {
+      this.treeClass += ' no-transition';
+      this.baseClass += ' no-transition';
+    });
     this.animeHeaderButtons();
   }
 

@@ -58,5 +58,6 @@
 
 <app-tutorial-button fxLayoutAlign="center center" [tutorialText]="skipTutorialText"
                      mlcClickeableOx style="right: 10vh; top:90vh;position: fixed;"
+                     [realClick]="onSkipTutorial.bind(this)"
                      class="skip-tutorial-btn"></app-tutorial-button>
 <!--    <div class="skip-tutorial-btn" style="right: 3vh; top:90vh;position: fixed;" fxLayoutAlign="center center"><span>Saltar tutorial</span></div>-->

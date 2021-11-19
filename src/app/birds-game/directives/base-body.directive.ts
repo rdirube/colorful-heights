@@ -17,6 +17,7 @@ export class BaseBodyDirective extends SubscriberOxDirective {
 
   treeClass: string = 'tree-hide no-transition';
   baseClass: string = 'base-show no-transition';
+  public absoluteAnswerCounter: number = 0;
   public correctAnswerCounter: number = 0;
 
   topNestInfo: (BirdInfo | undefined)[] = [];

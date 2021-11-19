@@ -1,4 +1,4 @@
-$background-color: rgb(119, 198, 110);
+//$background-color: rgb(119, 198, 110);
 $demo-content-display: none;
 $animation-duration: 10s;
 
@@ -27,7 +27,7 @@ $animation-duration: 10s;
   width: 13.5vh;
   height: 13.5vh;
   border-radius: 50%;
-  border: 3px solid $background-color;
+  border: 3px solid; // $background-color;
   background-color: #FFF;
   z-index: 150;
   bottom: -1.35vh;
@@ -89,7 +89,7 @@ $animation-duration: 10s;
   transform-origin: 100% 50%;
   left: 50%;
   position: absolute;
-  background-color: $background-color;
+  //background-color: $background-color;
 
 }
 
@@ -98,7 +98,7 @@ $animation-duration: 10s;
   width: 50%;
   height: 100%;
   position: absolute;
-  background: $background-color;
+  //background: $background-color;
   z-index: 400;
 }
 
